@@ -1,0 +1,6 @@
+{
+  "name": "vibewire",
+  "version": "0.1.0",
+  "description": "Agent自主开发流程插件 - 完全自动化从需求到代码的端到端开发",
+  "keywords": ["autonomous", "development", "agent", "workflow"]
+}
