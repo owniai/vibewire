@@ -9,7 +9,7 @@ description: "在任何实现工作之前必须使用 - 分析需求、设计架
 
 通过自然的协作对话，帮助将用户任务转化为完整的需求文档和架构设计。
 
-首先深度探索当前项目上下文，然后逐一提问以澄清需求。理解需求后呈现摘要并写入需求文档，接着提出多个架构方案供用户选择，最后呈现设计并获得用户批准。
+首先深度探索当前项目上下文，然后逐一提问以澄清需求。理解需求后呈现详述并写入需求文档，接着提出多个架构方案供用户选择，最后呈现设计并获得用户批准。
 
 <HARD-GATE>
 在呈现设计并获得用户批准之前，不要调用任何实现技能、编写任何代码或采取任何实现行动。这适用于每个项目，无论感知的简单程度如何。
@@ -25,7 +25,7 @@ description: "在任何实现工作之前必须使用 - 分析需求、设计架
 
 1. **探索项目上下文** — 检查 .vibewire/ 目录，深度探索文件、文档、最近提交、相关代码
 2. **提出澄清问题** — 一次一个，理解目的/约束/成功标准
-3. **呈现需求摘要** — 写入 .vibewire/requirements.md
+3. **呈现需求详述** — 写入 .vibewire/requirements.md
 4. **提出2-3个方案** — 附带权衡和你的建议
 5. **呈现架构设计** — 按复杂度缩放各部分，每部分后获得用户确认
 6. **编写规划文档** — 写入 .vibewire/architecture.md
@@ -37,7 +37,7 @@ description: "在任何实现工作之前必须使用 - 分析需求、设计架
 digraph plan {
     "Explore project context" [shape=box];
     "Ask clarifying questions" [shape=box];
-    "Present requirements summary" [shape=box];
+    "Present requirements specification" [shape=box];
     "Propose 2-3 approaches" [shape=box];
     "Present architecture design" [shape=box];
     "User approves design?" [shape=diamond];
@@ -45,8 +45,8 @@ digraph plan {
     "Prompt /go" [shape=doublecircle];
 
     "Explore project context" -> "Ask clarifying questions";
-    "Ask clarifying questions" -> "Present requirements summary";
-    "Present requirements summary" -> "Propose 2-3 approaches";
+    "Ask clarifying questions" -> "Present requirements specification";
+    "Present requirements specification" -> "Propose 2-3 approaches";
     "Propose 2-3 approaches" -> "Present architecture design";
     "Present architecture design" -> "User approves design?";
     "User approves design?" -> "Present architecture design" [label="no, revise"];
@@ -82,11 +82,11 @@ digraph plan {
 - 每条消息只问一个问题 — 如果某个主题需要更多探索，将其拆分为多个问题
 - 重点关注理解：目的、约束、成功标准
 
-### 3. 呈现需求摘要
+### 3. 呈现需求详述
 
 一旦你理解了需求：
 
-- 呈现需求摘要给用户确认
+- 呈现需求详述给用户确认
 - 获得确认后，写入 `.vibewire/requirements.md`
 - 涵盖：任务概述、功能需求、非功能需求、约束条件、成功标准
 
@@ -111,7 +111,6 @@ digraph plan {
 ### 6. 编写规划文档
 
 获得用户确认后，写入架构文档 `.vibewire/architecture.md`
-
 
 ### 7. 过渡到执行
 
