@@ -25,15 +25,30 @@
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                        用户输入任务                              │
-│                    "/go 实现用户登录功能"                         │
+│                  "/plan 实现用户登录功能"                         │
+└─────────────────────────┬───────────────────────────────────────┘
+                          ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    skills/plan/SKILL.md                         │
+│                    【需求分析与架构设计】                          │
+│  ┌─────────────────────────────────────────────────────────────┐│
+│  │  职责：                                                       ││
+│  │  1. 解析用户任务，提取需求点                                    ││
+│  │  2. 设计技术方案，确定架构和技术栈                              ││
+│  │  3. 输出 requirements.md + architecture.md                    ││
+│  └─────────────────────────────────────────────────────────────┘│
+└─────────────────────────┬───────────────────────────────────────┘
+                          ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                   用户确认后执行 /go                              │
 └─────────────────────────┬───────────────────────────────────────┘
                           ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                     skills/go/SKILL.md                          │
-│                      【主控调度器】                               │
+│                      【执行调度器】                               │
 │  ┌─────────────────────────────────────────────────────────────┐│
 │  │  职责：                                                       ││
-│  │  1. 解析用户任务                                              ││
+│  │  1. 读取 requirements.md + architecture.md                   ││
 │  │  2. 阶段划分与状态管理                                         ││
 │  │  3. 调度对应Agent执行                                         ││
 │  │  4. 收集结果、判断是否进入下一阶段                              ││
@@ -42,15 +57,11 @@
 └─────────────────────────┬───────────────────────────────────────┘
                           ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                      agents/ (6个Agent)                         │
+│                      agents/ (4个Agent)                         │
 ├────────────────┬────────────────┬───────────────────────────────┤
-│ requirement-   │   architect    │      planner                  │
-│   analyzer     │                │                               │
-│  需求分析       │   架构设计      │     计划制定                   │
-├────────────────┼────────────────┼───────────────────────────────┤
-│  implementer   │    tester      │      reviewer                 │
-│   代码实现      │     测试        │     代码审查                   │
-└────────────────┴────────────────┴───────────────────────────────┘
+│    planner     │  implementer   │      tester     │  reviewer   │
+│    计划制定     │    代码实现     │      测试        │  代码审查    │
+└────────────────┴────────────────┴─────────────────┴──────────────┘
                           ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                    .vibewire/ (过程资料)                         │
@@ -65,12 +76,12 @@ vibewire/
 │   └── plugin.json          # 插件元数据
 │
 ├── skills/
-│   └── go/                  # 主控skill
+│   ├── plan/                # 需求分析与架构设计skill
+│   │   └── SKILL.md
+│   └── go/                  # 执行调度skill
 │       └── SKILL.md
 │
-├── agents/                  # 6个专业Agent
-│   ├── requirement-analyzer.md
-│   ├── architect.md
+├── agents/                  # 4个专业Agent
 │   ├── planner.md
 │   ├── implementer.md
 │   ├── tester.md
@@ -124,12 +135,13 @@ vibewire/
 ### 4.1 流程概览
 
 ```
-【前期准备】
-  ├─ requirement-analyzer → requirements.md
-  └─ architect → architecture.md
+【Step 1: 规划阶段】/plan
+  └─ plan skill → requirements.md + architecture.md
 
-【阶段规划】
-  └─ planner 分析任务，划分执行阶段（如：基础框架 → 核心功能 → 扩展功能 → 收尾）
+【用户确认】
+
+【Step 2: 执行阶段】/go
+  └─ planner 分析architecture.md，划分执行阶段（如：基础框架 → 核心功能 → 扩展功能 → 收尾）
 
 【执行阶段1】
   └─ planner → stage-1/design.md + tasks.md
@@ -149,8 +161,9 @@ vibewire/
   └─ 生成 final-summary.md
 ```
 
-### 4.2 主控Skill核心逻辑
+### 4.2 Skill核心逻辑
 
+#### plan skill
 ```
 用户输入任务
     ↓
@@ -158,14 +171,27 @@ vibewire/
     ├─ 创建 .vibewire/ 目录
     └─ 记录任务信息
     ↓
-【2. 前期准备】
-    ├─ 调用 requirement-analyzer → requirements.md
-    └─ 调用 architect → architecture.md
+【2. 需求分析】
+    └─ 解析任务，提取需求点 → requirements.md
     ↓
-【3. 阶段规划】
+【3. 架构设计】
+    └─ 设计技术方案 → architecture.md
+    ↓
+【4. 完成】
+    └─ 输出规划文档，等待用户确认
+```
+
+#### go skill
+```
+用户执行 /go
+    ↓
+【1. 初始化】
+    └─ 读取 requirements.md + architecture.md
+    ↓
+【2. 阶段规划】
     └─ 调用 planner → 输出阶段列表
     ↓
-【4. 阶段循环】
+【3. 阶段循环】
     └─ 对每个执行阶段:
         ├─ 调用 planner → stage-N/design.md + tasks.md
         └─ 【批次循环】
@@ -178,7 +204,7 @@ vibewire/
                     └─ 有问题 → 调整文档 → 重新执行批次
         └─ 生成 stage-N/summary.md
     ↓
-【5. 完成】
+【4. 完成】
     └─ 生成 final-summary.md
 ```
 
@@ -186,41 +212,45 @@ vibewire/
 
 ## 5. Agent职责
 
-### 5.1 Agent清单
+### 5.1 Skill与Agent清单
 
-| Agent | 职责 | 输入 | 输出 |
-|-------|------|------|------|
-| **requirement-analyzer** | 分析用户任务，提取需求点，澄清边界 | 用户任务描述 | requirements.md |
-| **architect** | 设计技术方案，确定架构、技术栈、模块划分 | requirements.md | architecture.md |
-| **planner** | 划分执行阶段和任务批次，制定每阶段详细计划 | architecture.md | stage-N/design.md + tasks.md |
-| **implementer** | 按批次执行代码实现 | design.md + tasks.md | 代码文件 + implementation.md |
-| **tester** | 编写/执行测试，验证实现是否符合设计 | 代码 + design.md | test-results.md |
-| **reviewer** | 审查代码质量和规范性，检查是否偏离设计 | 代码 + design.md + test-results | review-results.md |
+| 组件 | 类型 | 职责 | 输入 | 输出 |
+|------|------|------|------|------|
+| **plan** | Skill | 分析用户任务，提取需求点，设计技术方案 | 用户任务描述 | requirements.md + architecture.md |
+| **go** | Skill | 执行调度，管理阶段和批次迭代 | requirements.md + architecture.md | 代码 + 测试 + 文档 |
+| **planner** | Agent | 划分执行阶段和任务批次，制定每阶段详细计划 | architecture.md | stage-N/design.md + tasks.md |
+| **implementer** | Agent | 按批次执行代码实现 | design.md + tasks.md | 代码文件 + implementation.md |
+| **tester** | Agent | 编写/执行测试，验证实现是否符合设计 | 代码 + design.md | test-results.md |
+| **reviewer** | Agent | 审查代码质量和规范性，检查是否偏离设计 | 代码 + design.md + test-results | review-results.md |
 
-### 5.2 Agent协作关系
+### 5.2 组件协作关系
 
 ```
-requirement-analyzer → architect → planner
-                                   ↓
-                          ┌────────────────┐
-                          │  循环：每阶段   │
-                          │  ↓             │
-                          │  planner       │
-                          │  ↓             │
-                          │  ┌───────────┐ │
-                          │  │循环：每批次│ │
-                          │  │  ↓        │ │
-                          │  │implementer│ │
-                          │  │  ↓        │ │
-                          │  │  tester   │ │
-                          │  │  ↓        │ │
-                          │  │ reviewer  │ │
-                          │  │  ↓        │ │
-                          │  │有问题？   │ │
-                          │  │  是→调整  │ │
-                          │  │  否→继续  │ │
-                          │  └───────────┘ │
-                          └────────────────┘
+/plan → requirements.md + architecture.md
+                    ↓
+                   /go
+                    ↓
+                planner
+                    ↓
+            ┌────────────────┐
+            │  循环：每阶段   │
+            │  ↓             │
+            │  planner       │
+            │  ↓             │
+            │  ┌───────────┐ │
+            │  │循环：每批次│ │
+            │  │  ↓        │ │
+            │  │implementer│ │
+            │  │  ↓        │ │
+            │  │  tester   │ │
+            │  │  ↓        │ │
+            │  │ reviewer  │ │
+            │  │  ↓        │ │
+            │  │有问题？   │ │
+            │  │  是→调整  │ │
+            │  │  否→继续  │ │
+            │  └───────────┘ │
+            └────────────────┘
 ```
 
 ---
@@ -262,14 +292,18 @@ requirement-analyzer → architect → planner
 ### 7.2 使用方式
 
 ```bash
-# 用户在任意项目中使用
-/go 实现一个用户登录功能，支持邮箱密码和OAuth登录
+# Step 1: 规划 - 分析需求并设计架构
+/plan 实现一个用户登录功能，支持邮箱密码和OAuth登录
+
+# Step 2: 用户确认规划文档后执行
+/go
 ```
 
 系统自动：
-1. 在当前目录创建 `.vibewire/` 存放过程资料
-2. 按流程执行各个阶段
-3. 最终输出代码 + 测试 + 文档
+1. `/plan` 在当前目录创建 `.vibewire/` 并输出 requirements.md + architecture.md
+2. 用户确认规划文档
+3. `/go` 读取规划文档，按流程执行各个阶段
+4. 最终输出代码 + 测试 + 文档
 
 ---
 
@@ -279,7 +313,7 @@ requirement-analyzer → architect → planner
 |--------|------|------|
 | 输出范围 | 设计文档 + 实施计划 + 代码 + 测试 | 完整可交付物 |
 | 系统类型 | 全新构建 | 独立可控 |
-| Agent数量 | 6个 | 职责清晰，覆盖全流程 |
+| 组件数量 | 1 Skill + 4 Agent | 需求分析与架构设计合并为skill，简化前期准备 |
 | 迭代模型 | 两层迭代 | 阶段迭代 + 批次迭代，灵活可控 |
 | 用户介入 | 完全自主 | V1目标是最小可运行 |
 | 过程资料位置 | .vibewire/ | 不污染用户项目 |
