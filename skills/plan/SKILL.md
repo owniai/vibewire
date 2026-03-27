@@ -25,11 +25,11 @@ description: "在任何实现工作之前必须使用 - 分析需求、设计架
 
 1. **探索项目上下文** — 检查 .vibewire/ 目录，深度探索文件、文档、最近提交、相关代码
 2. **提出澄清问题** — 一次一个，理解目的/约束/成功标准
-3. **呈现需求详述** — 写入 .vibewire/requirements.md
+3. **呈现需求详述** — 写入 .vibewire/{seq}-{name}/requirements.md
 4. **提出2-3个方案** — 附带权衡和你的建议
 5. **呈现架构设计** — 按复杂度缩放各部分，每部分后获得用户确认
-6. **编写规划文档** — 写入 .vibewire/architecture.md
-7. **过渡到执行** — 总结对话，提示用户使用 /go
+6. **编写规划文档** — 写入 .vibewire/{seq}-{name}/architecture.md
+7. **过渡到执行** — 总结对话，提示用户使用 /vibewire:go
 
 ## 流程图
 
@@ -42,7 +42,7 @@ digraph plan {
     "Present architecture design" [shape=box];
     "User approves design?" [shape=diamond];
     "Write docs & summarize" [shape=box];
-    "Prompt /go" [shape=doublecircle];
+    "Prompt /vibewire:go" [shape=doublecircle];
 
     "Explore project context" -> "Ask clarifying questions";
     "Ask clarifying questions" -> "Present requirements specification";
@@ -51,20 +51,20 @@ digraph plan {
     "Present architecture design" -> "User approves design?";
     "User approves design?" -> "Present architecture design" [label="no, revise"];
     "User approves design?" -> "Write docs & summarize" [label="yes"];
-    "Write docs & summarize" -> "Prompt /go";
+    "Write docs & summarize" -> "Prompt /vibewire:go";
 }
 ```
 
-**终止状态是提示用户使用 /go。** 不要调用任何实现技能。plan 之后用户需要运行 /go 来开始执行。
+**终止状态是提示用户使用 /vibewire:go。** 不要调用任何实现技能。plan 之后用户需要运行 /vibewire:go 来开始执行。
 
 ## 流程
 
 ### 1. 探索项目上下文
 
-首先检查 `.vibewire/` 目录是否存在，然后深度探索当前项目状态：
+创建规划目录：`.vibewire/{seq}-{name}/`
 
-- **如果 .vibewire/ 不存在**：创建目录，继续探索
-- **如果 .vibewire/ 已存在**：询问用户如何处理（覆盖或基于现有文档继续）
+- 序号：三位数字自动递增（001, 002...）
+- 名称：任务对应的英文标识，kebab-case（如 `user-auth`）
 
 深度探索项目：
 - 读取项目目录结构
@@ -87,7 +87,7 @@ digraph plan {
 一旦你理解了需求：
 
 - 呈现需求详述给用户确认
-- 获得确认后，写入 `.vibewire/requirements.md`
+- 获得确认后，写入 `.vibewire/{seq}-{name}/requirements.md`
 - 涵盖：任务概述、功能需求、非功能需求、约束条件、成功标准
 
 ### 4. 探索方案
@@ -110,14 +110,14 @@ digraph plan {
 
 ### 6. 编写规划文档
 
-获得用户确认后，写入架构文档 `.vibewire/architecture.md`
+获得用户确认后，写入架构文档 `.vibewire/{seq}-{name}/architecture.md`
 
 ### 7. 过渡到执行
 
 总结对话并提示用户下一步：
 
 **总结对话：**
-- 将交互过程总结保存到 `.vibewire/planning-session.md`
+- 将交互过程总结保存到 `.vibewire/{seq}-{name}/planning-session.md`
 - 记录关键决策点和理由
 - 记录用户的偏好和约束
 - 便于在新会话中恢复上下文
@@ -126,11 +126,11 @@ digraph plan {
 **提示用户：**
 
 ```
-规划已完成！需求文档和架构设计已保存到 .vibewire/ 目录。
+规划已完成！需求文档和架构设计已保存到 .vibewire/{seq}-{name}/ 目录。
 
 下一步：
-- 当前会话：直接运行 /go 开始执行
-- 新会话：在新会话中运行 /go，系统会读取 .vibewire/ 中的规划文档
+- 当前会话：直接运行 /vibewire:go 开始执行
+- 新会话：在新会话中运行 /vibewire:go，系统会读取最新的规划文档
 ```
 
 ## 关键原则
@@ -148,6 +148,6 @@ digraph plan {
 
 | 文件 | 内容 | 写入时机 |
 |------|------|----------|
-| `.vibewire/requirements.md` | 需求分析文档 | 需求澄清完成并确认后 |
-| `.vibewire/architecture.md` | 架构设计文档 | 架构设计确认后 |
-| `.vibewire/planning-session.md` | 对话总结 | 架构设计确认后，提示 /go 前 |
+| `.vibewire/{seq}-{name}/requirements.md` | 需求分析文档 | 需求澄清完成并确认后 |
+| `.vibewire/{seq}-{name}/architecture.md` | 架构设计文档 | 架构设计确认后 |
+| `.vibewire/{seq}-{name}/planning-session.md` | 对话总结 | 架构设计确认后，提示 /vibewire:go 前 |
