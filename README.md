@@ -33,7 +33,7 @@ vibewire/
 ├── agents/                  # 6个专业Agent
 │   ├── requirement-analyzer.md
 │   ├── architect.md
-│   ├── planner.md
+│   ├── stager.md
 │   ├── implementer.md
 │   ├── tester.md
 │   └── reviewer.md
@@ -57,7 +57,7 @@ vibewire/
 |-------|------|
 | requirement-analyzer | 分析用户任务，提取需求点 |
 | architect | 设计技术方案和架构 |
-| planner | 划分执行阶段和任务批次 |
+| stager | 划分执行阶段和任务批次 |
 | implementer | 按批次执行代码实现 |
 | tester | 编写/执行测试 |
 | reviewer | 审查代码质量 |

@@ -59,8 +59,8 @@
 ┌─────────────────────────────────────────────────────────────────┐
 │                      agents/ (4个Agent)                         │
 ├────────────────┬────────────────┬───────────────────────────────┤
-│    planner     │  implementer   │      tester     │  reviewer   │
-│    计划制定     │    代码实现     │      测试        │  代码审查    │
+│     stager     │  implementer   │      tester     │  reviewer   │
+│    阶段规划     │    代码实现     │      测试        │  代码审查    │
 └────────────────┴────────────────┴─────────────────┴──────────────┘
                           ▼
 ┌─────────────────────────────────────────────────────────────────┐
@@ -82,7 +82,7 @@ vibewire/
 │       └── SKILL.md
 │
 ├── agents/                  # 4个专业Agent
-│   ├── planner.md
+│   ├── stager.md
 │   ├── implementer.md
 │   ├── tester.md
 │   └── reviewer.md
@@ -104,7 +104,7 @@ vibewire/
 ├── requirements.md            # 需求分析文档（前期）
 ├── architecture.md            # 架构设计文档（前期）
 │
-├── stage-1-xxx/               # 执行阶段1（名称由planner根据任务内容命名）
+├── stage-1-xxx/               # 执行阶段1（名称由stager根据任务内容命名）
 │   ├── design.md              # 该阶段详细设计
 │   ├── tasks.md               # 任务批次列表
 │   ├── batch-1/
@@ -141,20 +141,20 @@ vibewire/
 【用户确认】
 
 【Step 2: 执行阶段】/go
-  └─ planner 分析architecture.md，划分执行阶段（如：基础框架 → 核心功能 → 扩展功能 → 收尾）
+  └─ stager 分析architecture.md，划分执行阶段（如：基础框架 → 核心功能 → 扩展功能 → 收尾）
 
 【执行阶段1】
-  └─ planner → stage-1/design.md + tasks.md
+  └─ stager → stage-1/design.md + tasks.md
   └─ 批次迭代: implementer → tester → reviewer → (问题则调整文档)
 
 【执行阶段2】
-  └─ planner → stage-2/design.md + tasks.md
+  └─ stager → stage-2/design.md + tasks.md
   └─ 批次迭代: implementer → tester → reviewer
 
 ...
 
 【执行阶段N】
-  └─ planner → stage-N/design.md + tasks.md
+  └─ stager → stage-N/design.md + tasks.md
   └─ 批次迭代: implementer → tester → reviewer
 
 【完成】
@@ -189,11 +189,11 @@ vibewire/
     └─ 读取 requirements.md + architecture.md
     ↓
 【2. 阶段规划】
-    └─ 调用 planner → 输出阶段列表
+    └─ 调用 stager → 输出阶段列表
     ↓
 【3. 阶段循环】
     └─ 对每个执行阶段:
-        ├─ 调用 planner → stage-N/design.md + tasks.md
+        ├─ 调用 stager → stage-N/design.md + tasks.md
         └─ 【批次循环】
             └─ 对每个批次:
                 ├─ 调用 implementer
@@ -218,7 +218,7 @@ vibewire/
 |------|------|------|------|------|
 | **plan** | Skill | 分析用户任务，提取需求点，设计技术方案 | 用户任务描述 | requirements.md + architecture.md |
 | **go** | Skill | 执行调度，管理阶段和批次迭代 | requirements.md + architecture.md | 代码 + 测试 + 文档 |
-| **planner** | Agent | 划分执行阶段和任务批次，制定每阶段详细计划 | architecture.md | stage-N/design.md + tasks.md |
+| **stager** | Agent | 划分执行阶段和任务批次，制定每阶段详细计划 | architecture.md | stage-N/design.md + tasks.md |
 | **implementer** | Agent | 按批次执行代码实现 | design.md + tasks.md | 代码文件 + implementation.md |
 | **tester** | Agent | 编写/执行测试，验证实现是否符合设计 | 代码 + design.md | test-results.md |
 | **reviewer** | Agent | 审查代码质量和规范性，检查是否偏离设计 | 代码 + design.md + test-results | review-results.md |
@@ -230,12 +230,12 @@ vibewire/
                     ↓
                    /go
                     ↓
-                planner
+                stager
                     ↓
             ┌────────────────┐
             │  循环：每阶段   │
             │  ↓             │
-            │  planner       │
+            │  stager        │
             │  ↓             │
             │  ┌───────────┐ │
             │  │循环：每批次│ │
