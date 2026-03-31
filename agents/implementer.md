@@ -18,8 +18,7 @@ model: sonnet
 2. **批判性审查** — 检查设计文档和任务列表是否有矛盾、遗漏、指令不清之处
    - 有问题 → 记录到 implementer-issues.md，停止并等待文档更新
    - 无问题 → 继续
-3. 创建 git 分支 `stage-{N}-{name}`（从当前分支创建）
-4. 读取 handoff.md 获取任务分工
+3. 读取 handoff.md 获取任务分工
 
 ### 任务分类
 

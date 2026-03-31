@@ -16,6 +16,9 @@ description: "执行调度器 — 读取规划文档，调度 stager/tester/impl
 - 确认 `.vibewire/{seq}-{name}/` 目录存在
 - 读取 `requirements.md` 和 `architecture.md`
 - 确认文件内容完整，否则提示用户先运行 `/plan`
+- 检测当前目录是否为 git 仓库，若不是则 `git init` 初始化
+- 根据项目信息（语言、框架等）创建或更新 `.gitignore`
+- 若仓库无任何提交，创建初始提交
 
 ### 2. 阶段规划
 
@@ -38,6 +41,12 @@ prompt: |
 
 #### 3.1 阶段设计
 
+创建阶段分支：
+
+```
+git checkout -b stage-{N}-{name}
+```
+
 调用 stager：
 
 ```
@@ -47,6 +56,13 @@ prompt: |
   执行逐阶段调用。
   阶段序号：{N}，阶段名称：{name}
   规划目录：.vibewire/{seq-name}/
+```
+
+提交阶段设计文档：
+
+```
+git add .vibewire/{seq-name}/stage-{N}-{name}/
+git commit -m "docs(stage-{N}): 阶段设计文档"
 ```
 
 #### 3.2 初始化
@@ -263,6 +279,15 @@ Blocking 问题列表：
 
 ## 审查遗留
 - [列出未修复的 major/minor 问题]
+```
+
+提交总结文档并合并回主分支：
+
+```
+git add .vibewire/{seq-name}/stage-{N}-{name}/summary.md
+git commit -m "docs(stage-{N}): 阶段总结"
+git checkout {main-branch}
+git merge stage-{N}-{name}
 ```
 
 ### 4. 最终总结
