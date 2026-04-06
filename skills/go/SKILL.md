@@ -48,9 +48,7 @@ prompt: |
   规划目录：.vibewire/{seq-name}/
 ```
 
-stager 完成（含 self-review 和 subagent review）后输出里程碑设计文档和所有 stage 文档 → 等待用户审批。
-
-提交设计文档：
+stager 完成后，提交设计文档并进入阶段循环：
 
 ```
 git add .vibewire/{seq-name}/milestone-{N}-{name}/
@@ -72,7 +70,14 @@ prompt: |
   Stage 文档：.vibewire/{seq-name}/milestone-{N}-{name}/stage-{N}-{M}.md
 ```
 
-检查 tester 状态码（见「状态码处理」）。
+根据 tester 状态码处理：
+
+| 状态 | 含义 | 处理方式 |
+|------|------|----------|
+| DONE | 测试编写完成 | 继续下一步骤 |
+| DONE_WITH_CONCERNS | 完成但有顾虑 | 记录顾虑到日志，继续下一步骤 |
+| BLOCKED | 无法继续 | 调用 stager 修复文档后重试（最多 2 次），仍失败则暂停等用户 |
+| NEEDS_CONTEXT | 需要额外信息 | 补充缺失上下文后调度新的 agent |
 
 **步骤 2 — implementer（Green）：**
 
@@ -87,7 +92,7 @@ prompt: |
   Stage 文档：.vibewire/{seq-name}/milestone-{N}-{name}/stage-{N}-{M}.md
 ```
 
-检查 implementer 状态码（见「状态码处理」）。
+根据 implementer 状态码处理（同 tester 状态码表）。
 
 **步骤 3 — review-code（审查）：**
 
@@ -169,15 +174,6 @@ git merge milestone-{N}-{name}
 - 运行项目测试确认完整性
 - 检查遗留问题是否需要处理
 ```
-
-## 状态码处理
-
-| 状态 | 含义 | 处理方式 |
-|------|------|----------|
-| DONE | 任务完成 | 继续下一步 |
-| DONE_WITH_CONCERNS | 完成但有顾虑 | 记录顾虑到日志，继续下一步 |
-| BLOCKED | 无法继续 | 调用 stager 修复文档后重试（最多 2 次），仍失败则暂停等用户 |
-| NEEDS_CONTEXT | 需要额外信息 | 提供上下文后重新调度同一 agent |
 
 ### BLOCKED 处理流程
 
