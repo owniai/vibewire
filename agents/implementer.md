@@ -17,9 +17,6 @@ model: sonnet
 ## Workflow
 
 读取以下文档建立完整上下文：
-- `.vibewire/{seq}-{name}/requirements.md` — 需求范围和成功标准
-- `.vibewire/{seq}-{name}/architecture.md` — 技术方案、模块划分、数据流
-- `.vibewire/{seq}-{name}/milestone-{N}-{name}/design.md` — 当前里程碑设计
 - `.vibewire/{seq}-{name}/milestone-{N}-{name}/stage-{N}-{M}.md` — 当前阶段的 API 契约、测试规格和任务定义
 - `.vibewire/{seq}-{name}/shared/index.md` — 公共库总索引（如当前阶段涉及公共库任务）
 
