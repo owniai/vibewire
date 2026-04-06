@@ -1,13 +1,20 @@
 ---
 name: global-design
-description: "在 /spec 完成后使用 - 读取 requirements.md 和 architecture.md，将架构设计拆分为可独立交付的里程碑，输出 design.md。用户审批后运行 /go 执行。"
+description: "在 /spec 完成后使用 - 接收编号参数 {seq}，读取对应 spec 文档的 requirements.md 和 architecture.md，将架构设计拆分为可独立交付的里程碑，输出 design.md。用户审批后运行 /go 执行。调用方式：/global-design {seq}"
 ---
 
 # Global Design：从架构到里程碑
 
 ## 概述
 
-读取 `/spec` 输出的需求文档和架构设计，将工作拆分为可独立交付的里程碑规划。
+接收编号参数，读取对应 spec 目录的需求文档和架构设计，将工作拆分为可独立交付的里程碑规划。
+
+## 参数
+
+调用方式：`/global-design {seq}`
+
+- `{seq}`：spec 目录的编号（如 `001`、`002`）
+- 根据 `{seq}` 在 `.vibewire/` 下匹配 `{seq}-*` 目录
 
 <HARD-GATE>
 在用户审阅并批准 design.md 之前，不要调用任何实现技能、编写任何代码或采取任何实现行动。
@@ -26,8 +33,9 @@ description: "在 /spec 完成后使用 - 读取 requirements.md 和 architectur
 
 ### 1. 确认前置条件
 
-- 确认 `.vibewire/{seq}-{name}/` 目录存在
-- 读取 `requirements.md` 和 `architecture.md`
+- 扫描 `.vibewire/` 下匹配 `{seq}-*` 模式的目录，确定完整目录名 `{seq}-{name}`
+- 若未找到匹配目录，提示用户可用的编号列表并中止
+- 读取 `.vibewire/{seq}-{name}/requirements.md` 和 `.vibewire/{seq}-{name}/architecture.md`
 - 确认文件内容完整，否则提示用户先运行 `/spec`
 
 ### 2. 建立上下文

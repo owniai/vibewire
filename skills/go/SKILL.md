@@ -7,7 +7,7 @@ description: "执行调度器 — 读取规划文档和全局设计，调度 sta
 
 ## 概述
 
-读取 `/spec` 输出的需求文档和架构设计、`/global-design` 输出的里程碑规划，通过调度三个专业 Agent（stager、tester、implementer），按里程碑和阶段迭代完成代码实现和测试验证。
+读取需求文档、架构设计和里程碑规划，通过调度三个专业 Agent（stager、tester、implementer），按里程碑和阶段迭代完成代码实现和测试验证。
 
 ## 流程
 
