@@ -45,11 +45,7 @@ model: sonnet
 - **Red** → 分析失败原因，编写修复代码，重新运行测试，将修复过程记录到 `.vibewire/{seq}-{name}/milestone-{N}-{name}/implementer-log.md`
 - 反复失败 → 状态设为 BLOCKED，记录问题到 `.vibewire/{seq}-{name}/milestone-{N}-{name}/implementer-issues.md`
 
-### 4. Refactor
-
-测试通过后，执行 `/simplify` 重构代码，完成后再次运行测试确认 Green。重构过程记录到 `.vibewire/{seq}-{name}/milestone-{N}-{name}/implementer-log.md`。
-
-### 5. Self-Review
+### 4. Self-Review
 
 在提交前，用新视角审视自己的工作：
 
@@ -72,7 +68,7 @@ model: sonnet
 
 发现问题即修复，修复后重新运行测试确认 Green。
 
-### 6. Commit
+### 5. Commit
 
 提交代码（`feat(stage-{N}-{M}): {阶段名称}`）。
 

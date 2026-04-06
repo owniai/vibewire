@@ -31,6 +31,7 @@ description: "执行调度器 — 读取规划文档，调度 stager/tester/impl
 
 ```
 subagent_type: "stager"
+name: "stager"
 description: "stager Global Analysis"
 prompt: |
   执行 Global Analysis。
@@ -97,12 +98,23 @@ tester 完成后，启动 implementer 执行全部步骤：
 subagent_type: "implementer"
 description: "implementer Stage {N}-{M}"
 prompt: |
-  执行全部实现步骤（Review → Implement → Verify → Refactor → Self-Review → Commit）。
+  执行全部实现步骤（Review → Implement → Verify → Self-Review → Commit）。
   规划目录：.vibewire/{seq-name}/
   Stage 文档：.vibewire/{seq-name}/milestone-{N}-{name}/stage-{N}-{M}.md
 ```
 
 检查 implementer 状态码（见「状态码处理」）。
+
+**步骤 3 — review-code（审查）：**
+
+implementer 完成且状态为 DONE 后，执行 reuse, quality, and efficiency 三维度代码审查。从 `references/review-agents.md` 读取提示词模板，使用 Agent 工具同时启动三个 agent。
+
+等待三个 agent 完成，根据各自输出的一行摘要判断结果：
+
+- **全部无问题** → 继续下一 stage
+- **存在至少一个问题** → 从 `references/review-approver.md` 读取提示词模板，使用 Agent 工具启动修复 agent。修复 agent 完成后检查其输出的测试结果：
+  - **PASS** → 继续下一 stage
+  - **FAIL** → 暂停，报告失败信息，等待用户处理
 
 #### 3.3 里程碑总结
 
