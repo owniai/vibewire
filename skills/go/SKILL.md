@@ -1,50 +1,35 @@
 ---
 name: go
-description: "执行调度器 — 读取规划文档，调度 stager/tester/implementer 完成从里程碑规划到代码实现的端到端流程。在 plan skill 完成后由用户调用 /go {seq}-{name} 启动。"
+description: "执行调度器 — 读取规划文档和全局设计，调度 stager/tester/implementer 完成从里程碑设计到代码实现的端到端流程。在 /global-design 完成后由用户调用 /go {seq}-{name} 启动。"
 ---
 
-# Go：从规划到实现
+# Go：从设计到实现
 
 ## 概述
 
-读取 plan skill 输出的需求文档和架构设计，通过调度三个专业 Agent（stager、tester、implementer），按里程碑和阶段迭代完成代码实现和测试验证。
+读取 `/spec` 输出的需求文档和架构设计、`/global-design` 输出的里程碑规划，通过调度三个专业 Agent（stager、tester、implementer），按里程碑和阶段迭代完成代码实现和测试验证。
 
 ## 流程
 
 ### 1. 初始化
 
 - 确认 `.vibewire/{seq}-{name}/` 目录存在
-- 读取 `requirements.md` 和 `architecture.md`
-- 确认文件内容完整，否则提示用户先运行 `/plan`
+- 读取 `requirements.md`、`architecture.md` 和 `design.md`
+- 确认文件内容完整，否则提示用户先运行 `/spec` 和 `/global-design`
 - 检测当前目录是否为 git 仓库，若不是则 `git init` 初始化
 - 根据项目信息（语言、框架等）创建或更新 `.gitignore`
 - 若仓库无任何提交，创建初始提交
 - 运行项目测试确认基线干净（如项目无测试则跳过）。若失败 → 暂停，报告失败信息，等待用户处理
 
-### 2. 全局规划
-
 <HARD-RULE>
 所有 Agent 调用必须严格按照本文档中的模板使用 Agent 工具执行，不得自行修改、省略或替换模板内容。模板中的 `{变量}` 需替换为实际值。
 </HARD-RULE>
 
-调用 stager 执行 Global Analysis（首次启动，后续通过 SendMessage 复用同一实例）：
-
-```
-subagent_type: "stager"
-name: "stager"
-description: "stager Global Analysis"
-prompt: |
-  执行 Global Analysis。
-  规划目录：.vibewire/{seq-name}/
-```
-
-stager 完成（含 self-review 和 subagent review）后输出 `design.md` → 等待用户审批。
-
-### 3. 里程碑循环
+### 2. 里程碑循环
 
 对 `design.md` 中列出的每个里程碑，按顺序执行：
 
-#### 3.1 里程碑设计
+#### 2.1 里程碑设计
 
 创建里程碑分支：
 
@@ -52,16 +37,15 @@ stager 完成（含 self-review 和 subagent review）后输出 `design.md` → 
 git checkout -b milestone-{N}-{name}
 ```
 
-通过 SendMessage 继续同一个 stager 执行 Milestone Design：
+调用 stager 执行 Milestone Design：
 
 ```
-SendMessage:
-  to: "stager"
-  summary: "stager Milestone Design"
-  message: |
-    执行 Milestone Design。
-    里程碑序号：{N}，里程碑名称：{name}
-    规划目录：.vibewire/{seq-name}/
+subagent_type: "stager"
+description: "stager Milestone Design {N}-{name}"
+prompt: |
+  执行 Milestone Design。
+  里程碑序号：{N}，里程碑名称：{name}
+  规划目录：.vibewire/{seq-name}/
 ```
 
 stager 完成（含 self-review 和 subagent review）后输出里程碑设计文档和所有 stage 文档 → 等待用户审批。
@@ -73,7 +57,7 @@ git add .vibewire/{seq-name}/milestone-{N}-{name}/
 git commit -m "docs(milestone-{N}): 里程碑设计文档"
 ```
 
-#### 3.2 阶段循环
+#### 2.2 阶段循环
 
 对当前里程碑中的每个 stage，按顺序执行：
 
@@ -116,7 +100,7 @@ implementer 完成且状态为 DONE 后，执行 reuse, quality, and efficiency 
   - **PASS** → 继续下一 stage
   - **FAIL** → 暂停，报告失败信息，等待用户处理
 
-#### 3.3 里程碑总结
+#### 2.3 里程碑总结
 
 所有 stage 完成后，生成 `.vibewire/{seq-name}/milestone-{N}-{name}/summary.md`：
 
@@ -157,7 +141,7 @@ git merge milestone-{N}-{name}
 
 - **Red** → 暂停，报告失败信息，等待用户处理
 
-### 4. 最终总结
+### 3. 最终总结
 
 所有里程碑完成后，生成 `.vibewire/{seq-name}/final-summary.md`：
 
@@ -200,14 +184,14 @@ git merge milestone-{N}-{name}
 1. 调用 stager 修复相关文档：
 
 ```
-SendMessage:
-  to: "stager"
-  summary: "stager fix issues"
-  message: |
-    执行者报告了问题，请修改相关文档以解决。
-    规划目录：.vibewire/{seq-name}/
-    问题来源：{agent-name}
-    问题描述：{agent 报告的问题内容}
+subagent_type: "stager"
+description: "stager fix {agent-name} issues"
+prompt: |
+  执行者报告了问题，请修改相关文档以解决。
+  规划目录：.vibewire/{seq-name}/
+  里程碑序号：{N}，里程碑名称：{name}
+  问题来源：{agent-name}
+  问题描述：{agent 报告的问题内容}
 ```
 
 2. 修复后重新调用报告问题的 agent（使用原模板）
@@ -232,9 +216,8 @@ Issues 列表：
 
 ## 调用 Agent 通用规则
 
-- stager 全程使用同一个 agent 实例：首次通过 Agent 工具启动，后续通过 SendMessage 继续同一实例，保留完整上下文；仅当上下文超限时重新启动新实例
-- tester 和 implementer 按 stage 独立调用，每个 stage 各一个新的 tester 和 implementer 实例
-- implementer 一次运行全部步骤（Review → Implement → Verify → Refactor → Self-Review → Commit），无需分次调用
+- stager、tester、implementer 均按调用独立启动新 agent 实例，不跨调用复用
+- implementer 一次运行全部步骤（Review → Implement → Verify → Self-Review → Commit），无需分次调用
 - 每次调用时严格使用流程步骤中的提示词模板，仅替换 `{变量}` 为实际值
 - 不得自行修改、省略或替换模板内容
 - Agent 工作目录为项目根目录
@@ -253,8 +236,8 @@ Issues 列表：
 
 | 场景 | 处理方式 |
 | ------ | -------- |
-| 规划目录不存在 | 提示用户先运行 `/plan` |
-| requirements.md 或 architecture.md 缺失 | 提示文档不完整 |
+| 规划目录不存在 | 提示用户先运行 `/spec` |
+| requirements.md、architecture.md 或 design.md 缺失 | 提示文档不完整，运行 `/spec` 和 `/global-design` |
 | 基线测试失败 | 暂停，报告失败信息，等待用户处理 |
 | 里程碑全量测试失败 | 暂停，报告失败信息，等待用户处理 |
 | tester/implementer BLOCKED | 调用 stager 修复文档，修改后重新执行（最多 2 次） |

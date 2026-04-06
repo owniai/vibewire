@@ -1,9 +1,9 @@
 ---
-name: plan
+name: spec
 description: "在任何实现工作之前必须使用 - 分析需求、设计架构，生成 requirements.md + architecture.md。当用户开始新任务、创建新功能、需要规划实现方案时触发。"
 ---
 
-# Plan：从任务到规划
+# Spec：从任务到规格
 
 ## 概述
 
@@ -38,7 +38,7 @@ description: "在任何实现工作之前必须使用 - 分析需求、设计架
 ## 流程图
 
 ```dot
-digraph plan {
+digraph spec {
     "Explore project context" [shape=box];
     "Assess scope" [shape=box];
     "Too large?" [shape=diamond];
@@ -51,7 +51,7 @@ digraph plan {
     "Write & self-review architecture" [shape=box];
     "User reviews architecture?" [shape=diamond];
     "Write planning session summary" [shape=box];
-    "Prompt /vibewire:go" [shape=doublecircle];
+    "Prompt /global-design" [shape=doublecircle];
 
     "Explore project context" -> "Assess scope";
     "Assess scope" -> "Too large?";
@@ -66,11 +66,11 @@ digraph plan {
     "Write & self-review architecture" -> "User reviews architecture?";
     "User reviews architecture?" -> "Write & self-review architecture" [label="changes requested"];
     "User reviews architecture?" -> "Write planning session summary" [label="approved"];
-    "Write planning session summary" -> "Prompt /vibewire:go";
+    "Write planning session summary" -> "Prompt /global-design";
 }
 ```
 
-**终止状态是提示用户使用 /vibewire:go。** 不要调用任何实现技能。plan 之后用户需要运行 /vibewire:go 来开始执行。
+**终止状态是提示用户使用 /global-design。** 不要调用任何实现技能。spec 之后用户需要运行 /global-design 来进行全局设计。
 
 ## 流程
 
@@ -95,7 +95,7 @@ digraph plan {
 - 如果任务描述了多个独立子系统（如"构建一个包含聊天、文件存储、计费和分析的平台"），立即标记
 - 不要花大量问题去细化一个需要拆分的项目的细节
 - 如果项目对单个规划来说太大，帮助用户拆分为子项目：哪些是独立的部分，它们如何关联，应该以什么顺序构建？然后对第一个子项目走正常的规划流程
-- 每个子项目拥有自己的 plan→go 周期
+- 每个子项目拥有自己的 spec→global-design→go 周期
 
 ### 3. 需求澄清
 
@@ -186,8 +186,8 @@ digraph plan {
 规划已完成！需求文档和架构设计已保存到 .vibewire/{seq}-{name}/ 目录。
 
 下一步：
-- 当前会话：直接运行 /vibewire:go 开始执行
-- 新会话：在新会话中运行 /vibewire:go，系统会读取最新的规划文档
+- 当前会话：直接运行 /global-design 进行全局设计
+- 新会话：在新会话中运行 /global-design，系统会读取最新的规划文档
 ```
 
 ## 关键原则
@@ -208,4 +208,4 @@ digraph plan {
 |------|------|----------|
 | `.vibewire/{seq}-{name}/requirements.md` | 需求分析文档 | 需求澄清完成、确认并自检后 |
 | `.vibewire/{seq}-{name}/architecture.md` | 架构设计文档 | 架构设计确认、自检并用户审阅通过后 |
-| `.vibewire/{seq}-{name}/planning-session.md` | 对话总结 | 架构文档用户审阅通过后，提示 /vibewire:go 前 |
+| `.vibewire/{seq}-{name}/planning-session.md` | 对话总结 | 架构文档用户审阅通过后，提示 /global-design 前 |
