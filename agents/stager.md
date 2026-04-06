@@ -50,7 +50,7 @@ model: opus
 - 将里程碑拆分为渐进式阶段，再为每个阶段拆分任务
 - 输出里程碑设计文档（格式参考 `${CLAUDE_PLUGIN_ROOT}/references/milestone-design-template.md`）
 - 逐个编写 stage 文档（格式参考 `${CLAUDE_PLUGIN_ROOT}/references/stage-template.md`）
-- 全部输出完成 → 执行 Self-Review → 修复问题 → 调用 subagent 审查（格式参考 `${CLAUDE_PLUGIN_ROOT}/references/plan-reviewer-prompt.md`）→ 修复问题
+- 全部输出完成 → 执行 Self-Review → 修复问题 → 调用 subagent 审查（格式参考 `${CLAUDE_PLUGIN_ROOT}/references/design-reviewer-prompt.md`）→ 修复问题
 
 **TDD 策略：**
 

@@ -32,7 +32,7 @@ description: "在任何实现工作之前必须使用 - 分析需求、设计架
 7. **呈现架构设计** — 按复杂度缩放各部分，强调模块化与清晰边界，每部分后获得用户确认
 8. **写入并自检架构文档** — 写入 architecture.md，自检占位符/矛盾/歧义/范围
 9. **用户审阅架构文档** — 请用户审阅架构文档文件
-10. **编写规划对话总结** — 写入 planning-session.md
+10. **编写规格对话总结** — 写入 spec-session.md
 11. **过渡到执行** — 总结对话，提示用户使用 /vibewire:go
 
 ## 流程图
@@ -170,9 +170,9 @@ digraph spec {
 
 等待用户响应。如用户要求修改，修改后重新自检再请用户审阅。仅在用户确认后继续。
 
-### 10. 编写规划对话总结
+### 10. 编写规格对话总结
 
-将交互过程总结保存到 `.vibewire/{seq}-{name}/planning-session.md`：
+将交互过程总结保存到 `.vibewire/{seq}-{name}/spec-session.md`：
 - 记录关键决策点和理由
 - 记录用户的偏好和约束
 - 便于在新会话中恢复上下文
@@ -208,4 +208,4 @@ digraph spec {
 |------|------|----------|
 | `.vibewire/{seq}-{name}/requirements.md` | 需求分析文档 | 需求澄清完成、确认并自检后 |
 | `.vibewire/{seq}-{name}/architecture.md` | 架构设计文档 | 架构设计确认、自检并用户审阅通过后 |
-| `.vibewire/{seq}-{name}/planning-session.md` | 对话总结 | 架构文档用户审阅通过后，提示 /global-design 前 |
+| `.vibewire/{seq}-{name}/spec-session.md` | 对话总结 | 架构文档用户审阅通过后，提示 /global-design 前 |
