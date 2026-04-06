@@ -1,8 +1,8 @@
-# Plan Document Reviewer Prompt
+# Design Document Reviewer Prompt
 
-Use this template when dispatching a plan document reviewer subagent.
+Use this template when dispatching a design document reviewer subagent.
 
-**Purpose:** Verify the plan document is complete, matches the spec, and is ready for implementation.
+**Purpose:** Verify the design document is complete, matches the spec, and is ready for implementation.
 
 **Dispatch after:** Self-review is complete and issues are fixed.
 
@@ -10,11 +10,7 @@ Use this template when dispatching a plan document reviewer subagent.
 
 Replace placeholders in brackets before dispatching.
 
-**After Global Analysis:**
-- Plan to review: `.vibewire/{seq}-{name}/design.md`
-- Spec for reference: `.vibewire/{seq}-{name}/requirements.md` + `.vibewire/{seq}-{name}/architecture.md`
-
-**After Milestone Design:**
+**After Milestone Design (stager):**
 - Plan to review: milestone design doc + stage docs
 - Spec for reference: `.vibewire/{seq}-{name}/architecture.md` + `.vibewire/{seq}-{name}/design.md`
 
@@ -22,9 +18,9 @@ Replace placeholders in brackets before dispatching.
 
 ```
 Agent tool (general-purpose):
-  description: "Review plan document"
+  description: "Review design document"
   prompt: |
-    You are a plan document reviewer. Verify this plan is complete and ready for implementation.
+    You are a design document reviewer. Verify this plan is complete and ready for implementation.
 
     **Plan to review:** [PLAN_FILE_PATH]
     **Spec for reference:** [SPEC_FILE_PATH]
@@ -51,7 +47,7 @@ Agent tool (general-purpose):
 
     ## Output Format
 
-    ## Plan Review
+    ## Design Review
 
     **Status:** Approved | Issues Found
 
