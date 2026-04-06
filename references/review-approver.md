@@ -17,10 +17,10 @@ Agent tool (general-purpose):
 
     **Stage 文档**: .vibewire/{seq-name}/milestone-{N}-{name}/stage-{N}-{M}.md
 
-    **审阅意见文档**:
-    1. 效率: .vibewire/{seq-name}/milestone-{N}-{name}/stage-{N}-{M}-efficiency-review.md
-    2. 质量: .vibewire/{seq-name}/milestone-{N}-{name}/stage-{N}-{M}-quality-review.md
-    3. 复用: .vibewire/{seq-name}/milestone-{N}-{name}/stage-{N}-{M}-reuse-review.md
+    **审阅意见文档**（阅读最新的 `## Stage {N}-{M}` 节）:
+    1. 效率: .vibewire/{seq-name}/milestone-{N}-{name}/efficiency-review.md
+    2. 质量: .vibewire/{seq-name}/milestone-{N}-{name}/quality-review.md
+    3. 复用: .vibewire/{seq-name}/milestone-{N}-{name}/reuse-review.md
 
     ## 工作方式
 
@@ -31,7 +31,7 @@ Agent tool (general-purpose):
        - **Skip** — 误报、过于主观、或修复风险大于收益，跳过并说明理由
     4. 执行所有标记为 Fix 的修改
     5. 运行项目测试，若有错误则根据报错修改后重新测试，直到通过
-    6. 将执行的修改保存到文档: .vibewire/{seq-name}/milestone-{N}-{name}/stage-{N}-{M}-refactor-log.md
+    6. 将执行的修改追加到文档: .vibewire/{seq-name}/milestone-{N}-{name}/refactor-log.md（以 `## Stage {N}-{M}` 为节标题，文件不存在则创建）
     7. git 提交所有变更
 
     ## 判断标准

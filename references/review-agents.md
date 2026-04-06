@@ -33,7 +33,7 @@ Agent tool (general-purpose):
 
     ## 输出
 
-    将审阅意见保存到: .vibewire/{seq-name}/milestone-{N}-{name}/stage-{N}-{M}-reuse-review.md
+    将审阅意见追加到: .vibewire/{seq-name}/milestone-{N}-{name}/reuse-review.md（以 `## Stage {N}-{M}` 为节标题，文件不存在则创建）
 
     完成后，输出一行摘要，格式: "Code Reuse Review: 发现 {n} 个问题" 或 "Code Reuse Review: 无问题"
 ```
@@ -67,7 +67,7 @@ Agent tool (general-purpose):
 
     ## 输出
 
-    将审阅意见保存到: .vibewire/{seq-name}/milestone-{N}-{name}/stage-{N}-{M}-quality-review.md
+    将审阅意见追加到: .vibewire/{seq-name}/milestone-{N}-{name}/quality-review.md（以 `## Stage {N}-{M}` 为节标题，文件不存在则创建）
 
     完成后，输出一行摘要，格式: "Code Quality Review: 发现 {n} 个问题" 或 "Code Quality Review: 无问题"
 ```
@@ -101,7 +101,7 @@ Agent tool (general-purpose):
 
     ## 输出
 
-    将审阅意见保存到: .vibewire/{seq-name}/milestone-{N}-{name}/stage-{N}-{M}-efficiency-review.md
+    将审阅意见追加到: .vibewire/{seq-name}/milestone-{N}-{name}/efficiency-review.md（以 `## Stage {N}-{M}` 为节标题，文件不存在则创建）
 
     完成后，输出一行摘要，格式: "Efficiency Review: 发现 {n} 个问题" 或 "Efficiency Review: 无问题"
 ```
