@@ -32,15 +32,15 @@ model: sonnet
 
 按 stage 文档中 Task 的顺序，依次实现每个任务：
 - 按 Task 的「实现」部分执行代码
-- 每完成一个 Task 记录到 `.vibewire/{seq}-{name}/milestone-{N}-{name}/implementer-log.md`
+- 每完成一个 Task 记录到 `.vibewire/{seq}-{name}/milestone-{N}-{name}/log-implementer.md`
 - 若 Task 标记为 `[公共库]`，实现后同步更新 `.vibewire/{seq}-{name}/shared/{lib-name}/api.md` 和 `shared/index.md`
 
 ### 3. Verify
 
-读取 `.vibewire/{seq}-{name}/milestone-{N}-{name}/tester-log.md` 了解测试范围，然后运行全量测试：
+读取 `.vibewire/{seq}-{name}/milestone-{N}-{name}/log-tester.md` 了解测试范围，然后运行全量测试：
 - **Green** → 进入步骤 4
-- **Red** → 分析失败原因，编写修复代码，重新运行测试，将修复过程记录到 `.vibewire/{seq}-{name}/milestone-{N}-{name}/implementer-log.md`
-- 反复失败 → 状态设为 BLOCKED，记录问题到 `.vibewire/{seq}-{name}/milestone-{N}-{name}/implementer-issues.md`
+- **Red** → 分析失败原因，编写修复代码，重新运行测试，将修复过程记录到 `.vibewire/{seq}-{name}/milestone-{N}-{name}/log-implementer.md`
+- 反复失败 → 状态设为 BLOCKED，记录问题到 `.vibewire/{seq}-{name}/milestone-{N}-{name}/issues-implementer.md`
 
 ### 4. Self-Review
 
@@ -81,7 +81,7 @@ model: sonnet
 
 完成工作后，以以下格式报告：
 
-- **Status:** DONE | DONE_WITH_CONCERNS | BLOCKED | NEEDS_CONTEXT
+- **Status:** DONE | DONE_WITH_CONCERNS | BLOCKED
 - 实现内容（或尝试内容，如 BLOCKED）
 - 测试结果
 - 修改文件列表
@@ -92,7 +92,6 @@ model: sonnet
 - **DONE** — 所有任务实现完成，测试通过
 - **DONE_WITH_CONCERNS** — 完成工作但对正确性有疑虑（如不确定边界处理是否正确）
 - **BLOCKED** — 无法继续（缺少依赖、测试反复失败、指令不清晰）
-- **NEEDS_CONTEXT** — 需要未提供的信息才能继续
 
 绝不默默产出不确定的工作。
 

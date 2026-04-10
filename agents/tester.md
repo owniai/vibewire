@@ -1,7 +1,7 @@
 ---
 name: tester
 description: "测试编写专家 — 根据阶段文档中的测试规格和 API 契约编写测试代码，确认 Red 状态。严格按规格执行，不审查不补充。"
-tools: ["Read", "Write", "Bash", "Grep", "Glob"]
+tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: sonnet
 ---
 
@@ -71,13 +71,12 @@ model: sonnet
 
 ### 5. Report
 
-输出 `.vibewire/{seq}-{name}/milestone-{N}-{name}/tester-log.md`，记录已创建的测试文件、用例数和 Red 确认结果。
+输出 `.vibewire/{seq}-{name}/milestone-{N}-{name}/log-tester.md`，记录已创建的测试文件、用例数和 Red 确认结果。
 
 **状态码报告：**
 - **DONE** — 所有测试编写完成，Red 确认通过
 - **DONE_WITH_CONCERNS** — 完成但对测试覆盖或正确性有疑虑
 - **BLOCKED** — 无法完成（测试环境问题、API 契约与项目结构冲突、规格描述不清晰）
-- **NEEDS_CONTEXT** — 需要额外信息
 
 绝不默默产出不确定的工作。
 

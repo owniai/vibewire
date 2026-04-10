@@ -13,12 +13,9 @@ description: "执行调度器 — 读取规划文档和全局设计，调度 sta
 
 ### 1. 初始化
 
-- 确认 `.vibewire/{seq}-{name}/` 目录存在
-- 读取 `requirements.md`、`architecture.md` 和 `design.md`
-- 确认文件内容完整，否则提示用户先运行 `/spec` 和 `/global-design`
-- 检测当前目录是否为 git 仓库，若不是则 `git init` 初始化
-- 根据项目信息（语言、框架等）创建或更新 `.gitignore`
-- 若仓库无任何提交，创建初始提交
+- 确认 `.vibewire/{seq-name}/` 目录存在
+- 读取 `.vibewire/{seq-name}/requirements.md` 了解项目信息
+- 确认 `architecture.md` 和 `design.md` 存在，若缺失则提示用户先运行 `/spec` 和 `/global-design`
 - 运行项目测试确认基线干净（如项目无测试则跳过）。若失败 → 暂停，报告失败信息，等待用户处理
 
 <HARD-RULE>
@@ -77,7 +74,6 @@ prompt: |
 | DONE | 测试编写完成 | 继续下一步骤 |
 | DONE_WITH_CONCERNS | 完成但有顾虑 | 记录顾虑到日志，继续下一步骤 |
 | BLOCKED | 无法继续 | 调用 stager 修复文档后重试（最多 2 次），仍失败则暂停等用户 |
-| NEEDS_CONTEXT | 需要额外信息 | 补充缺失上下文后调度新的 agent |
 
 **步骤 2 — implementer（Green）：**
 
@@ -96,36 +92,68 @@ prompt: |
 
 **步骤 3 — review-code（审查）：**
 
-implementer 完成且状态为 DONE 后，执行 reuse, quality, and efficiency 三维度代码审查。从 `references/review-agents.md` 读取提示词模板，使用 Agent 工具同时启动三个 agent。
+implementer 完成且状态为 DONE 后，同时启动三个审查 agent：
+
+```
+subagent_type: "reuse-reviewer"
+description: "reuse-reviewer Stage {N}-{M}"
+prompt: |
+  执行复用审查。
+  规划目录：.vibewire/{seq-name}/
+  里程碑序号：{N}，里程碑名称：{name}
+  阶段序号：{M}
+```
+
+```
+subagent_type: "quality-reviewer"
+description: "quality-reviewer Stage {N}-{M}"
+prompt: |
+  执行质量审查。
+  规划目录：.vibewire/{seq-name}/
+  里程碑序号：{N}，里程碑名称：{name}
+  阶段序号：{M}
+```
+
+```
+subagent_type: "efficiency-reviewer"
+description: "efficiency-reviewer Stage {N}-{M}"
+prompt: |
+  执行效率审查。
+  规划目录：.vibewire/{seq-name}/
+  里程碑序号：{N}，里程碑名称：{name}
+  阶段序号：{M}
+```
 
 等待三个 agent 完成，根据各自输出的一行摘要判断结果：
 
 - **全部无问题** → 继续下一 stage
-- **存在至少一个问题** → 从 `references/review-approver.md` 读取提示词模板，使用 Agent 工具启动修复 agent。修复 agent 完成后检查其输出的测试结果：
+- **存在至少一个问题** → 启动修复 agent：
+
+```
+subagent_type: "review-fixer"
+description: "review-fixer Stage {N}-{M}"
+prompt: |
+  执行审查修复。
+  规划目录：.vibewire/{seq-name}/
+  里程碑序号：{N}，里程碑名称：{name}
+  阶段序号：{M}
+```
+
+修复 agent 完成后检查其输出的测试结果：
   - **PASS** → 继续下一 stage
   - **FAIL** → 暂停，报告失败信息，等待用户处理
 
 #### 2.3 里程碑总结
 
-所有 stage 完成后，生成 `.vibewire/{seq-name}/milestone-{N}-{name}/summary.md`：
+所有 stage 完成后，调用 summary-writer 生成总结：
 
-```markdown
-# Milestone {N}: {里程碑名称} — 总结
-
-## 完成概况
-- 阶段数：{N}
-- 总任务数：{N}
-
-## 阶段完成情况
-| Stage | 名称 | 任务数 | 状态 |
-| ----- | ----- | ----- | ----- |
-| {N}-{M} | {名称} | {N} | ✅ 通过 |
-
-## 修改文件
-- [列出所有新建和修改的文件]
-
-## Issues 遗留
-- [列出未解决的问题]
+```
+subagent_type: "summary-writer"
+description: "summary-writer milestone-{N}"
+prompt: |
+  生成里程碑总结。
+  规划目录：.vibewire/{seq-name}/
+  里程碑序号：{N}，里程碑名称：{name}
 ```
 
 提交总结，运行全量测试验证后合并回主分支：
@@ -148,31 +176,14 @@ git merge milestone-{N}-{name}
 
 ### 3. 最终总结
 
-所有里程碑完成后，生成 `.vibewire/{seq-name}/final-summary.md`：
+所有里程碑完成后，调用 summary-writer 生成最终总结：
 
-```markdown
-# 最终总结 — {任务名称}
-
-## 概况
-- 规划目录：.vibewire/{seq-name}/
-- 总里程碑数：{N}
-- 总阶段数：{N}
-- 总任务数：{N}
-
-## 里程碑完成情况
-| Milestone | 名称 | 阶段数 | 任务数 | 状态 |
-| --------- | ----- | ----- | ----- | ----- |
-| {N} | {名称} | {N} | {N} | ✅ 通过 |
-
-## 修改文件汇总
-- [列出所有新建和修改的文件]
-
-## Issues 遗留
-- [列出所有未解决的问题]
-
-## 下一步
-- 运行项目测试确认完整性
-- 检查遗留问题是否需要处理
+```
+subagent_type: "summary-writer"
+description: "summary-writer final"
+prompt: |
+  生成最终总结。
+  规划目录：.vibewire/{seq-name}/
 ```
 
 ### BLOCKED 处理流程
@@ -204,15 +215,9 @@ Issues 列表：
 请手动处理后，运行 /go {seq}-{name} 继续
 ```
 
-### NEEDS_CONTEXT 处理流程
-
-1. 分析 agent 报告的上下文需求
-2. 从项目文档或代码中提取所需信息
-3. 在 agent 的 prompt 中补充所需上下文后重新调度
-
 ## 调用 Agent 通用规则
 
-- stager、tester、implementer 均按调用独立启动新 agent 实例，不跨调用复用
+- 所有 agent 均按调用独立启动新实例，不跨调用复用
 - implementer 一次运行全部步骤（Review → Implement → Verify → Self-Review → Commit），无需分次调用
 - 每次调用时严格使用流程步骤中的提示词模板，仅替换 `{变量}` 为实际值
 - 不得自行修改、省略或替换模板内容
@@ -233,9 +238,8 @@ Issues 列表：
 | 场景 | 处理方式 |
 | ------ | -------- |
 | 规划目录不存在 | 提示用户先运行 `/spec` |
-| requirements.md、architecture.md 或 design.md 缺失 | 提示文档不完整，运行 `/spec` 和 `/global-design` |
+| architecture.md 或 design.md 不存在 | 提示文件缺失，先运行 `/spec` 和 `/global-design` |
 | 基线测试失败 | 暂停，报告失败信息，等待用户处理 |
 | 里程碑全量测试失败 | 暂停，报告失败信息，等待用户处理 |
 | tester/implementer BLOCKED | 调用 stager 修复文档，修改后重新执行（最多 2 次） |
 | 2 次修复后仍 BLOCKED | 暂停，列出未解决问题，等待用户介入 |
-| tester/implementer NEEDS_CONTEXT | 提供上下文后重新调度 |

@@ -31,7 +31,7 @@ model: opus
 
 #### a. 建立上下文
 
-- 非首个里程碑，额外读取前序里程碑的 `.vibewire/{seq}-{name}/milestone-{N}-{name}/tester-log.md`、`.vibewire/{seq}-{name}/milestone-{N}-{name}/implementer-log.md`（了解实现过程中的偏差和修复）、`refactor-log.md`（了解代码审查后的重构），以及 `.vibewire/{seq}-{name}/shared/index.md` 及相关功能库 API 文档（复用已有公共库）
+- 非首个里程碑，额外读取前序里程碑的 `.vibewire/{seq}-{name}/milestone-{N}-{name}/log-tester.md`、`.vibewire/{seq}-{name}/milestone-{N}-{name}/log-implementer.md`（了解实现过程中的偏差和修复）、`log-refactor.md`（了解代码审查后的重构），以及 `.vibewire/{seq}-{name}/shared/index.md` 及相关功能库 API 文档（复用已有公共库）
 
 #### b. 文件结构映射
 
