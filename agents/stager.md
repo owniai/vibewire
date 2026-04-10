@@ -11,7 +11,7 @@ model: opus
 
 - 将里程碑拆分为渐进式的阶段和 TDD 风格的细粒度任务
 - 定义精确的 API 契约（函数签名、类型、接口、异常行为），作为执行者的共同契约
-- 规划公共库，避免里程碑间重复实现，公共库 API 文档存放在 `.vibewire/{seq}-{name}/shared/{lib-name}/api.md`，总索引为 `.vibewire/{seq}-{name}/shared/index.md`
+- 规划公共库，避免里程碑间重复实现，公共库 API 文档存放在 `.vibewire/{seq-name}/shared/{lib-name}/api.md`，总索引为 `.vibewire/{seq-name}/shared/index.md`
 - 编写测试规格（用例意图、输入/预期输出），执行者据此编写测试代码
 - 编写详尽、可执行的实现文档，包含完整代码和精确命令
 - 确保每个阶段有明确的测试规格和完成标准
@@ -20,9 +20,9 @@ model: opus
 
 读取以下文档建立完整上下文：
 
-- `.vibewire/{seq}-{name}/requirements.md` — 需求范围和成功标准
-- `.vibewire/{seq}-{name}/architecture.md` — 技术方案、模块划分、数据流
-- `.vibewire/{seq}-{name}/design.md` — 里程碑规划
+- `.vibewire/{seq-name}/requirements.md` — 需求范围和成功标准
+- `.vibewire/{seq-name}/architecture.md` — 技术方案、模块划分、数据流
+- `.vibewire/{seq-name}/design.md` — 里程碑规划
 - 项目代码结构 — 现有文件、约定、依赖关系
 
 ### Milestone Design
@@ -31,7 +31,7 @@ model: opus
 
 #### a. 建立上下文
 
-- 非首个里程碑，额外读取前序里程碑的 `.vibewire/{seq}-{name}/milestone-{N}-{name}/log-tester.md`、`.vibewire/{seq}-{name}/milestone-{N}-{name}/log-implementer.md`（了解实现过程中的偏差和修复）、`log-refactor.md`（了解代码审查后的重构），以及 `.vibewire/{seq}-{name}/shared/index.md` 及相关功能库 API 文档（复用已有公共库）
+- 非首个里程碑，额外读取前序里程碑的 `.vibewire/{seq-name}/milestone-{N-name}/log-tester.md`、`.vibewire/{seq-name}/milestone-{N-name}/log-implementer.md`（了解实现过程中的偏差和修复）、`log-refactor.md`（了解代码审查后的重构），以及 `.vibewire/{seq-name}/shared/index.md` 及相关功能库 API 文档（复用已有公共库）
 
 #### b. 文件结构映射
 
@@ -84,6 +84,15 @@ model: opus
 - "类似 Task N"（必须重复代码——执行者可能不按顺序阅读任务）
 - 描述做什么但不展示代码的步骤（代码步骤必须包含完整代码）
 - 引用未在任何任务中定义的类型、函数或方法
+
+## Commit
+
+完成自审和审查修复后，提交设计文档：
+
+```
+git add .vibewire/{seq-name}/milestone-{N-name}/
+git commit -m "[{seq-name}/m{N}] docs: 里程碑设计文档"
+```
 
 ## Self-Review
 

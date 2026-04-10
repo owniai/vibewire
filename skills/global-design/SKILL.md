@@ -33,17 +33,17 @@ description: "在 /spec 完成后使用 - 接收编号参数 {seq}，读取对�
 
 ### 1. 确认前置条件
 
-- 扫描 `.vibewire/` 下匹配 `{seq}-*` 模式的目录，确定完整目录名 `{seq}-{name}`
+- 扫描 `.vibewire/` 下匹配 `{seq}-*` 模式的目录，确定完整目录名 `{seq-name}`
 - 若未找到匹配目录，提示用户可用的编号列表并中止
-- 读取 `.vibewire/{seq}-{name}/requirements.md` 和 `.vibewire/{seq}-{name}/architecture.md`
+- 读取 `.vibewire/{seq-name}/requirements.md` 和 `.vibewire/{seq-name}/architecture.md`
 - 确认文件内容完整，否则提示用户先运行 `/spec`
 
 ### 2. 建立上下文
 
 读取以下文档建立完整上下文：
 
-- `.vibewire/{seq}-{name}/requirements.md` — 需求范围和成功标准
-- `.vibewire/{seq}-{name}/architecture.md` — 技术方案、模块划分、数据流
+- `.vibewire/{seq-name}/requirements.md` — 需求范围和成功标准
+- `.vibewire/{seq-name}/architecture.md` — 技术方案、模块划分、数据流
 - 项目代码结构 — 现有文件、约定、依赖关系
 
 ### 3. 分析并拆分里程碑
@@ -70,7 +70,7 @@ description: "在 /spec 完成后使用 - 接收编号参数 {seq}，读取对�
 
 请用户审阅 design.md：
 
-> 里程碑设计文档已写入 `.vibewire/{seq}-{name}/design.md`。请审阅文件内容，如有需要修改的地方请告知，确认无误后我们将进入执行阶段。
+> 里程碑设计文档已写入 `.vibewire/{seq-name}/design.md`。请审阅文件内容，如有需要修改的地方请告知，确认无误后我们将进入执行阶段。
 
 等待用户响应。如用户要求修改，修改后重新自检再请用户审阅。仅在用户确认后继续。
 
@@ -79,7 +79,7 @@ description: "在 /spec 完成后使用 - 接收编号参数 {seq}，读取对�
 提示用户下一步：
 
 ```
-全局设计已完成！里程碑规划已保存到 .vibewire/{seq}-{name}/design.md。
+全局设计已完成！里程碑规划已保存到 .vibewire/{seq-name}/design.md。
 
 下一步：
 - 当前会话：直接运行 /go 开始执行

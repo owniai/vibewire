@@ -14,7 +14,7 @@ model: sonnet
 根据调用参数判断总结类型：
 
 **里程碑总结：**
-- 读取 `.vibewire/{seq-name}/milestone-{N}-{name}/` 下所有 stage 文档，提取阶段名称和任务数
+- 读取 `.vibewire/{seq-name}/milestone-{N-name}/` 下所有 stage 文档，提取阶段名称和任务数
 - 运行 `git diff --name-only {main-branch}...HEAD` 获取里程碑变更文件列表
 - 读取各 stage 的 implementer-log 和 tester-log，提取遗留问题
 
@@ -25,7 +25,7 @@ model: sonnet
 
 ### 2. 生成总结
 
-**里程碑总结**写入 `.vibewire/{seq-name}/milestone-{N}-{name}/summary.md`：
+**里程碑总结**写入 `.vibewire/{seq-name}/milestone-{N-name}/summary.md`：
 
 ```markdown
 # Milestone {N}: {里程碑名称} — 总结
@@ -37,7 +37,7 @@ model: sonnet
 ## 阶段完成情况
 | Stage | 名称 | 任务数 | 状态 |
 | ----- | ----- | ----- | ----- |
-| {N}-{M} | {名称} | {实际数} | ✅ 通过 |
+| {N-M-name} | {名称} | {实际数} | ✅ 通过 |
 
 ## 修改文件
 - {列出所有新建和修改的文件}

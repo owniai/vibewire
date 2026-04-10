@@ -12,13 +12,13 @@ model: sonnet
 - 严格按 stage 文档中 Task 的顺序和 API 契约执行实现代码
 - 运行全量测试确认 Green
 - 测试通过后提交代码
-- 实现标记为 `[公共库]` 的任务时，同步更新对应功能库的 API 文档（`.vibewire/{seq}-{name}/shared/{lib-name}/api.md`）和总索引（`.vibewire/{seq}-{name}/shared/index.md`）
+- 实现标记为 `[公共库]` 的任务时，同步更新对应功能库的 API 文档（`.vibewire/{seq-name}/shared/{lib-name}/api.md`）和总索引（`.vibewire/{seq-name}/shared/index.md`）
 
 ## Workflow
 
 读取以下文档建立完整上下文：
-- `.vibewire/{seq}-{name}/milestone-{N}-{name}/stage-{N}-{M}.md` — 当前阶段的 API 契约、测试规格和任务定义
-- `.vibewire/{seq}-{name}/shared/index.md` — 公共库总索引（如当前阶段涉及公共库任务）
+- `.vibewire/{seq-name}/milestone-{N-name}/stage-{N-M-name}.md` — 当前阶段的 API 契约、测试规格和任务定义
+- `.vibewire/{seq-name}/shared/index.md` — 公共库总索引（如当前阶段涉及公共库任务）
 
 ### 1. Review
 
@@ -32,15 +32,15 @@ model: sonnet
 
 按 stage 文档中 Task 的顺序，依次实现每个任务：
 - 按 Task 的「实现」部分执行代码
-- 每完成一个 Task 记录到 `.vibewire/{seq}-{name}/milestone-{N}-{name}/log-implementer.md`
-- 若 Task 标记为 `[公共库]`，实现后同步更新 `.vibewire/{seq}-{name}/shared/{lib-name}/api.md` 和 `shared/index.md`
+- 每完成一个 Task 记录到 `.vibewire/{seq-name}/milestone-{N-name}/log-implementer.md`
+- 若 Task 标记为 `[公共库]`，实现后同步更新 `.vibewire/{seq-name}/shared/{lib-name}/api.md` 和 `shared/index.md`
 
 ### 3. Verify
 
-读取 `.vibewire/{seq}-{name}/milestone-{N}-{name}/log-tester.md` 了解测试范围，然后运行全量测试：
+读取 `.vibewire/{seq-name}/milestone-{N-name}/log-tester.md` 了解测试范围，然后运行全量测试：
 - **Green** → 进入步骤 4
-- **Red** → 分析失败原因，编写修复代码，重新运行测试，将修复过程记录到 `.vibewire/{seq}-{name}/milestone-{N}-{name}/log-implementer.md`
-- 反复失败 → 状态设为 BLOCKED，记录问题到 `.vibewire/{seq}-{name}/milestone-{N}-{name}/issues-implementer.md`
+- **Red** → 分析失败原因，编写修复代码，重新运行测试，将修复过程记录到 `.vibewire/{seq-name}/milestone-{N-name}/log-implementer.md`
+- 反复失败 → 状态设为 BLOCKED，记录问题到 `.vibewire/{seq-name}/milestone-{N-name}/issues-implementer.md`
 
 ### 4. Self-Review
 
@@ -67,7 +67,12 @@ model: sonnet
 
 ### 5. Commit
 
-提交代码（`feat(stage-{N}-{M}): {阶段名称}`）。
+提交代码：
+
+```
+git add -A
+git commit -m "[{seq-name}/m{N}/s{N-M-name}] feat: {阶段名称}"
+```
 
 ## Code Organization
 

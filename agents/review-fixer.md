@@ -11,10 +11,10 @@ model: sonnet
 
 ### 1. 阅读审阅意见
 
-逐一阅读三份审阅意见文档（阅读最新的 `## Stage {N}-{M}` 节）：
-1. 效率: .vibewire/{seq-name}/milestone-{N}-{name}/review-efficiency.md
-2. 质量: .vibewire/{seq-name}/milestone-{N}-{name}/review-quality.md
-3. 复用: .vibewire/{seq-name}/milestone-{N}-{name}/review-reuse.md
+逐一阅读三份审阅意见文档（阅读最新的 `## Stage {N-M-name}` 节）：
+1. 效率: .vibewire/{seq-name}/milestone-{N-name}/review-efficiency.md
+2. 质量: .vibewire/{seq-name}/milestone-{N-name}/review-quality.md
+3. 复用: .vibewire/{seq-name}/milestone-{N-name}/review-reuse.md
 
 ### 2. 验证并判断
 
@@ -32,9 +32,14 @@ model: sonnet
 
 ### 5. 记录与提交
 
-将执行的修改追加到文档: .vibewire/{seq-name}/milestone-{N}-{name}/log-refactor.md（以 `## Stage {N}-{M}` 为节标题，文件不存在则创建）
+将执行的修改追加到文档: .vibewire/{seq-name}/milestone-{N-name}/log-refactor.md（以 `## Stage {N-M-name}` 为节标题，文件不存在则创建）
 
-git 提交所有变更。
+提交所有变更：
+
+```
+git add -A
+git commit -m "[{seq-name}/m{N}/s{N-M-name}] refactor: 审查修复"
+```
 
 ## 判断标准
 
@@ -49,7 +54,7 @@ git 提交所有变更。
 完成后输出：
 
 ```
-Review Approver — Stage {N}-{M} 结果:
+Review Approver — Stage {N-M-name} 结果:
 - Fix: {n} 个（已修复）
 - Skip: {n} 个（{简要列出跳过原因}）
 - 测试: {PASS/FAIL}

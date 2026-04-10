@@ -130,14 +130,14 @@ subagent 完成后，基于探索结果进入下一步。
 - 根据项目信息（语言、框架等）创建或更新 `.gitignore`
 - 若仓库无任何提交，创建初始提交
 
-**创建规划目录：** `.vibewire/{seq}-{name}/`
+**创建规划目录：** `.vibewire/{seq-name}/`
 
 - 检查 `.vibewire/` 目录是否存在，不存在则创建
-- 扫描 `.vibewire/` 下已有的 `{seq}-{name}/` 目录，确定当前最大序号
+- 扫描 `.vibewire/` 下已有的 `{seq-name}/` 目录，确定当前最大序号
 - 序号：三位数字，在已有最大序号基础上递增（无已有目录则从 001 开始）
 - 名称：任务对应的英文标识，kebab-case（如 `user-auth`）
 
-写入 `.vibewire/{seq}-{name}/requirements.md`
+写入 `.vibewire/{seq-name}/requirements.md`
 
 **文档自检：**
 写入后立即自检，无需重新审阅——修复后继续：
@@ -179,7 +179,7 @@ subagent 完成后，基于探索结果进入下一步。
 
 ### 8. 写入并自检架构文档
 
-获得用户确认后，写入架构文档 `.vibewire/{seq}-{name}/architecture.md`
+获得用户确认后，写入架构文档 `.vibewire/{seq-name}/architecture.md`
 
 **文档自检：**
 与需求文档相同的自检流程——扫描占位符、内部一致性、范围、歧义。修复后继续。
@@ -188,13 +188,13 @@ subagent 完成后，基于探索结果进入下一步。
 
 架构文档写入并自检后，请用户审阅文档文件：
 
-> 架构设计文档已写入 `.vibewire/{seq}-{name}/architecture.md`。请审阅文件内容，如有需要修改的地方请告知，确认无误后我们将进入执行阶段。
+> 架构设计文档已写入 `.vibewire/{seq-name}/architecture.md`。请审阅文件内容，如有需要修改的地方请告知，确认无误后我们将进入执行阶段。
 
 等待用户响应。如用户要求修改，修改后重新自检再请用户审阅。仅在用户确认后继续。
 
 ### 10. 编写规格对话总结
 
-将交互过程总结保存到 `.vibewire/{seq}-{name}/spec-session.md`：
+将交互过程总结保存到 `.vibewire/{seq-name}/spec-session.md`：
 - 记录关键决策点和理由
 - 记录用户的偏好和约束
 - 便于在新会话中恢复上下文
@@ -204,7 +204,7 @@ subagent 完成后，基于探索结果进入下一步。
 
 ```
 git add .vibewire/{seq-name}/
-git commit -m "docs({seq-name}): 需求、架构与规划总结文档"
+git commit -m "[{seq-name}] docs: 规划文档"
 ```
 
 ### 11. 过渡到执行
@@ -212,7 +212,7 @@ git commit -m "docs({seq-name}): 需求、架构与规划总结文档"
 提示用户下一步：
 
 ```
-规划已完成！需求文档和架构设计已保存到 .vibewire/{seq}-{name}/ 目录。
+规划已完成！需求文档和架构设计已保存到 .vibewire/{seq-name}/ 目录。
 
 下一步：
 - 当前会话：直接运行 /global-design 进行全局设计

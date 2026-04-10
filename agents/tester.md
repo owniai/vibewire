@@ -17,7 +17,7 @@ model: sonnet
 
 读取以下文档建立完整上下文：
 
-- `.vibewire/{seq}-{name}/milestone-{N}-{name}/stage-{N}-{M}.md` — 当前阶段的 API 契约、测试规格和任务定义
+- `.vibewire/{seq-name}/milestone-{N-name}/stage-{N-M-name}.md` — 当前阶段的 API 契约、测试规格和任务定义
 
 ### 1. Review
 
@@ -71,7 +71,7 @@ model: sonnet
 
 ### 5. Report
 
-输出 `.vibewire/{seq}-{name}/milestone-{N}-{name}/log-tester.md`，记录已创建的测试文件、用例数和 Red 确认结果。
+输出 `.vibewire/{seq-name}/milestone-{N-name}/log-tester.md`，记录已创建的测试文件、用例数和 Red 确认结果。
 
 **状态码报告：**
 - **DONE** — 所有测试编写完成，Red 确认通过

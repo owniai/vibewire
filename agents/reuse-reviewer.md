@@ -29,6 +29,6 @@ model: sonnet
 
 ### 5. 输出
 
-将审阅意见追加到: .vibewire/{seq-name}/milestone-{N}-{name}/review-reuse.md（以 `## Stage {N}-{M}` 为节标题，文件不存在则创建）
+将审阅意见追加到: .vibewire/{seq-name}/milestone-{N-name}/review-reuse.md（以 `## Stage {N-M-name}` 为节标题，文件不存在则创建）
 
 完成后，输出一行摘要，格式: "Code Reuse Review: 发现 {n} 个问题" 或 "Code Reuse Review: 无问题"

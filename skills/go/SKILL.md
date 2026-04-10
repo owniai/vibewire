@@ -1,6 +1,6 @@
 ---
 name: go
-description: "执行调度器 — 读取规划文档和全局设计，调度 stager/tester/implementer 完成从里程碑设计到代码实现的端到端流程。在 /global-design 完成后由用户调用 /go {seq}-{name} 启动。"
+description: "执行调度器 — 读取规划文档和全局设计，调度 stager/tester/implementer 完成从里程碑设计到代码实现的端到端流程。在 /global-design 完成后由用户调用 /go {seq-name} 启动。"
 ---
 
 # Go：从设计到实现
@@ -31,26 +31,21 @@ description: "执行调度器 — 读取规划文档和全局设计，调度 sta
 创建里程碑分支：
 
 ```
-git checkout -b milestone-{N}-{name}
+git checkout -b milestone-{N-name}
 ```
 
 调用 stager 执行 Milestone Design：
 
 ```
 subagent_type: "stager"
-description: "stager Milestone Design {N}-{name}"
+description: "stager Milestone Design {N-name}"
 prompt: |
   执行 Milestone Design。
-  里程碑序号：{N}，里程碑名称：{name}
+  里程碑：{N-name}
   规划目录：.vibewire/{seq-name}/
 ```
 
-stager 完成后，提交设计文档并进入阶段循环：
-
-```
-git add .vibewire/{seq-name}/milestone-{N}-{name}/
-git commit -m "docs(milestone-{N}): 里程碑设计文档"
-```
+stager 完成后，进入阶段循环：
 
 #### 2.2 阶段循环
 
@@ -60,11 +55,11 @@ git commit -m "docs(milestone-{N}): 里程碑设计文档"
 
 ```
 subagent_type: "tester"
-description: "tester Stage {N}-{M}"
+description: "tester Stage {N-M-name}"
 prompt: |
   执行测试编写。
   规划目录：.vibewire/{seq-name}/
-  Stage 文档：.vibewire/{seq-name}/milestone-{N}-{name}/stage-{N}-{M}.md
+  Stage 文档：.vibewire/{seq-name}/milestone-{N-name}/stage-{N-M-name}.md
 ```
 
 根据 tester 状态码处理：
@@ -81,11 +76,11 @@ tester 完成后，启动 implementer 执行全部步骤：
 
 ```
 subagent_type: "implementer"
-description: "implementer Stage {N}-{M}"
+description: "implementer Stage {N-M-name}"
 prompt: |
   执行全部实现步骤（Review → Implement → Verify → Self-Review → Commit）。
   规划目录：.vibewire/{seq-name}/
-  Stage 文档：.vibewire/{seq-name}/milestone-{N}-{name}/stage-{N}-{M}.md
+  Stage 文档：.vibewire/{seq-name}/milestone-{N-name}/stage-{N-M-name}.md
 ```
 
 根据 implementer 状态码处理（同 tester 状态码表）。
@@ -96,32 +91,32 @@ implementer 完成且状态为 DONE 后，同时启动三个审查 agent：
 
 ```
 subagent_type: "reuse-reviewer"
-description: "reuse-reviewer Stage {N}-{M}"
+description: "reuse-reviewer Stage {N-M-name}"
 prompt: |
   执行复用审查。
   规划目录：.vibewire/{seq-name}/
-  里程碑序号：{N}，里程碑名称：{name}
-  阶段序号：{M}
+  里程碑：{N-name}
+  阶段：{N-M-name}
 ```
 
 ```
 subagent_type: "quality-reviewer"
-description: "quality-reviewer Stage {N}-{M}"
+description: "quality-reviewer Stage {N-M-name}"
 prompt: |
   执行质量审查。
   规划目录：.vibewire/{seq-name}/
-  里程碑序号：{N}，里程碑名称：{name}
-  阶段序号：{M}
+  里程碑：{N-name}
+  阶段：{N-M-name}
 ```
 
 ```
 subagent_type: "efficiency-reviewer"
-description: "efficiency-reviewer Stage {N}-{M}"
+description: "efficiency-reviewer Stage {N-M-name}"
 prompt: |
   执行效率审查。
   规划目录：.vibewire/{seq-name}/
-  里程碑序号：{N}，里程碑名称：{name}
-  阶段序号：{M}
+  里程碑：{N-name}
+  阶段：{N-M-name}
 ```
 
 等待三个 agent 完成，根据各自输出的一行摘要判断结果：
@@ -131,12 +126,12 @@ prompt: |
 
 ```
 subagent_type: "review-fixer"
-description: "review-fixer Stage {N}-{M}"
+description: "review-fixer Stage {N-M-name}"
 prompt: |
   执行审查修复。
   规划目录：.vibewire/{seq-name}/
-  里程碑序号：{N}，里程碑名称：{name}
-  阶段序号：{M}
+  里程碑：{N-name}
+  阶段：{N-M-name}
 ```
 
 修复 agent 完成后检查其输出的测试结果：
@@ -153,14 +148,14 @@ description: "summary-writer milestone-{N}"
 prompt: |
   生成里程碑总结。
   规划目录：.vibewire/{seq-name}/
-  里程碑序号：{N}，里程碑名称：{name}
+  里程碑：{N-name}
 ```
 
 提交总结，运行全量测试验证后合并回主分支：
 
 ```
-git add .vibewire/{seq-name}/milestone-{N}-{name}/summary.md
-git commit -m "docs(milestone-{N}): 里程碑总结"
+git add .vibewire/{seq-name}/milestone-{N-name}/summary.md
+git commit -m "[{seq-name}/m{N}] docs: 里程碑总结"
 ```
 
 运行全量测试：
@@ -169,7 +164,7 @@ git commit -m "docs(milestone-{N}): 里程碑总结"
 
 ```
 git checkout {main-branch}
-git merge milestone-{N}-{name}
+git merge milestone-{N-name}
 ```
 
 - **Red** → 暂停，报告失败信息，等待用户处理
@@ -196,7 +191,7 @@ description: "stager fix {agent-name} issues"
 prompt: |
   执行者报告了问题，请修改相关文档以解决。
   规划目录：.vibewire/{seq-name}/
-  里程碑序号：{N}，里程碑名称：{name}
+  里程碑：{N-name}
   问题来源：{agent-name}
   问题描述：{agent 报告的问题内容}
 ```
@@ -207,12 +202,12 @@ prompt: |
 暂停时输出：
 
 ```
-Stage {N}-{M}: {名称} 执行失败（2 次自动修复后仍有问题）
+Stage {N-M-name}: {名称} 执行失败（2 次自动修复后仍有问题）
 
 Issues 列表：
 - [列出所有未解决的问题]
 
-请手动处理后，运行 /go {seq}-{name} 继续
+请手动处理后，运行 /go {seq-name} 继续
 ```
 
 ## 调用 Agent 通用规则
