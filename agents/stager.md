@@ -42,7 +42,7 @@ model: opus
 
 #### 1.3 前序里程碑上下文（仅当里程碑编号 > 1）
 
-- 读取 `log-implementer.md` 和 `log-refactor.md`，重点关注：
+- 读取 `log-implementer.md` 和 `log-resolver.md`，重点关注：
   - 前序里程碑引入了哪些新类型、接口和模块
   - 实现过程中偏离架构设计的部分及原因
 - 通过 Glob/Grep 验证上述内容在当前代码中的实际状态
