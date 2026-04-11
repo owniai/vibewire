@@ -125,8 +125,8 @@ prompt: |
 - **存在至少一个问题** → 启动修复 agent：
 
 ```
-subagent_type: "review-fixer"
-description: "review-fixer Stage {N-M-name}"
+subagent_type: "resolver"
+description: "resolver Stage {N-M-name}"
 prompt: |
   执行审查修复。
   规划目录：.vibewire/{seq-name}/
