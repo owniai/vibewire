@@ -1,11 +1,11 @@
 ---
 name: aim
-description: "在任何实现工作之前必须使用 - 分析需求、设计架构，生成 requirements.md + architecture.md。当用户开始新任务、创建新功能、需要规划实现方案时触发。前置条件：项目必须已通过 /intro 初始化项目文档。"
+description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not auto-trigger based on codebase analysis, feature requests, or perceived implementation needs.
 ---
 
-# Aim：从任务到规格
+# Aim: From Task to Architecture
 
-## 概述
+## Overview
 
 通过协作对话将用户任务转化为 requirements.md + architecture.md。项目文档（project.md、CHANGELOG.md）由 `/intro` skill 初始化。
 
@@ -13,32 +13,32 @@ description: "在任何实现工作之前必须使用 - 分析需求、设计架
 在用户审阅并批准架构设计文档之前，不要调用任何实现技能、编写任何代码或采取任何实现行动。这适用于每个项目，无论感知的简单程度如何。
 </HARD-GATE>
 
-## 反模式："这太简单了不需要规划"
+## Anti-Pattern: "This Is Too Simple to Plan"
 
 每个项目都要经过这个过程。简单的功能、配置更改——所有这些。"简单"的项目是未审视的假设导致最多浪费工作的地方。规划可以很短（对于真正简单的项目只需几句话），但你必须呈现它并获得批准。
 
-## 检查清单
+## Checklist
 
 你必须为以下每个项目创建任务并按顺序完成：
 
-1. **读取项目上下文** — 读取项目文档，若无则提示运行 /intro
-2. **评估任务范围** — 判断任务是否需要拆分为独立子项目
-3. **提出澄清问题** — 一次一个，理解目的/约束/成功标准
-4. **呈现需求详述** — 向用户展示完整需求描述
-5. **写入并自检需求文档** — 创建规划目录，写入 requirements.md，自检占位符/矛盾/歧义/范围
-6. **提出2-3个方案** — 附带权衡和你的建议
-7. **呈现架构设计** — 仅需求级增量：模块划分、数据流；项目级决策同步更新 project.md
-8. **写入并自检架构文档** — 写入 architecture.md，更新 project.md 和 CHANGELOG.md，自检
-9. **用户审阅架构文档** — 请用户审阅架构文档文件
-10. **过渡到执行** — 总结对话，提示用户使用 /global-design
+1. **Explore Project Context** — 读取项目文档，若无则提示运行 /vibewire:intro
+2. **Assess Task Scope** — 判断任务是否需要拆分为独立子项目
+3. **Requirements Clarification** — 一次一个，理解目的/约束/成功标准
+4. **Present Requirements** — 向用户展示完整需求描述
+5. **Write and Self-Check Requirements** — 创建规划目录，写入 requirements.md，自检占位符/矛盾/歧义/范围
+6. **Explore Solutions** — 附带权衡和你的建议
+7. **Present Architecture Design** — 仅需求级增量：模块划分、数据流；项目级决策同步更新 project.md
+8. **Write and Self-Check Architecture** — 写入 architecture.md，更新 project.md 和 CHANGELOG.md，自检
+9. **User Review Architecture** — 请用户审阅架构文档文件
+10. **Transition to Execution** — 总结对话，提示用户使用 /global-design
 
-## 流程
+## Process
 
-### 1. 探索项目上下文
+### 1. Explore Project Context
 
 **读取项目文档：** 读取 `.vibewire/project.md` 和 `.vibewire/CHANGELOG.md` 获取项目全貌。若不存在，提示用户先运行 `/vibewire:intro`。
 
-### 2. 评估任务范围
+### 2. Assess Task Scope
 
 在深入需求澄清之前，评估任务规模：
 - 如果任务描述了多个独立子系统（如"构建一个包含聊天、文件存储、计费和分析的平台"），立即标记
@@ -46,7 +46,7 @@ description: "在任何实现工作之前必须使用 - 分析需求、设计架
 - 如果项目对单个规划来说太大，帮助用户拆分为子项目：哪些是独立的部分，它们如何关联，应该以什么顺序构建？然后对第一个子项目走正常的规划流程
 - 每个子项目拥有自己的 aim→global-design→go 周期
 
-### 3. 需求澄清
+### 3. Requirements Clarification
 
 理解想法：
 - 逐一提问以完善需求
@@ -54,13 +54,13 @@ description: "在任何实现工作之前必须使用 - 分析需求、设计架
 - 每条消息只问一个问题 — 如果某个主题需要更多探索，将其拆分为多个问题
 - 重点关注理解：目的、约束、成功标准
 
-### 4. 呈现需求详述
+### 4. Present Requirements
 
 一旦你理解了需求：
 - 呈现需求详述给用户确认
 - 涵盖：任务概述、功能需求、非功能需求、约束条件、成功标准
 
-### 5. 写入并自检需求文档
+### 5. Write and Self-Check Requirements
 
 获得用户确认后，创建规划目录并写入需求文档。
 
@@ -79,7 +79,7 @@ description: "在任何实现工作之前必须使用 - 分析需求、设计架
 3. **范围检查** — 是否聚焦于一个可实现的范围，还是需要拆分？
 4. **歧义检查** — 是否有需求可以被两种不同方式解读？如有，选择一种并明确说明
 
-### 6. 探索方案
+### 6. Explore Solutions
 
 提出2-3个不同的架构方案：
 - 每个方案附带权衡分析
@@ -87,7 +87,7 @@ description: "在任何实现工作之前必须使用 - 分析需求、设计架
 - 首先提出你推荐的选项并解释原因
 - 让用户选择或提出修改意见
 
-### 7. 呈现架构设计
+### 7. Present Architecture Design
 
 基于选定的方案呈现需求级架构设计。仅关注**本需求的架构增量**，项目级决策（技术栈、错误处理策略、测试策略）沿用 `project.md` 或在此提出变更。
 
@@ -117,7 +117,7 @@ description: "在任何实现工作之前必须使用 - 分析需求、设计架
 **项目级决策变更：**
 如果本需求需要变更 `project.md` 中的项目级决策（如新增依赖、变更技术栈），在此一并提出并说明理由，获得用户确认。
 
-### 8. 写入并自检架构文档
+### 8. Write and Self-Check Architecture
 
 获得用户确认后，写入架构文档 `.vibewire/{seq-name}/architecture.md`，并同步更新项目级文档。
 
@@ -147,11 +147,11 @@ description: "在任何实现工作之前必须使用 - 分析需求、设计架
 
 额外检查 architecture.md 与 project.md 的一致性：architecture.md 中的模块是否已反映到 project.md 的"当前架构"和"目录结构"中。
 
-### 9. 用户审阅架构文档
+### 9. User Review Architecture
 
 架构文档写入并自检后，请用户审阅文档文件。如用户要求修改，修改后重新自检再请用户审阅。仅在用户确认后继续。
 
-### 10. 过渡到执行
+### 10. Transition to Execution
 
 提示用户下一步：
 
@@ -163,7 +163,7 @@ description: "在任何实现工作之前必须使用 - 分析需求、设计架
 - 新会话：在新会话中运行 /global-design，系统会读取最新的规划文档
 ```
 
-## 关键原则
+## Key Principles
 
 - **一次一个问题** — 不要用多个问题淹没用户
 - **优先选择题** — 在可能的情况下比开放性问题更容易回答

@@ -1,15 +1,15 @@
 ---
 name: global-design
-description: "在 /aim 完成后使用 - 接收编号参数 {seq}，读取 project.md 和对应 aim 文档的 requirements.md、architecture.md，将架构设计拆分为可独立交付的里程碑，输出 design.md。用户审批后运行 /go 执行。调用方式：/global-design {seq}"
+description: Use ONLY when the user explicitly invokes /vibewire:global-design. Do not auto-trigger based on the existence of architecture documents or planning artifacts.
 ---
 
-# Global Design：从架构到里程碑
+# Global Design: From Architecture to Milestones
 
-## 概述
+## Overview
 
 接收编号参数，读取对应 spec 目录的需求文档和架构设计，将工作拆分为可独立交付的里程碑规划。
 
-## 参数
+## Parameters
 
 调用方式：`/global-design {seq}`
 
@@ -20,25 +20,25 @@ description: "在 /aim 完成后使用 - 接收编号参数 {seq}，读取 proje
 在用户审阅并批准 design.md 之前，不要调用任何实现技能、编写任何代码或采取任何实现行动。
 </HARD-GATE>
 
-## 检查清单
+## Checklist
 
-1. **确认前置条件** — 验证 project.md、requirements.md 和 architecture.md 存在且完整
-2. **建立上下文** — 读取项目文档、需求、架构、项目代码结构
-3. **分析并拆分里程碑** — 输出 design.md
-4. **自检** — 扫描占位符、覆盖度、合理性
-5. **用户审批** — 请用户审阅 design.md
-6. **过渡到执行** — 提示用户使用 /go
+1. **Confirm Prerequisites** — 验证 project.md、requirements.md 和 architecture.md 存在且完整
+2. **Build Context** — 读取项目文档、需求、架构、项目代码结构
+3. **Analyze and Split Milestones** — 输出 design.md
+4. **Self-Check** — 扫描占位符、覆盖度、合理性
+5. **User Approval** — 请用户审阅 design.md
+6. **Transition to Execution** — 提示用户使用 /go
 
-## 流程
+## Process
 
-### 1. 确认前置条件
+### 1. Confirm Prerequisites
 
 - 扫描 `.vibewire/` 下匹配 `{seq}-*` 模式的目录，确定完整目录名 `{seq-name}`
 - 若未找到匹配目录，提示用户可用的编号列表并中止
 - 读取 `.vibewire/project.md`、`.vibewire/{seq-name}/requirements.md` 和 `.vibewire/{seq-name}/architecture.md`
 - 确认文件内容完整，否则提示用户先运行 `/intro`（缺少 project.md）或 `/aim`（缺少 requirements/architecture）
 
-### 2. 建立上下文
+### 2. Build Context
 
 读取以下文档建立完整上下文：
 - `.vibewire/project.md` — 项目全貌：当前架构、目录结构、技术栈、约定与规范
@@ -47,7 +47,7 @@ description: "在 /aim 完成后使用 - 接收编号参数 {seq}，读取 proje
 - `.shadow-api/` — 先读取影子 API 文件快速理解代码接口，再按需读取真实源文件深入细节
 - 目标代码探索 — 根据需求和架构聚焦相关模块，不做无目的的全量扫描
 
-### 3. 分析并拆分里程碑
+### 3. Analyze and Split Milestones
 
 将工作拆分为可独立交付的里程碑。
 
@@ -95,7 +95,7 @@ description: "在 /aim 完成后使用 - 接收编号参数 {seq}，读取 proje
 {合并后如何验证功能正确：可运行的行为验证，非内部测试细节}
 ```
 
-### 4. 自检
+### 4. Self-Check
 
 对照以下清单检查 design.md，发现问题直接修复：
 1. **占位符扫描** — 是否有"TBD"、"TODO"、不完整部分？修复它们
@@ -104,11 +104,11 @@ description: "在 /aim 完成后使用 - 接收编号参数 {seq}，读取 proje
 4. **依赖顺序** — 里程碑间的依赖顺序是否清晰合理？
 5. **重复实现** — 跨里程碑是否有重复实现的功能？应提取为公共库
 
-### 5. 用户审批
+### 5. User Approval
 
 请用户审阅 design.md，如用户要求修改，修改后重新自检再请用户审阅。仅在用户确认后继续。
 
-### 6. 过渡到执行
+### 6. Transition to Execution
 
 提示用户下一步：
 
@@ -120,7 +120,7 @@ description: "在 /aim 完成后使用 - 接收编号参数 {seq}，读取 proje
 - 新会话：在新会话中运行 /go，系统会读取最新的规划文档
 ```
 
-## 关键原则
+## Key Principles
 
 - **最小可行切片优先** — Milestone 1 应尽可能小但仍可独立运行
 - **独立可交付** — 每个里程碑可独立合并和验证

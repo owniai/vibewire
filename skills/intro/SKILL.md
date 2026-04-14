@@ -3,7 +3,7 @@ name: intro
 description: Use ONLY when the user explicitly invokes /vibewire:intro. Do not auto-trigger based on codebase analysis or documentation staleness assumptions.
 ---
 
-# Intro
+# Intro: Scan and Establish Documentation Baseline
 
 扫描项目代码库，创建 `.vibewire/project.md` 和 `.vibewire/CHANGELOG.md`，建立文档基线。
 

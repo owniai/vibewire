@@ -1,17 +1,17 @@
 ---
 name: go
-description: "执行调度器 — 读取规划文档和全局设计，调度 stager/tester/implementer 完成从里程碑设计到代码实现的端到端流程。在 /global-design 完成后由用户调用 /go {seq-name} 启动。"
+description: Use ONLY when the user explicitly invokes /vibewire:go. Do not auto-trigger based on the existence of design documents or planning artifacts.
 ---
 
-# Go：从设计到实现
+# Go: From Design to Implementation
 
-## 概述
+## Overview
 
 读取需求文档、架构设计和里程碑规划，通过调度三个专业 Agent（stager、tester、implementer），按里程碑和阶段迭代完成代码实现和测试验证。
 
-## 流程
+## Process
 
-### 1. 初始化
+### 1. Initialize
 
 - 确认 `.vibewire/{seq-name}/` 目录存在
 - 读取 `.vibewire/{seq-name}/requirements.md` 了解项目信息
@@ -22,11 +22,11 @@ description: "执行调度器 — 读取规划文档和全局设计，调度 sta
 所有 Agent 调用必须严格按照本文档中的模板使用 Agent 工具执行，不得自行修改、省略或替换模板内容。模板中的 `{变量}` 需替换为实际值。
 </HARD-RULE>
 
-### 2. 里程碑循环
+### 2. Milestone Loop
 
 对 `design.md` 中列出的每个里程碑，按顺序执行：
 
-#### 2.1 里程碑设计
+#### 2.1 Milestone Design
 
 创建里程碑分支：
 
@@ -47,7 +47,7 @@ prompt: |
 
 stager 完成后，进入阶段循环：
 
-#### 2.2 阶段循环
+#### 2.2 Stage Loop
 
 对当前里程碑中的每个 stage，按顺序执行：
 
@@ -138,7 +138,7 @@ prompt: |
   - **PASS** → 继续下一 stage
   - **FAIL** → 暂停，报告失败信息，等待用户处理
 
-#### 2.3 里程碑收尾
+#### 2.3 Milestone Wrap-Up
 
 所有 stage 完成后，并行调用 evolver 和 shadow-keeper：
 
@@ -173,11 +173,11 @@ git merge milestone-{N-name}
 
 - **Red** → 暂停，报告失败信息，等待用户处理
 
-### 3. 完成
+### 3. Completion
 
 所有里程碑完成后，报告整体完成状态。
 
-### BLOCKED 处理流程
+### BLOCKED Handling
 
 1. 调用 stager 修复相关文档：
 
@@ -206,7 +206,7 @@ Issues 列表：
 请手动处理后，运行 /go {seq-name} 继续
 ```
 
-## 调用 Agent 通用规则
+## Agent Invocation Rules
 
 - 所有 agent 均按调用独立启动新实例，不跨调用复用
 - implementer 一次运行全部步骤（Review → Implement → Verify → Self-Review → Commit），无需分次调用
@@ -214,7 +214,7 @@ Issues 列表：
 - 不得自行修改、省略或替换模板内容
 - Agent 工作目录为项目根目录
 
-## 关键原则
+## Key Principles
 
 - **严格按序执行** — 里程碑和阶段按 design.md 中的依赖顺序执行，不跳阶段
 - **TDD 串行** — tester 完成 Red 后再启动 implementer，严格遵循 Red → Green 循环
@@ -224,7 +224,7 @@ Issues 列表：
 - **暂停而非猜测** — 超过重试上限时暂停等用户
 - **过程可追溯** — 所有过程记录在 `.vibewire/` 目录
 
-## 错误处理
+## Error Handling
 
 | 场景 | 处理方式 |
 | ------ | -------- |
