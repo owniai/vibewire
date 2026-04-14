@@ -7,7 +7,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 
 ## Overview
 
-通过协作对话将用户任务转化为 requirements.md + architecture.md。项目文档（project.md、CHANGELOG.md）由 `/intro` skill 初始化。
+通过协作对话将用户任务转化为 requirements.md + architecture.md。项目文档（project.md、CHANGELOG.md）由 `/vibewire:intro` skill 初始化。
 
 <HARD-GATE>
 在用户审阅并批准架构设计文档之前，不要调用任何实现技能、编写任何代码或采取任何实现行动。这适用于每个项目，无论感知的简单程度如何。
@@ -30,7 +30,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 7. **Present Architecture Design** — 仅需求级增量：模块划分、数据流；项目级决策同步更新 project.md
 8. **Write and Self-Check Architecture** — 写入 architecture.md，更新 project.md 和 CHANGELOG.md，自检
 9. **User Review Architecture** — 请用户审阅架构文档文件
-10. **Transition to Execution** — 总结对话，提示用户使用 /global-design
+10. **Transition to Execution** — 总结对话，提示用户使用 /vibewire:global-design
 
 ## Process
 
@@ -159,8 +159,8 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 规划已完成！需求文档和架构设计已保存到 .vibewire/{seq-name}/ 目录。
 
 下一步：
-- 当前会话：直接运行 /global-design 进行全局设计
-- 新会话：在新会话中运行 /global-design，系统会读取最新的规划文档
+- 当前会话：直接运行 /vibewire:global-design 进行全局设计
+- 新会话：在新会话中运行 /vibewire:global-design，系统会读取最新的规划文档
 ```
 
 ## Key Principles

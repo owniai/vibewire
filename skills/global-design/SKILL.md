@@ -11,7 +11,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:global-design. 
 
 ## Parameters
 
-调用方式：`/global-design {seq}`
+调用方式：`/vibewire:global-design {seq}`
 
 - `{seq}`：spec 目录的编号（如 `001`、`002`）
 - 根据 `{seq}` 在 `.vibewire/` 下匹配 `{seq}-*` 目录
@@ -27,7 +27,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:global-design. 
 3. **Analyze and Split Milestones** — 输出 design.md
 4. **Self-Check** — 扫描占位符、覆盖度、合理性
 5. **User Approval** — 请用户审阅 design.md
-6. **Transition to Execution** — 提示用户使用 /go
+6. **Transition to Execution** — 提示用户使用 /vibewire:go
 
 ## Process
 
@@ -36,7 +36,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:global-design. 
 - 扫描 `.vibewire/` 下匹配 `{seq}-*` 模式的目录，确定完整目录名 `{seq-name}`
 - 若未找到匹配目录，提示用户可用的编号列表并中止
 - 读取 `.vibewire/project.md`、`.vibewire/{seq-name}/requirements.md` 和 `.vibewire/{seq-name}/architecture.md`
-- 确认文件内容完整，否则提示用户先运行 `/intro`（缺少 project.md）或 `/aim`（缺少 requirements/architecture）
+- 确认文件内容完整，否则提示用户先运行 `/vibewire:intro`（缺少 project.md）或 `/vibewire:aim`（缺少 requirements/architecture）
 
 ### 2. Build Context
 
@@ -116,8 +116,8 @@ description: Use ONLY when the user explicitly invokes /vibewire:global-design. 
 全局设计已完成！里程碑规划已保存到 .vibewire/{seq-name}/design.md。
 
 下一步：
-- 当前会话：直接运行 /go 开始执行
-- 新会话：在新会话中运行 /go，系统会读取最新的规划文档
+- 当前会话：直接运行 /vibewire:go 开始执行
+- 新会话：在新会话中运行 /vibewire:go，系统会读取最新的规划文档
 ```
 
 ## Key Principles

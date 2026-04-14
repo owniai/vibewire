@@ -15,7 +15,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:go. Do not auto
 
 - 确认 `.vibewire/{seq-name}/` 目录存在
 - 读取 `.vibewire/{seq-name}/requirements.md` 了解项目信息
-- 确认 `architecture.md` 和 `design.md` 存在，若缺失则提示用户先运行 `/aim` 和 `/global-design`
+- 确认 `architecture.md` 和 `design.md` 存在，若缺失则提示用户先运行 `/vibewire:aim` 和 `/vibewire:global-design`
 - 运行项目测试确认基线干净（如项目无测试则跳过）。若失败 → 暂停，报告失败信息，等待用户处理
 
 <HARD-RULE>
@@ -203,7 +203,7 @@ Stage {N-M-name}: {名称} 执行失败（2 次自动修复后仍有问题）
 Issues 列表：
 - [列出所有未解决的问题]
 
-请手动处理后，运行 /go {seq-name} 继续
+请手动处理后，运行 /vibewire:go {seq-name} 继续
 ```
 
 ## Agent Invocation Rules
@@ -228,8 +228,8 @@ Issues 列表：
 
 | 场景 | 处理方式 |
 | ------ | -------- |
-| 规划目录不存在 | 提示用户先运行 `/aim` |
-| architecture.md 或 design.md 不存在 | 提示文件缺失，先运行 `/aim` 和 `/global-design` |
+| 规划目录不存在 | 提示用户先运行 `/vibewire:aim` |
+| architecture.md 或 design.md 不存在 | 提示文件缺失，先运行 `/vibewire:aim` 和 `/vibewire:global-design` |
 | 基线测试失败 | 暂停，报告失败信息，等待用户处理 |
 | 里程碑全量测试失败 | 暂停，报告失败信息，等待用户处理 |
 | tester/implementer BLOCKED | 调用 stager 修复文档，修改后重新执行（最多 2 次） |
