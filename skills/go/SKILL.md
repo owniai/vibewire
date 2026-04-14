@@ -15,7 +15,7 @@ description: "执行调度器 — 读取规划文档和全局设计，调度 sta
 
 - 确认 `.vibewire/{seq-name}/` 目录存在
 - 读取 `.vibewire/{seq-name}/requirements.md` 了解项目信息
-- 确认 `architecture.md` 和 `design.md` 存在，若缺失则提示用户先运行 `/spec` 和 `/global-design`
+- 确认 `architecture.md` 和 `design.md` 存在，若缺失则提示用户先运行 `/aim` 和 `/global-design`
 - 运行项目测试确认基线干净（如项目无测试则跳过）。若失败 → 暂停，报告失败信息，等待用户处理
 
 <HARD-RULE>
@@ -138,25 +138,29 @@ prompt: |
   - **PASS** → 继续下一 stage
   - **FAIL** → 暂停，报告失败信息，等待用户处理
 
-#### 2.3 里程碑总结
+#### 2.3 里程碑收尾
 
-所有 stage 完成后，调用 summary-writer 生成总结：
+所有 stage 完成后，并行调用 evolver 和 shadow-keeper：
 
 ```
-subagent_type: "summary-writer"
-description: "summary-writer milestone-{N}"
+subagent_type: "evolver"
+description: "evolver milestone-{N}"
 prompt: |
-  生成里程碑总结。
+  执行经验提炼与漂移记录。
   规划目录：.vibewire/{seq-name}/
   里程碑：{N-name}
 ```
 
-提交总结，运行全量测试验证后合并回主分支：
+```
+subagent_type: "shadow-keeper"
+description: "shadow-keeper milestone-{N}"
+prompt: |
+  执行影子 API 维护。
+  规划目录：.vibewire/{seq-name}/
+  里程碑：{N-name}
+```
 
-```
-git add .vibewire/{seq-name}/milestone-{N-name}/summary.md
-git commit -m "[{seq-name}/m{N}] docs: 里程碑总结"
-```
+milestone-closer 完成后，运行全量测试验证后合并回主分支：
 
 运行全量测试：
 
@@ -169,17 +173,9 @@ git merge milestone-{N-name}
 
 - **Red** → 暂停，报告失败信息，等待用户处理
 
-### 3. 最终总结
+### 3. 完成
 
-所有里程碑完成后，调用 summary-writer 生成最终总结：
-
-```
-subagent_type: "summary-writer"
-description: "summary-writer final"
-prompt: |
-  生成最终总结。
-  规划目录：.vibewire/{seq-name}/
-```
+所有里程碑完成后，报告整体完成状态。
 
 ### BLOCKED 处理流程
 
@@ -232,8 +228,8 @@ Issues 列表：
 
 | 场景 | 处理方式 |
 | ------ | -------- |
-| 规划目录不存在 | 提示用户先运行 `/spec` |
-| architecture.md 或 design.md 不存在 | 提示文件缺失，先运行 `/spec` 和 `/global-design` |
+| 规划目录不存在 | 提示用户先运行 `/aim` |
+| architecture.md 或 design.md 不存在 | 提示文件缺失，先运行 `/aim` 和 `/global-design` |
 | 基线测试失败 | 暂停，报告失败信息，等待用户处理 |
 | 里程碑全量测试失败 | 暂停，报告失败信息，等待用户处理 |
 | tester/implementer BLOCKED | 调用 stager 修复文档，修改后重新执行（最多 2 次） |

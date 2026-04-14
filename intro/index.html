@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibewire - 从 Vibe Coding 到 Vibe Wire</title>
+<style>
+/* ========== Reset & Base ========== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --primary: #1a1a2e;
+  --accent: #e94560;
+  --accent-light: #ff6b81;
+  --blue: #0f3460;
+  --blue-light: #16537e;
+  --gray-50: #fafafa;
+  --gray-100: #f5f5f5;
+  --gray-200: #e5e5e5;
+  --gray-300: #d4d4d4;
+  --gray-400: #a3a3a3;
+  --gray-500: #737373;
+  --gray-600: #525252;
+  --gray-700: #404040;
+  --gray-800: #262626;
+  --gray-900: #171717;
+  --green: #22c55e;
+  --orange: #f59e0b;
+  --red: #ef4444;
+  --slide-width: 2560px;
+  --slide-height: 1440px;
+}
+
+html {
+  font-size: 32px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: #e5e5e5;
+  color: var(--gray-800);
+  line-height: 1.6;
+}
+
+/* ========== Slide Container ========== */
+.slide {
+  width: var(--slide-width);
+  height: var(--slide-height);
+  margin: 40px auto;
+  background: white;
+  position: relative;
+  overflow: hidden;
+  page-break-after: always;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  padding: 120px 160px;
+}
+
+/* ========== Typography ========== */
+.slide h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--primary);
+  letter-spacing: -0.02em;
+}
+
+.slide h2 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 24px;
+  letter-spacing: -0.01em;
+}
+
+.slide h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--blue);
+  margin-bottom: 16px;
+}
+
+.slide p {
+  font-size: 1.1rem;
+  color: var(--gray-600);
+  line-height: 1.7;
+}
+
+.slide .subtitle {
+  font-size: 1.5rem;
+  color: var(--gray-500);
+  font-weight: 400;
+}
+
+.slide .accent { color: var(--accent); }
+.slide .blue { color: var(--blue); }
+.slide .bold { font-weight: 700; }
+.slide .large { font-size: 1.3rem; }
+
+/* ========== Cover Slide ========== */
+.slide.cover {
+  justify-content: center;
+  align-items: flex-start;
+  padding: 160px 200px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+}
+
+.slide.cover .tag {
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: rgba(233,69,96,0.08);
+  padding: 12px 32px;
+  border-radius: 40px;
+  margin-bottom: 48px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.slide.cover h1 {
+  font-size: 3.8rem;
+  margin-bottom: 32px;
+}
+
+.slide.cover .subtitle {
+  font-size: 1.6rem;
+  margin-bottom: 96px;
+  max-width: 1400px;
+}
+
+.slide.cover .meta {
+  font-size: 0.9rem;
+  color: var(--gray-400);
+  position: absolute;
+  bottom: 120px;
+  left: 200px;
+}
+
+/* ========== Section Header ========== */
+.slide.section-header {
+  justify-content: center;
+  align-items: flex-start;
+  background: var(--primary);
+  color: white;
+}
+
+.slide.section-header h2 {
+  color: white;
+  font-size: 2.6rem;
+  margin-bottom: 32px;
+}
+
+.slide.section-header p {
+  color: rgba(255,255,255,0.6);
+  font-size: 1.2rem;
+}
+
+.slide.section-header .section-num {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-light);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 40px;
+}
+
+/* ========== Content Layouts ========== */
+.slide .flex {
+  display: flex;
+  gap: 80px;
+  flex: 1;
+  align-items: flex-start;
+}
+
+.slide .flex-1 { flex: 1; }
+.slide .flex-2 { flex: 2; }
+.slide .flex-3 { flex: 3; }
+
+.slide .col-left { flex: 1; }
+.slide .col-right { flex: 1; }
+
+/* ========== Cards ========== */
+.card {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: 24px;
+  padding: 48px;
+  margin-bottom: 32px;
+}
+
+.card-accent {
+  border-left: 8px solid var(--accent);
+}
+
+.card-blue {
+  border-left: 8px solid var(--blue);
+}
+
+.card h3 {
+  margin-bottom: 16px;
+}
+
+/* ========== Stats ========== */
+.stat-row {
+  display: flex;
+  gap: 64px;
+  margin: 48px 0;
+}
+
+.stat {
+  text-align: center;
+  flex: 1;
+}
+
+.stat .num {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 16px;
+}
+
+.stat .label {
+  font-size: 0.9rem;
+  color: var(--gray-500);
+}
+
+/* ========== Lists ========== */
+.slide ul {
+  list-style: none;
+  padding: 0;
+}
+
+.slide ul li {
+  font-size: 1.1rem;
+  color: var(--gray-600);
+  padding: 16px 0 16px 56px;
+  position: relative;
+  line-height: 1.6;
+}
+
+.slide ul li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 32px;
+  width: 16px;
+  height: 16px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+.slide ul.blue-dots li::before {
+  background: var(--blue);
+}
+
+/* ========== Diagrams ========== */
+.flow-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin: 48px 0;
+  flex-wrap: wrap;
+}
+
+.flow-box {
+  background: var(--blue);
+  color: white;
+  padding: 24px 48px;
+  border-radius: 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  min-width: 200px;
+}
+
+.flow-box.accent {
+  background: var(--accent);
+}
+
+.flow-box.outline {
+  background: white;
+  color: var(--blue);
+  border: 4px solid var(--blue);
+}
+
+.flow-arrow {
+  font-size: 1.4rem;
+  color: var(--gray-400);
+  font-weight: 300;
+}
+
+/* ========== Comparison Table ========== */
+.comp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  margin: 32px 0;
+}
+
+.comp-table th {
+  background: var(--primary);
+  color: white;
+  padding: 24px 32px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.comp-table td {
+  padding: 20px 32px;
+  border-bottom: 2px solid var(--gray-200);
+  color: var(--gray-600);
+}
+
+.comp-table tr:nth-child(even) td {
+  background: var(--gray-50);
+}
+
+.comp-table .highlight-col {
+  background: rgba(233,69,96,0.05);
+  font-weight: 600;
+}
+
+/* ========== Quote ========== */
+.quote {
+  font-size: 1.4rem;
+  font-style: italic;
+  color: var(--gray-700);
+  border-left: 8px solid var(--accent);
+  padding: 40px 56px;
+  margin: 48px 0;
+  background: var(--gray-50);
+  border-radius: 0 24px 24px 0;
+  line-height: 1.6;
+}
+
+.quote .author {
+  font-size: 0.9rem;
+  font-style: normal;
+  color: var(--gray-400);
+  margin-top: 24px;
+}
+
+/* ========== Pipeline ========== */
+.pipeline {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  margin: 40px 0;
+}
+
+.pipeline-step {
+  flex: 1;
+  text-align: center;
+  padding: 40px 24px;
+  position: relative;
+  border-radius: 16px;
+  margin: 0 8px;
+}
+
+.pipeline-step .step-icon {
+  font-size: 1.6rem;
+  margin-bottom: 16px;
+}
+
+.pipeline-step .step-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.pipeline-step .step-desc {
+  font-size: 0.8rem;
+  color: var(--gray-500);
+}
+
+.pipeline-arrow {
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+  color: var(--gray-300);
+}
+
+/* ========== Badge ========== */
+.badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 6px 20px;
+  border-radius: 24px;
+  margin-right: 12px;
+}
+
+.badge-red { background: rgba(239,68,68,0.1); color: var(--red); }
+.badge-green { background: rgba(34,197,94,0.1); color: var(--green); }
+.badge-blue { background: rgba(15,52,96,0.1); color: var(--blue); }
+.badge-orange { background: rgba(245,158,11,0.1); color: var(--orange); }
+
+/* ========== Footer ========== */
+.slide .page-num {
+  position: absolute;
+  bottom: 48px;
+  right: 80px;
+  font-size: 0.8rem;
+  color: var(--gray-300);
+}
+
+/* ========== Print ========== */
+@media print {
+  @page {
+    size: 2560px 1440px;
+    margin: 0;
+  }
+  html, body {
+    background: white;
+    width: 2560px;
+    margin: 0;
+    padding: 0;
+  }
+  .slide {
+    box-shadow: none;
+    margin: 0;
+    width: 2560px;
+    height: 1440px;
+    page-break-after: always;
+    break-after: page;
+  }
+}
+
+/* ========== Timeline ========== */
+.timeline {
+  position: relative;
+  padding-left: 64px;
+  margin: 32px 0;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 16px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--gray-200);
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 40px;
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -56px;
+  top: 12px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 4px solid white;
+  box-shadow: 0 0 0 4px var(--accent);
+}
+
+.timeline-item .year {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.timeline-item .text {
+  font-size: 1rem;
+  color: var(--gray-600);
+}
+
+/* ========== Grid ========== */
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+}
+
+/* ========== Highlight Box ========== */
+.highlight-box {
+  background: linear-gradient(135deg, var(--primary), var(--blue));
+  color: white;
+  border-radius: 24px;
+  padding: 56px 64px;
+  margin: 40px 0;
+}
+
+.highlight-box h3 {
+  color: white;
+  font-size: 1.2rem;
+  margin-bottom: 16px;
+}
+
+.highlight-box p {
+  color: rgba(255,255,255,0.8);
+}
+
+/* ========== Icon Circles ========== */
+.icon-circle {
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 24px;
+}
+
+.icon-circle.blue { background: rgba(15,52,96,0.1); }
+.icon-circle.accent { background: rgba(233,69,96,0.1); }
+.icon-circle.green { background: rgba(34,197,94,0.1); }
+
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- PAGE 1: Cover -->
+<!-- ============================================================ -->
+<div class="slide cover" id="page-1">
+  <div class="tag">AI-Native Development Framework</div>
+  <h1>Vibewire</h1>
+  <p class="subtitle">从 Vibe Coding 到 Vibe Wire<br>从需求到交付的 AI 工程流水线</p>
+  <div class="meta">2026 年 4 月</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 2: Background — From Systems Theory to Automation -->
+<!-- ============================================================ -->
+<div class="slide" id="page-2">
+  <div class="section-num" style="font-size:0.85rem;font-weight:600;color:var(--accent);letter-spacing:0.1em;margin-bottom:24px;">01 / 背景</div>
+  <h2>一个反复被验证的规律</h2>
+  <p style="margin-bottom:56px;">每一次工程能力的跃迁，背后都是同一套思想：将复杂过程拆解为可观测、可反馈、可自动化的闭环。</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="year">1948 — 控制论</div>
+      <div class="text">Norbert Wiener 提出反馈控制：系统通过感知偏差、自动纠正来维持目标状态</div>
+    </div>
+    <div class="timeline-item">
+      <div class="year">1950s — 系统动力学</div>
+      <div class="text">Jay Forrester 用存量/流量建模复杂系统行为，揭示反馈环的决定性作用</div>
+    </div>
+    <div class="timeline-item">
+      <div class="year">2010s — DevOps / CI·CD</div>
+      <div class="text">反馈环思想落地软件交付：Plan → Code → Build → Test → Deploy → Monitor → 循环</div>
+    </div>
+    <div class="timeline-item">
+      <div class="year">2025 — AI Coding</div>
+      <div class="text">大模型让"用自然语言描述需求、AI 生成代码"成为可能——<span class="accent bold">但闭环在哪里？</span></div>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <h3>核心洞察</h3>
+    <p>没有反馈闭环的系统，无论初始表现多好，终将偏离目标。AI 编码也不例外。</p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 3: Vibe Coding — The Promise and The Wall -->
+<!-- ============================================================ -->
+<div class="slide" id="page-3">
+  <div style="font-size:0.85rem;font-weight:600;color:var(--accent);letter-spacing:0.1em;margin-bottom:24px;">02 / 现状</div>
+  <h2>Vibe Coding：人人都能"说"出软件</h2>
+  <p style="margin-bottom:48px;">2025 年初，Andrej Karpathy 提出一个新范式——用自然语言描述你想要的，让 AI 写代码。</p>
+
+  <div class="stat-row">
+    <div class="stat">
+      <div class="num">84%</div>
+      <div class="label">开发者在使用 AI 编码工具<br><span style="font-size:0.75rem;color:var(--gray-400);">Stack Overflow 2025 调查</span></div>
+    </div>
+    <div class="stat">
+      <div class="num">29%</div>
+      <div class="label">开发者信任 AI 生成的代码<br><span style="font-size:0.75rem;color:var(--gray-400);">同一份调查</span></div>
+    </div>
+    <div class="stat">
+      <div class="num">-20%</div>
+      <div class="label">22-25 岁开发者就业变化<br><span style="font-size:0.75rem;color:var(--gray-400);">Stanford 2022-2025 研究</span></div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px;">
+    <div class="card card-blue">
+      <h3 style="color:var(--green);">令人兴奋的部分</h3>
+      <ul class="blue-dots">
+        <li>门槛大幅降低——非专业开发者也能构建原型</li>
+        <li>速度惊人——简单功能分钟级交付</li>
+        <li>意图驱动——从"怎么写"转向"写什么"</li>
+      </ul>
+    </div>
+    <div class="card card-accent">
+      <h3 style="color:var(--red);">被忽视的代价</h3>
+      <ul>
+        <li><strong>Context Rot</strong> — 长会话中 AI 丢失上下文，质量持续退化</li>
+        <li><strong>理解债务</strong> — 开发者发布了自己不理解的代码</li>
+        <li><strong>规模化崩溃</strong> — 项目超过一定规模后变得不可控</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 4: Current Solutions Landscape -->
+<!-- ============================================================ -->
+<div class="slide" id="page-4">
+  <div style="font-size:0.85rem;font-weight:600;color:var(--accent);letter-spacing:0.1em;margin-bottom:24px;">03 / 现有方案</div>
+  <h2>行业已在寻找答案</h2>
+  <p style="margin-bottom:48px;">三套代表性体系，各自试图驯服 AI 编码的不可控性。</p>
+
+  <div class="grid-3">
+    <div class="card" style="display:flex;flex-direction:column;">
+      <div style="display:flex;align-items:center;gap:24px;margin-bottom:32px;">
+        <span style="font-size:1.8rem;">📚</span>
+        <div>
+          <h3 style="margin:0;">everything-claude-code</h3>
+          <span style="font-size:0.8rem;color:var(--gray-400);">141K Stars</span>
+        </div>
+      </div>
+      <p style="font-size:0.95rem;margin-bottom:24px;">定位：<strong>性能优化"驯化"手册</strong></p>
+      <ul style="font-size:0.9rem;">
+        <li>Skills + Instincts 配置框架</li>
+        <li>跨会话 Memory 持久化</li>
+        <li>Research-first 工作流</li>
+      </ul>
+      <div style="margin-top:auto;padding-top:24px;">
+        <span class="badge badge-orange">最佳实践集</span>
+        <span class="badge badge-orange">需自行组装</span>
+      </div>
+    </div>
+
+    <div class="card" style="display:flex;flex-direction:column;">
+      <div style="display:flex;align-items:center;gap:24px;margin-bottom:32px;">
+        <span style="font-size:1.8rem;">⚡</span>
+        <div>
+          <h3 style="margin:0;">Superpowers</h3>
+          <span style="font-size:0.8rem;color:var(--gray-400);">28K+ Stars</span>
+        </div>
+      </div>
+      <p style="font-size:0.95rem;margin-bottom:24px;">定位：<strong>方法论强制执行框架</strong></p>
+      <ul style="font-size:0.9rem;">
+        <li>brainstorm → plan → execute 流水线</li>
+        <li>强制 TDD (RED-GREEN-REFACTOR)</li>
+        <li>Subagent 并行 + 双阶段审查</li>
+      </ul>
+      <div style="margin-top:auto;padding-top:24px;">
+        <span class="badge badge-blue">多平台</span>
+        <span class="badge badge-orange">流程较重</span>
+      </div>
+    </div>
+
+    <div class="card" style="display:flex;flex-direction:column;">
+      <div style="display:flex;align-items:center;gap:24px;margin-bottom:32px;">
+        <span style="font-size:1.8rem;">🚀</span>
+        <div>
+          <h3 style="margin:0;">GSD (Get Shit Done)</h3>
+          <span style="font-size:0.8rem;color:var(--gray-400);">47.9K Stars</span>
+        </div>
+      </div>
+      <p style="font-size:0.95rem;margin-bottom:24px;">定位：<strong>Spec-Driven 完整工作流</strong></p>
+      <ul style="font-size:0.9rem;">
+        <li>discuss → plan → execute → verify → ship</li>
+        <li>Wave 并行执行 + 文件外部化状态</li>
+        <li>元提示 + 上下文工程驱动</li>
+      </ul>
+      <div style="margin-top:auto;padding-top:24px;">
+        <span class="badge badge-blue">功能丰富</span>
+        <span class="badge badge-orange">30+ 命令</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 5: What Current Tools Have Solved -->
+<!-- ============================================================ -->
+<div class="slide" id="page-5-solved">
+  <div style="font-size:0.85rem;font-weight:600;color:var(--accent);letter-spacing:0.1em;margin-bottom:24px;">04 / 已有突破</div>
+  <h2>三套工具，四个共识</h2>
+  <p style="margin-bottom:40px;">虽然形态各异，但三套工具已经在关键维度上形成了行业共识，并各自给出了有效解法。</p>
+
+  <div class="grid-2" style="gap:32px;margin-bottom:32px;">
+    <!-- 规划纪律 -->
+    <div style="background:rgba(15,52,96,0.04);border:2px solid rgba(15,52,96,0.12);border-radius:20px;padding:36px 44px;">
+      <div style="display:flex;align-items:center;gap:20px;margin-bottom:20px;">
+        <div style="width:64px;height:64px;border-radius:50%;background:rgba(15,52,96,0.1);display:flex;align-items:center;justify-content:center;font-size:1rem;">📋</div>
+        <div style="font-size:1rem;font-weight:700;color:var(--blue);">规划纪律</div>
+      </div>
+      <div style="font-size:0.85rem;color:var(--gray-600);line-height:1.5;margin-bottom:20px;">强制"先想清楚再动手"——不再让 AI 直接写代码，而是先输出计划或规格文档。</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <span class="badge badge-orange">everything-claude-code · Research-first</span>
+        <span class="badge badge-blue">Superpowers · brainstorm → plan → execute</span>
+        <span class="badge badge-blue">GSD · discuss → plan → execute</span>
+      </div>
+    </div>
+
+    <!-- 上下文持久化 -->
+    <div style="background:rgba(15,52,96,0.04);border:2px solid rgba(15,52,96,0.12);border-radius:20px;padding:36px 44px;">
+      <div style="display:flex;align-items:center;gap:20px;margin-bottom:20px;">
+        <div style="width:64px;height:64px;border-radius:50%;background:rgba(15,52,96,0.1);display:flex;align-items:center;justify-content:center;font-size:1rem;">💾</div>
+        <div style="font-size:1rem;font-weight:700;color:var(--blue);">上下文持久化</div>
+      </div>
+      <div style="font-size:0.85rem;color:var(--gray-600);line-height:1.5;margin-bottom:20px;">把状态从对话内存中搬出来——写入文件系统，让每个新 Agent 都能读到完整上下文。</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <span class="badge badge-orange">everything-claude-code · Memory 持久化</span>
+        <span class="badge badge-blue">Superpowers · 文件外部化状态</span>
+        <span class="badge badge-blue">GSD · Wave 状态文件</span>
+      </div>
+    </div>
+
+    <!-- 质量门控 -->
+    <div style="background:rgba(15,52,96,0.04);border:2px solid rgba(15,52,96,0.12);border-radius:20px;padding:36px 44px;">
+      <div style="display:flex;align-items:center;gap:20px;margin-bottom:20px;">
+        <div style="width:64px;height:64px;border-radius:50%;background:rgba(15,52,96,0.1);display:flex;align-items:center;justify-content:center;font-size:1rem;">🛡️</div>
+        <div style="font-size:1rem;font-weight:700;color:var(--blue);">质量门控</div>
+      </div>
+      <div style="font-size:0.85rem;color:var(--gray-600);line-height:1.5;margin-bottom:20px;">不再信任 AI 的第一次输出——通过测试先行、自动审查、人工审批等多重检查保障质量。</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <span class="badge badge-orange">everything-claude-code · 安全 Hooks</span>
+        <span class="badge badge-blue">Superpowers · 强制 TDD + 双阶段审查</span>
+        <span class="badge badge-blue">GSD · 验收测试</span>
+      </div>
+    </div>
+
+    <!-- 并行执行 -->
+    <div style="background:rgba(15,52,96,0.04);border:2px solid rgba(15,52,96,0.12);border-radius:20px;padding:36px 44px;">
+      <div style="display:flex;align-items:center;gap:20px;margin-bottom:20px;">
+        <div style="width:64px;height:64px;border-radius:50%;background:rgba(15,52,96,0.1);display:flex;align-items:center;justify-content:center;font-size:1rem;">⚡</div>
+        <div style="font-size:1rem;font-weight:700;color:var(--blue);">并行执行</div>
+      </div>
+      <div style="font-size:0.85rem;color:var(--gray-600);line-height:1.5;margin-bottom:20px;">多个 Agent 同时工作——不再串行等待，用并行换取速度。</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <span class="badge badge-blue">Superpowers · Subagent 并行</span>
+        <span class="badge badge-blue">GSD · Wave 并行执行</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:var(--gray-50);border:2px solid var(--gray-200);border-radius:20px;padding:28px 44px;text-align:center;">
+    <div style="font-size:0.88rem;color:var(--gray-600);">
+      <strong>共识已经形成</strong>——规划、持久化、质量、并行是 AI 编码工程化的四大支柱。三套工具的差异在于<strong>实现方式</strong>，而非<strong>该不该做</strong>。
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 6: The Gap — Too Heavy or Not Enough -->
+<!-- ============================================================ -->
+<div class="slide" id="page-6">
+  <div style="font-size:0.85rem;font-weight:600;color:var(--accent);letter-spacing:0.1em;margin-bottom:24px;">05 / 困境</div>
+  <h2>零部件齐了，机器还没转起来</h2>
+  <p style="margin-bottom:48px;">三个工具各有所长，但拼不出一条从需求到交付的完整流水线。</p>
+
+  <div style="display:flex;gap:40px;margin-bottom:40px;">
+    <div style="flex:1;border-top:6px solid var(--orange);background:rgba(245,158,11,0.03);border-radius:0 0 20px 20px;padding:44px 40px;">
+      <div style="display:flex;align-items:center;gap:20px;margin-bottom:24px;">
+        <div style="width:72px;height:72px;border-radius:50%;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center;font-size:1.1rem;">🔧</div>
+        <div style="font-size:1rem;font-weight:700;color:var(--orange);">碎片化拼装</div>
+      </div>
+      <p style="font-size:0.88rem;color:var(--gray-500);line-height:1.6;">每个工具擅长一个环节，但规划、执行、质量保障之间需要用户手动串联——没有一条自动流转的完整流水线。</p>
+    </div>
+    <div style="flex:1;border-top:6px solid var(--blue);background:rgba(15,52,96,0.03);border-radius:0 0 20px 20px;padding:44px 40px;">
+      <div style="display:flex;align-items:center;gap:20px;margin-bottom:24px;">
+        <div style="width:72px;height:72px;border-radius:50%;background:rgba(15,52,96,0.1);display:flex;align-items:center;justify-content:center;font-size:1.1rem;">👤</div>
+        <div style="font-size:1rem;font-weight:700;color:var(--blue);">人是操作者，非决策者</div>
+      </div>
+      <p style="font-size:0.88rem;color:var(--gray-500);line-height:1.6;">用户仍需触发每一步、检查状态、处理异常——减少的是工作量，不是参与度。理想状态是人只做关键决策。</p>
+    </div>
+    <div style="flex:1;border-top:6px solid var(--accent);background:rgba(233,69,96,0.03);border-radius:0 0 20px 20px;padding:44px 40px;">
+      <div style="display:flex;align-items:center;gap:20px;margin-bottom:24px;">
+        <div style="width:72px;height:72px;border-radius:50%;background:rgba(233,69,96,0.1);display:flex;align-items:center;justify-content:center;font-size:1.1rem;">🛡️</div>
+        <div style="font-size:1rem;font-weight:700;color:var(--accent);">质量是附加，非内建</div>
+      </div>
+      <p style="font-size:0.88rem;color:var(--gray-500);line-height:1.6;">TDD 和代码审查作为后置环节存在，而非编织在执行流程中的自动循环——审查发现问题后缺乏自动回流修复的闭环。</p>
+    </div>
+  </div>
+
+  <div style="background:linear-gradient(135deg, var(--primary), var(--blue));color:white;border-radius:24px;padding:56px 64px;display:flex;gap:64px;align-items:center;">
+    <div style="flex:1;">
+      <div style="font-size:1.1rem;font-weight:700;margin-bottom:16px;">大项目撑不住</div>
+      <div style="font-size:0.88rem;color:rgba(255,255,255,0.7);line-height:1.6;">即使拼齐了所有环节，现有工具在面对大型项目时仍然力不从心：单会话上下文终会耗尽，跨里程碑的全局规划依赖人工维护，任务间依赖关系无法自动追溯。</div>
+    </div>
+    <div style="border-left:2px solid rgba(255,255,255,0.15);padding-left:64px;">
+      <div style="font-size:0.8rem;color:var(--accent-light);font-weight:600;margin-bottom:16px;">根本缺失</div>
+      <div style="font-size:1rem;color:white;line-height:1.6;">缺少一套从需求到交付的<br><strong>端到端自动化闭环</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 6: The Spec Drift Problem -->
+<!-- ============================================================ -->
+<div class="slide" id="page-7-spec-drift">
+  <div style="font-size:0.85rem;font-weight:600;color:var(--accent);letter-spacing:0.1em;margin-bottom:24px;">06 / 被忽视的致命问题</div>
+  <h2>计划赶不上变化</h2>
+  <p style="margin-bottom:40px;">Spec 阶段不可能预料所有情况——执行时需要根据真实情况修正，但修正无反馈到 Spec，导致文档与代码彻底脱节。</p>
+
+  <!-- Flow: the drift process -->
+  <div style="background:var(--gray-50);border:2px solid var(--gray-200);border-radius:20px;padding:36px 48px;margin-bottom:36px;">
+    <div style="font-size:0.85rem;font-weight:700;color:var(--gray-700);margin-bottom:24px;">规格漂移是如何发生的</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px;font-size:0.85rem;flex-wrap:wrap;">
+      <div style="background:var(--blue);color:white;padding:16px 28px;border-radius:12px;font-weight:600;">编写 Spec</div>
+      <div style="color:var(--gray-400);font-size:1.1rem;">→</div>
+      <div style="background:var(--blue);color:white;padding:16px 28px;border-radius:12px;font-weight:600;">开始执行</div>
+      <div style="color:var(--gray-400);font-size:1.1rem;">→</div>
+      <div style="background:var(--orange);color:white;padding:16px 28px;border-radius:12px;font-weight:600;">发现未预料问题</div>
+      <div style="color:var(--gray-400);font-size:1.1rem;">→</div>
+      <div style="background:var(--orange);color:white;padding:16px 28px;border-radius:12px;font-weight:600;">修正代码</div>
+      <div style="color:var(--gray-400);font-size:1.1rem;">→</div>
+      <div style="background:var(--red);color:white;padding:16px 28px;border-radius:12px;font-weight:600;">Spec 未更新</div>
+      <div style="color:var(--gray-400);font-size:1.1rem;">→</div>
+      <div style="background:var(--red);color:white;padding:16px 28px;border-radius:12px;font-weight:600;">后续开发基于过时文档</div>
+      <div style="color:var(--gray-400);font-size:1.1rem;">→</div>
+      <div style="background:var(--gray-700);color:white;padding:16px 28px;border-radius:12px;font-weight:600;">文档与代码冲突</div>
+    </div>
+    <div style="text-align:center;margin-top:20px;font-size:0.78rem;color:var(--red);font-weight:600;">
+      缺少反馈闭环：代码修正 → Spec 同步 这一步从未发生
+    </div>
+  </div>
+
+  <div style="display:flex;gap:32px;margin-bottom:32px;">
+    <div class="quote" style="flex:1;font-size:0.88rem;padding:24px 32px;margin:0;border-left-color:var(--red);">
+      Most spec-driven tools produce static documents that drift from implementation <strong>within hours</strong>.
+      <div class="author">— Augmentcode, 2026</div>
+    </div>
+    <div class="quote" style="flex:1;font-size:0.88rem;padding:24px 32px;margin:0;border-left-color:var(--blue);">
+      强行要求"文档与代码实时完美同步"会<strong>严重拖慢开发节奏</strong>。
+      <div class="author">— 阿里云开发者社区, 2026</div>
+    </div>
+  </div>
+
+  <div style="background:rgba(239,68,68,0.04);border:2px solid rgba(239,68,68,0.15);border-radius:20px;padding:32px 40px;">
+    <div style="font-size:0.85rem;font-weight:700;color:var(--red);margin-bottom:12px;">根本原因：Spec 是一次性的快照</div>
+    <div style="font-size:0.85rem;color:var(--gray-600);line-height:1.6;">它在某个时刻对需求的理解是准确的，但执行中的发现（API 限制、性能瓶颈、框架约束）无法自动回流。所有复杂项目中，Spec 都必然存在未预见的实现细节——这不是执行偏差，而是<strong>计划的天然局限</strong>。</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 7: Vibewire Design Philosophy -->
+<!-- ============================================================ -->
+<div class="slide section-header" id="page-8" style="padding-top:96px;justify-content:flex-start;">
+  <div class="section-num">07 / 设计理念</div>
+  <h2>Vibe + Wire</h2>
+  <p style="color:rgba(255,255,255,0.7);font-size:1.3rem;max-width:1400px;margin-bottom:80px;">保留 Vibe 的自然表达力，加上 Wire 的工程纪律。</p>
+
+  <div style="display:flex;gap:96px;align-items:flex-start;">
+    <div style="flex:1;">
+      <div style="font-size:2.8rem;font-weight:800;margin-bottom:16px;color:var(--accent-light);">Vibe</div>
+      <p style="color:rgba(255,255,255,0.6);font-size:1.05rem;line-height:1.7;">用户用自然语言描述意图，不需要关心实现细节。就像 Vibe Coding 一样简单——说你想做什么。</p>
+    </div>
+    <div style="font-size:2rem;color:rgba(255,255,255,0.2);align-self:center;padding-top:24px;">+</div>
+    <div style="flex:1;">
+      <div style="font-size:2.8rem;font-weight:800;margin-bottom:16px;color:white;">Wire</div>
+      <p style="color:rgba(255,255,255,0.6);font-size:1.05rem;line-height:1.7;">将意图编织成一条结构化的流水线——自动拆解、自动验证、自动交付。用户只审核，不操作。</p>
+    </div>
+    <div style="font-size:2rem;color:rgba(255,255,255,0.2);align-self:center;padding-top:24px;">=</div>
+    <div style="flex:1;">
+      <div style="font-size:2.8rem;font-weight:800;margin-bottom:16px;background:linear-gradient(90deg,var(--accent-light),white);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Vibewire</div>
+      <p style="color:rgba(255,255,255,0.6);font-size:1.05rem;line-height:1.7;">一句话需求，端到端交付。人负责决策，AI 负责执行和验证。</p>
+    </div>
+  </div>
+
+  <div style="margin-top:auto;padding-top:0;">
+    <div style="border-top:2px solid rgba(255,255,255,0.1);padding-top:56px;text-align:center;">
+      <div style="display:inline-flex;gap:112px;text-align:left;">
+        <div style="width:560px;">
+          <div style="font-size:1rem;color:var(--accent-light);font-weight:600;letter-spacing:0.08em;margin-bottom:16px;">核心理念</div>
+          <div style="color:rgba(255,255,255,0.65);font-size:1.1rem;">用户只做两件事：提需求、审结果</div>
+        </div>
+        <div style="width:2px;background:rgba(255,255,255,0.15);"></div>
+        <div style="width:560px;">
+          <div style="font-size:1rem;color:var(--accent-light);font-weight:600;letter-spacing:0.08em;margin-bottom:16px;">设计原则</div>
+          <div style="color:rgba(255,255,255,0.65);font-size:1.1rem;">可靠性优先于速度，可追溯优先于简洁</div>
+        </div>
+        <div style="width:2px;background:rgba(255,255,255,0.15);"></div>
+        <div style="width:560px;">
+          <div style="font-size:1rem;color:var(--accent-light);font-weight:600;letter-spacing:0.08em;margin-bottom:16px;">目标</div>
+          <div style="color:rgba(255,255,255,0.65);font-size:1.1rem;">让 AI 按工程规范系统化交付</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 7: Architecture Overview -->
+<!-- ============================================================ -->
+<div class="slide" id="page-9">
+  <div style="font-size:0.85rem;font-weight:600;color:var(--accent);letter-spacing:0.1em;margin-bottom:24px;">08 / 架构</div>
+  <h2>三阶段，端到端</h2>
+  <p style="margin-bottom:48px;">从一句话需求到可交付代码，三个阶段依次推进，每个阶段都有明确的输入、输出和验证门。</p>
+
+  <div class="pipeline" style="margin-bottom:56px;">
+    <div class="pipeline-step" style="background:rgba(15,52,96,0.08);border-radius:24px;padding:56px 32px;">
+      <div class="step-icon" style="font-size:2rem;">📋</div>
+      <div class="step-title" style="color:var(--blue);">/spec</div>
+      <div class="step-desc">需求分析 + 架构设计</div>
+      <div style="margin-top:10px;font-size:0.75rem;color:var(--gray-400);">requirements.md<br>architecture.md</div>
+    </div>
+    <div class="pipeline-arrow" style="color:var(--gray-500);font-size:1.5rem;">→</div>
+    <div class="pipeline-step" style="background:rgba(15,52,96,0.08);border-radius:24px;padding:56px 32px;">
+      <div class="step-icon" style="font-size:2rem;">🗺️</div>
+      <div class="step-title" style="color:var(--blue);">/global-design</div>
+      <div class="step-desc">里程碑拆分</div>
+      <div style="margin-top:10px;font-size:0.75rem;color:var(--gray-400);">design.md<br>里程碑规划</div>
+    </div>
+    <div class="pipeline-arrow" style="color:var(--gray-500);font-size:1.5rem;">→</div>
+    <div class="pipeline-step" style="background:rgba(233,69,96,0.06);border-radius:24px;padding:56px 32px;">
+      <div class="step-icon" style="font-size:2rem;">⚙️</div>
+      <div class="step-title" style="color:var(--accent);">/go</div>
+      <div class="step-desc">里程碑执行</div>
+      <div style="margin-top:10px;font-size:0.75rem;color:var(--gray-400);">Stager → Tester → Implementer<br>Stage 级 TDD 循环</div>
+    </div>
+    <div class="pipeline-arrow" style="color:var(--gray-500);font-size:1.5rem;">→</div>
+    <div class="pipeline-step" style="background:rgba(34,197,94,0.06);border-radius:24px;padding:56px 32px;">
+      <div class="step-icon" style="font-size:2rem;">✅</div>
+      <div class="step-title" style="color:var(--green);">交付</div>
+      <div class="step-desc">代码 + 测试 + 文档</div>
+      <div style="margin-top:10px;font-size:0.75rem;color:var(--gray-400);">可交付的<br>工程产物</div>
+    </div>
+  </div>
+
+  <div class="grid-3" style="gap:48px;">
+    <div class="card card-blue" style="padding:40px 48px;">
+      <div style="font-size:0.9rem;font-weight:700;color:var(--blue);margin-bottom:12px;">文档驱动</div>
+      <div style="font-size:0.88rem;color:var(--gray-500);line-height:1.6;">每个阶段都有结构化文档输出，状态持久化在文件系统中，不依赖上下文窗口</div>
+    </div>
+    <div class="card card-blue" style="padding:40px 48px;">
+      <div style="font-size:0.9rem;font-weight:700;color:var(--blue);margin-bottom:12px;">验证门机制</div>
+      <div style="font-size:0.88rem;color:var(--gray-500);line-height:1.6;">阶段之间设有人工审批点，确保方向正确后才进入下一步</div>
+    </div>
+    <div class="card card-accent" style="padding:40px 48px;">
+      <div style="font-size:0.9rem;font-weight:700;color:var(--accent);margin-bottom:12px;">Stage 级 TDD</div>
+      <div style="font-size:0.88rem;color:var(--gray-500);line-height:1.6;">每个 Stage 是一个完整的 RED → GREEN → REVIEW 循环，API 契约先行</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 8: /spec Phase Deep Dive -->
+<!-- ============================================================ -->
+<div class="slide" id="page-10">
+  <div style="font-size:0.85rem;font-weight:600;color:var(--accent);letter-spacing:0.1em;margin-bottom:24px;">09 / Spec 阶段</div>
+  <h2>/spec：从模糊想法到精确蓝图</h2>
+  <p style="margin-bottom:56px;">用户只需描述想要什么，AI 负责澄清需求、探索方案、设计架构。</p>
+
+  <div style="display:flex;gap:32px;margin-bottom:56px;align-items:stretch;">
+    <div style="flex:1;background:rgba(15,52,96,0.05);border-top:6px solid var(--blue);border-radius:16px;padding:40px 36px;text-align:center;">
+      <div style="font-size:0.75rem;font-weight:700;color:var(--gray-400);letter-spacing:0.08em;margin-bottom:20px;">STEP 1</div>
+      <div style="font-size:1.1rem;font-weight:700;color:var(--blue);margin-bottom:16px;">探索项目</div>
+      <div style="font-size:0.88rem;color:var(--gray-500);line-height:1.5;">自动读取技术栈、目录结构、已有代码模式</div>
+    </div>
+    <div style="display:flex;align-items:center;color:var(--gray-500);font-size:1.2rem;">→</div>
+    <div style="flex:1;background:rgba(15,52,96,0.05);border-top:6px solid var(--blue);border-radius:16px;padding:40px 36px;text-align:center;">
+      <div style="font-size:0.75rem;font-weight:700;color:var(--gray-400);letter-spacing:0.08em;margin-bottom:20px;">STEP 2</div>
+      <div style="font-size:1.1rem;font-weight:700;color:var(--blue);margin-bottom:16px;">澄清需求</div>
+      <div style="font-size:0.88rem;color:var(--gray-500);line-height:1.5;">逐个提问消除歧义，锁定范围和成功标准</div>
+    </div>
+    <div style="display:flex;align-items:center;color:var(--gray-500);font-size:1.2rem;">→</div>
+    <div style="flex:1;background:rgba(15,52,96,0.08);border-top:6px solid var(--blue);border-radius:16px;padding:40px 36px;text-align:center;">
+      <div style="font-size:0.75rem;font-weight:700;color:var(--gray-400);letter-spacing:0.08em;margin-bottom:20px;">STEP 3</div>
+      <div style="font-size:1.1rem;font-weight:700;color:var(--blue);margin-bottom:16px;">需求规格</div>
+      <div style="font-size:0.88rem;color:var(--gray-500);line-height:1.5;">输出用户故事、验收标准、约束条件</div>
+    </div>
+    <div style="display:flex;align-items:center;color:var(--gray-500);font-size:1.2rem;">→</div>
+    <div style="flex:1;background:rgba(233,69,96,0.04);border-top:6px solid var(--accent);border-radius:16px;padding:40px 36px;text-align:center;">
+      <div style="font-size:0.75rem;font-weight:700;color:var(--gray-400);letter-spacing:0.08em;margin-bottom:20px;">STEP 4</div>
+      <div style="font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:16px;">架构设计</div>
+      <div style="font-size:0.88rem;color:var(--gray-500);line-height:1.5;">提出 2-3 个方案，对比利弊，用户决策</div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:48px;">
+    <div class="highlight-box" style="margin:0;">
+      <h3>设计原则</h3>
+      <ul style="font-size:0.88rem;list-style:none;padding:0;">
+        <li style="padding:8px 0 8px 40px;position:relative;color:rgba(255,255,255,0.8);"><span style="position:absolute;left:0;top:20px;width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.4);"></span>问题逐个问，不一股脑列清单</li>
+        <li style="padding:8px 0 8px 40px;position:relative;color:rgba(255,255,255,0.8);"><span style="position:absolute;left:0;top:20px;width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.4);"></span>先理解项目再提方案，避免空中楼阁</li>
+        <li style="padding:8px 0 8px 40px;position:relative;color:rgba(255,255,255,0.8);"><span style="position:absolute;left:0;top:20px;width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.4);"></span>每个方案附明确利弊，由用户决策</li>
+        <li style="padding:8px 0 8px 40px;position:relative;color:rgba(255,255,255,0.8);"><span style="position:absolute;left:0;top:20px;width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.4);"></span>文档持久化，不受上下文窗口限制</li>
+      </ul>
+    </div>
+    <div style="display:flex;flex-direction:column;justify-content:center;">
+      <div style="font-size:0.9rem;color:var(--gray-400);margin-bottom:24px;font-weight:600;">输出产物</div>
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div style="background:var(--gray-50);border:2px solid var(--gray-200);border-radius:20px;padding:28px 36px;display:flex;align-items:center;gap:24px;">
+          <div style="font-size:1.2rem;">📄</div>
+          <div><div style="font-size:0.92rem;font-weight:700;color:var(--blue);">requirements.md</div><div style="font-size:0.78rem;color:var(--gray-400);">需求规格文档</div></div>
+        </div>
+        <div style="background:var(--gray-50);border:2px solid var(--gray-200);border-radius:20px;padding:28px 36px;display:flex;align-items:center;gap:24px;">
+          <div style="font-size:1.2rem;">📐</div>
+          <div><div style="font-size:0.92rem;font-weight:700;color:var(--blue);">architecture.md</div><div style="font-size:0.78rem;color:var(--gray-400);">架构设计文档</div></div>
+        </div>
+        <div style="background:var(--gray-50);border:2px solid var(--gray-200);border-radius:20px;padding:28px 36px;display:flex;align-items:center;gap:24px;">
+          <div style="font-size:1.2rem;">📝</div>
+          <div><div style="font-size:0.92rem;font-weight:700;color:var(--blue);">spec-session.md</div><div style="font-size:0.78rem;color:var(--gray-400);">规格对话总结</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 9: /global-design Phase -->
+<!-- ============================================================ -->
+<div class="slide" id="page-11">
+  <div style="font-size:0.85rem;font-weight:600;color:var(--accent);letter-spacing:0.1em;margin-bottom:24px;">10 / 规划</div>
+  <h2>/global-design：从蓝图到可交付路径</h2>
+  <p style="margin-bottom:56px;">将架构拆解为多个独立可交付的里程碑，每个里程碑内再拆解为渐进式阶段。</p>
+
+  <div style="display:flex;gap:40px;margin-bottom:48px;align-items:center;">
+    <div style="background:var(--gray-50);border:2px solid var(--gray-200);border-radius:20px;padding:32px 40px;text-align:center;min-width:320px;">
+      <div style="font-size:0.8rem;color:var(--gray-400);margin-bottom:12px;">输入</div>
+      <div style="font-size:0.9rem;font-weight:600;color:var(--blue);">requirements.md</div>
+      <div style="font-size:0.9rem;font-weight:600;color:var(--blue);">architecture.md</div>
+    </div>
+    <div style="color:var(--gray-500);font-size:1.4rem;">→</div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:20px;">
+      <div style="display:flex;gap:24px;align-items:center;">
+        <div style="background:rgba(15,52,96,0.06);border-left:6px solid var(--blue);border-radius:0 16px 16px 0;padding:28px 36px;flex:1;">
+          <div style="font-size:0.95rem;font-weight:700;color:var(--blue);margin-bottom:8px;">里程碑 M1</div>
+          <div style="font-size:0.82rem;color:var(--gray-500);">Stage 1 → Stage 2 → Stage 3 — 独立可验证的最小交付单元</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:24px;align-items:center;">
+        <div style="background:rgba(15,52,96,0.06);border-left:6px solid var(--blue);border-radius:0 16px 16px 0;padding:28px 36px;flex:1;">
+          <div style="font-size:0.95rem;font-weight:700;color:var(--blue);margin-bottom:8px;">里程碑 M2</div>
+          <div style="font-size:0.82rem;color:var(--gray-500);">Stage 1 → Stage 2 — 在 M1 基础上增量扩展</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:24px;align-items:center;">
+        <div style="background:rgba(233,69,96,0.04);border-left:6px solid var(--accent);border-radius:0 16px 16px 0;padding:28px 36px;flex:1;">
+          <div style="font-size:0.95rem;font-weight:700;color:var(--accent);margin-bottom:8px;">里程碑 MN ...</div>
+          <div style="font-size:0.82rem;color:var(--gray-500);">每个里程碑都是可独立演示的完整功能切片</div>
+        </div>
+      </div>
+    </div>
+    <div style="color:var(--gray-500);font-size:1.4rem;">→</div>
+    <div style="background:var(--gray-50);border:2px solid var(--gray-200);border-radius:20px;padding:32px 40px;text-align:center;min-width:320px;">
+      <div style="font-size:0.8rem;color:var(--gray-400);margin-bottom:12px;">输出</div>
+      <div style="font-size:0.9rem;font-weight:600;color:var(--blue);">design.md</div>
+      <div style="font-size:0.8rem;color:var(--gray-400);">里程碑规划文档</div>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card" style="padding:32px 40px;">
+      <div style="font-size:0.85rem;font-weight:700;color:var(--blue);margin-bottom:12px;">增量交付</div>
+      <div style="font-size:0.85rem;color:var(--gray-500);">每个里程碑是可独立运行的交付物，而非抽象的模块划分</div>
+    </div>
+    <div class="card" style="padding:32px 40px;">
+      <div style="font-size:0.85rem;font-weight:700;color:var(--blue);margin-bottom:12px;">依赖感知</div>
+      <div style="font-size:0.85rem;color:var(--gray-500);">里程碑按依赖关系排序，后续里程碑复用前序产物</div>
+    </div>
+    <div class="card" style="padding:32px 40px;">
+      <div style="font-size:0.85rem;font-weight:700;color:var(--blue);margin-bottom:12px;">人工审批</div>
+      <div style="font-size:0.85rem;color:var(--gray-500);">里程碑拆分完成后需用户确认，确保路径符合预期</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 10: /go Phase — Execution Engine -->
+<!-- ============================================================ -->
+<div class="slide" id="page-12">
+  <div style="font-size:0.85rem;font-weight:600;color:var(--accent);letter-spacing:0.1em;margin-bottom:24px;">11 / 执行</div>
+  <h2>/go：全自动执行引擎</h2>
+  <p style="margin-bottom:48px;">三个专职 Agent 自动调度，每一步同时产出代码和过程记录。</p>
+
+  <div style="display:flex;align-items:stretch;margin-bottom:48px;">
+    <div style="flex:1;background:rgba(15,52,96,0.05);border-radius:20px;padding:40px 36px;border-left:8px solid var(--blue);">
+      <div style="font-size:1.6rem;margin-bottom:8px;">🧩</div>
+      <div style="font-size:1rem;font-weight:700;color:var(--blue);">Stager <span style="font-size:0.75rem;font-weight:400;color:var(--gray-400);">· Opus</span></div>
+      <div style="font-size:0.82rem;color:var(--gray-500);line-height:1.5;margin:16px 0;">读取需求 + <strong style="color:var(--gray-600);">前序执行日志</strong>，拆解为 Stage，定义 API 契约</div>
+      <div style="font-size:0.75rem;color:var(--gray-400);border-top:2px solid var(--gray-200);padding-top:12px;">📝 设计决策 · API 契约 · 测试规格</div>
+    </div>
+    <div style="display:flex;align-items:center;color:var(--gray-400);font-size:1.2rem;padding:0 16px;">→</div>
+    <div style="flex:1;background:rgba(245,158,11,0.04);border-radius:20px;padding:40px 36px;border-left:8px solid var(--orange);">
+      <div style="font-size:1.6rem;margin-bottom:8px;">🧪</div>
+      <div style="font-size:1rem;font-weight:700;color:var(--orange);">Tester <span style="font-size:0.75rem;font-weight:400;color:var(--gray-400);">· Sonnet</span></div>
+      <div style="font-size:0.82rem;color:var(--gray-500);line-height:1.5;margin:16px 0;">按 API 契约编写测试代码，确认 RED 状态</div>
+      <div style="font-size:0.75rem;color:var(--gray-400);border-top:2px solid var(--gray-200);padding-top:12px;">📝 tester-log · RED 状态确认</div>
+    </div>
+    <div style="display:flex;align-items:center;color:var(--gray-400);font-size:1.2rem;padding:0 16px;">→</div>
+    <div style="flex:1;background:rgba(34,197,94,0.04);border-radius:20px;padding:40px 36px;border-left:8px solid var(--green);">
+      <div style="font-size:1.6rem;margin-bottom:8px;">🔧</div>
+      <div style="font-size:1rem;font-weight:700;color:var(--green);">Implementer <span style="font-size:0.75rem;font-weight:400;color:var(--gray-400);">· Sonnet</span></div>
+      <div style="font-size:0.82rem;color:var(--gray-500);line-height:1.5;margin:16px 0;">逐 Task 实现，确认 GREEN，记录偏差和决策</div>
+      <div style="font-size:0.75rem;color:var(--gray-400);border-top:2px solid var(--gray-200);padding-top:12px;">📝 implementer-log · Git 提交</div>
+    </div>
+    <div style="display:flex;align-items:center;color:var(--gray-400);font-size:1.2rem;padding:0 16px;">→</div>
+    <div style="flex:1;background:rgba(233,69,96,0.04);border-radius:20px;padding:40px 36px;border-left:8px solid var(--accent);">
+      <div style="font-size:1.6rem;margin-bottom:8px;">🛡️</div>
+      <div style="font-size:1rem;font-weight:700;color:var(--accent);">Review</div>
+      <div style="font-size:0.82rem;color:var(--gray-500);line-height:1.5;margin:16px 0;">三维度自动审查，发现问题自动修复</div>
+      <div style="font-size:0.75rem;color:var(--gray-400);border-top:2px solid var(--gray-200);padding-top:12px;">📝 refactor-log · 审查修复记录</div>
+    </div>
+  </div>
+
+  <div style="background:linear-gradient(135deg, var(--primary), var(--blue));border-radius:20px;padding:40px 56px;color:white;display:flex;align-items:center;gap:64px;">
+    <div style="flex:1;">
+      <div style="font-size:0.85rem;font-weight:700;color:var(--accent-light);margin-bottom:12px;">核心机制</div>
+      <div style="font-size:0.88rem;color:rgba(255,255,255,0.8);line-height:1.6;">像 Git 一样<strong>记录变化</strong>，而非追求文档与代码的实时同步——每个 Stage 的设计决策、测试结果、实现偏差、审查修复都被完整记录</div>
+    </div>
+    <div style="border-left:2px solid rgba(255,255,255,0.15);padding-left:64px;">
+      <div style="font-size:0.82rem;color:rgba(255,255,255,0.5);margin-bottom:8px;">Stager 读取前序执行日志</div>
+      <div style="font-size:0.82rem;color:rgba(255,255,255,0.5);">→ 计划基于真实反馈持续演进</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 11: Quality Assurance — Three-Dimensional Review -->
+<!-- ============================================================ -->
+<div class="slide" id="page-13">
+  <div style="font-size:0.85rem;font-weight:600;color:var(--accent);letter-spacing:0.1em;margin-bottom:24px;">12 / 质量保障</div>
+  <h2>GREEN 不是终点</h2>
+  <p style="margin-bottom:40px;">测试通过后，三维度自动审查 + 修复闭环，确保代码质量经得起真实工程考验。</p>
+
+  <div style="display:flex;gap:32px;margin-bottom:32px;">
+    <div style="flex:1;border:2px solid var(--gray-200);border-radius:20px;padding:32px;">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px;">
+        <div style="width:60px;height:60px;border-radius:50%;background:rgba(15,52,96,0.08);display:flex;align-items:center;justify-content:center;font-size:0.9rem;">♻️</div>
+        <div style="font-size:0.92rem;font-weight:700;color:var(--blue);">复用审查</div>
+      </div>
+      <div style="font-size:0.82rem;color:var(--gray-500);line-height:1.5;">搜索已有工具函数和共享模块，标记重复实现，替换为复用调用</div>
+    </div>
+    <div style="flex:1;border:2px solid var(--gray-200);border-radius:20px;padding:32px;">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px;">
+        <div style="width:60px;height:60px;border-radius:50%;background:rgba(15,52,96,0.08);display:flex;align-items:center;justify-content:center;font-size:0.9rem;">🔍</div>
+        <div style="font-size:0.92rem;font-weight:700;color:var(--blue);">质量审查</div>
+      </div>
+      <div style="font-size:0.82rem;color:var(--gray-500);line-height:1.5;">冗余状态、参数膨胀、复制粘贴变体、抽象泄漏、不必要的嵌套</div>
+    </div>
+    <div style="flex:1;border:2px solid var(--gray-200);border-radius:20px;padding:32px;">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px;">
+        <div style="width:60px;height:60px;border-radius:50%;background:rgba(15,52,96,0.08);display:flex;align-items:center;justify-content:center;font-size:0.9rem;">⚡</div>
+        <div style="font-size:0.92rem;font-weight:700;color:var(--blue);">效率审查</div>
+      </div>
+      <div style="font-size:0.82rem;color:var(--gray-500);line-height:1.5;">冗余计算、遗漏并发、热路径膨胀、TOCTOU 竞态、内存泄漏</div>
+    </div>
+  </div>
+
+  <div style="background:var(--gray-50);border:2px solid var(--gray-200);border-radius:20px;padding:28px 44px;margin-bottom:32px;">
+    <div style="font-size:0.85rem;font-weight:700;color:var(--gray-700);margin-bottom:20px;">自动修复闭环</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px;font-size:0.82rem;">
+      <div style="background:var(--green);color:white;padding:14px 28px;border-radius:12px;font-weight:600;">GREEN 通过</div>
+      <div style="color:var(--gray-500);">→</div>
+      <div style="background:var(--blue);color:white;padding:14px 28px;border-radius:12px;font-weight:600;">三维度审查</div>
+      <div style="color:var(--gray-500);">→</div>
+      <div style="background:var(--accent);color:white;padding:14px 28px;border-radius:12px;font-weight:600;">发现问题</div>
+      <div style="color:var(--gray-500);">→</div>
+      <div style="background:var(--blue);color:white;padding:14px 28px;border-radius:12px;font-weight:600;">自动修复</div>
+      <div style="color:var(--gray-500);">→</div>
+      <div style="background:var(--green);color:white;padding:14px 28px;border-radius:12px;font-weight:600;">验证通过</div>
+    </div>
+  </div>
+
+  <div style="border:2px solid var(--gray-200);border-radius:20px;padding:28px 44px;">
+    <div style="font-size:0.85rem;font-weight:700;color:var(--gray-700);margin-bottom:20px;">完整记录链</div>
+    <div style="display:flex;gap:24px;font-size:0.82rem;">
+      <div style="flex:1;background:var(--gray-50);border-radius:12px;padding:20px 28px;text-align:center;">
+        <div style="font-weight:600;color:var(--orange);margin-bottom:4px;">tester-log</div>
+        <div style="font-size:0.75rem;color:var(--gray-400);">测试结果与 RED 状态</div>
+      </div>
+      <div style="flex:1;background:var(--gray-50);border-radius:12px;padding:20px 28px;text-align:center;">
+        <div style="font-weight:600;color:var(--green);margin-bottom:4px;">implementer-log</div>
+        <div style="font-size:0.75rem;color:var(--gray-400);">实现过程与偏差记录</div>
+      </div>
+      <div style="flex:1;background:var(--gray-50);border-radius:12px;padding:20px 28px;text-align:center;">
+        <div style="font-weight:600;color:var(--accent);margin-bottom:4px;">refactor-log</div>
+        <div style="font-size:0.75rem;color:var(--gray-400);">审查发现与修复记录</div>
+      </div>
+      <div style="flex:1;background:var(--gray-50);border-radius:12px;padding:20px 28px;text-align:center;">
+        <div style="font-weight:600;color:var(--blue);margin-bottom:4px;">Git History</div>
+        <div style="font-size:0.75rem;color:var(--gray-400);">每 Stage 原子提交</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 12: Competitive Comparison -->
+<!-- ============================================================ -->
+<div class="slide" id="page-14">
+  <div style="font-size:0.85rem;font-weight:600;color:var(--accent);letter-spacing:0.1em;margin-bottom:24px;">13 / 差异化</div>
+  <h2>同样的痛点，不同的解法</h2>
+  <p style="margin-bottom:40px;">现有工具提供了好的零部件，Vibewire 提供一台完整运转的机器。</p>
+
+  <table class="comp-table" style="font-size:0.88rem;">
+    <thead>
+      <tr>
+        <th style="width:15%;">痛点</th>
+        <th style="width:25%;">现有工具的做法</th>
+        <th style="width:60%;">Vibewire 的解法</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong style="color:var(--red);">Spec Drift</strong><br><span style="font-size:0.75rem;color:var(--gray-400);">文档与代码脱节</span></td>
+        <td style="font-size:0.85rem;">产出静态 Spec 文档，执行后不再同步；靠人工维护一致性</td>
+        <td style="background:rgba(15,52,96,0.06);font-weight:600;color:var(--blue);font-size:0.85rem;">像 Git 一样<strong>记录变化</strong>而非维持同步——每个 Stage 的设计决策、测试结果、实现偏差、审查修复都有完整日志，Stager 读取前序日志持续演进</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--orange);">碎片化</strong><br><span style="font-size:0.75rem;color:var(--gray-400);">环节需手动串联</span></td>
+        <td style="font-size:0.85rem;">规划、执行、质量各是独立 Skill / Wave，用户负责衔接</td>
+        <td style="background:rgba(15,52,96,0.06);font-weight:600;color:var(--blue);font-size:0.85rem;">一条管线自动流转：<strong>/spec → /global-design → /go</strong>，专职 Agent 自动调度，无需人工衔接</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--blue);">人是操作者</strong><br><span style="font-size:0.75rem;color:var(--gray-400);">用户仍需管理流程</span></td>
+        <td style="font-size:0.85rem;">减少工作量但不减参与度——仍需触发每步、检查状态</td>
+        <td style="background:rgba(15,52,96,0.06);font-weight:600;color:var(--blue);font-size:0.85rem;">用户只在<strong>关键节点审批</strong>（里程碑拆分、架构方案），Agent 自动完成需求澄清、设计、测试、实现、审查、修复</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--accent);">质量附加</strong><br><span style="font-size:0.75rem;color:var(--gray-400);">审查是后置环节</span></td>
+        <td style="font-size:0.85rem;">TDD / 代码审查作为可选步骤，发现问题后缺乏修复闭环</td>
+        <td style="background:rgba(15,52,96,0.06);font-weight:600;color:var(--blue);font-size:0.85rem;">质量<strong>内建于流水线</strong>：Stage TDD + 三维度自动审查 + 自动修复闭环，审查发现问题后自动修复并验证</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--gray-700);">大项目失控</strong><br><span style="font-size:0.75rem;color:var(--gray-400);">上下文耗尽</span></td>
+        <td style="font-size:0.85rem;">依赖对话上下文，文件外部化缓解但不解决根本问题</td>
+        <td style="background:rgba(15,52,96,0.06);font-weight:600;color:var(--blue);font-size:0.85rem;"><strong>文件驱动 + 里程碑独立上下文</strong>：每个 Stage 由独立 Agent 在独立上下文执行，状态持久化在文件系统，跨里程碑可追溯</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--blue);">理解债务</strong><br><span style="font-size:0.75rem;color:var(--gray-400);">发布不理解的代码</span></td>
+        <td style="font-size:0.85rem;">依赖用户自行审查理解，工具不强制代码可解释性</td>
+        <td style="background:rgba(15,52,96,0.06);font-weight:600;color:var(--blue);font-size:0.85rem;"><strong>API 契约先行 + 结构化文档</strong>：每个 Stage 都有精确的函数签名、类型定义和测试规格，文档即代码的真实蓝图</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 14: Summary — The Complete Picture -->
+<!-- ============================================================ -->
+<div class="slide section-header" id="page-16" style="padding-top:96px;justify-content:flex-start;">
+  <div class="section-num">15 / 总结</div>
+  <h2>用户只做决策，其余全自动</h2>
+  <p style="color:rgba(255,255,255,0.7);font-size:1.2rem;max-width:1600px;margin-bottom:64px;">从需求理解到代码交付，一条管线自动流转。用户的三个审批点是唯一的暂停。</p>
+
+  <div style="max-width:2160px;margin:0 auto 48px;background:rgba(255,255,255,0.04);border:2px solid rgba(255,255,255,0.08);border-radius:28px;padding:48px 72px;">
+    <div style="display:flex;align-items:center;gap:32px;margin-bottom:36px;justify-content:center;">
+      <div style="display:flex;align-items:center;gap:12px;"><div style="width:20px;height:20px;border-radius:6px;background:var(--accent);"></div><span style="font-size:0.75rem;color:rgba(255,255,255,0.45);">用户决策</span></div>
+      <div style="display:flex;align-items:center;gap:12px;"><div style="width:20px;height:20px;border-radius:6px;background:rgba(255,255,255,0.18);"></div><span style="font-size:0.75rem;color:rgba(255,255,255,0.45);">AI 自动</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;font-size:0.88rem;justify-content:center;white-space:nowrap;">
+      <div style="background:var(--accent);color:white;padding:18px 32px;border-radius:12px;font-weight:700;">描述需求</div>
+      <div style="color:rgba(255,255,255,0.2);font-size:0.9rem;">→</div>
+      <div style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);padding:18px 32px;border-radius:12px;font-weight:600;">澄清</div>
+      <div style="color:rgba(255,255,255,0.2);font-size:0.9rem;">→</div>
+      <div style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);padding:18px 32px;border-radius:12px;font-weight:600;">架构</div>
+      <div style="color:rgba(255,255,255,0.2);font-size:0.9rem;">→</div>
+      <div style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);padding:18px 32px;border-radius:12px;font-weight:600;">里程碑</div>
+      <div style="color:rgba(255,255,255,0.2);font-size:0.9rem;">→</div>
+      <div style="background:var(--accent);color:white;padding:18px 32px;border-radius:12px;font-weight:700;">审阅方案</div>
+      <div style="color:rgba(255,255,255,0.2);font-size:0.9rem;">→</div>
+      <div style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);padding:18px 32px;border-radius:12px;font-weight:600;">Stage</div>
+      <div style="color:rgba(255,255,255,0.2);font-size:0.9rem;">→</div>
+      <div style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);padding:18px 32px;border-radius:12px;font-weight:600;">TDD</div>
+      <div style="color:rgba(255,255,255,0.2);font-size:0.9rem;">→</div>
+      <div style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);padding:18px 32px;border-radius:12px;font-weight:600;">审查</div>
+      <div style="color:rgba(255,255,255,0.2);font-size:0.9rem;">→</div>
+      <div style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);padding:18px 32px;border-radius:12px;font-weight:600;">修复</div>
+      <div style="color:rgba(255,255,255,0.2);font-size:0.9rem;">→</div>
+      <div style="background:var(--accent);color:white;padding:18px 32px;border-radius:12px;font-weight:700;">验收</div>
+      <div style="color:rgba(255,255,255,0.2);font-size:0.9rem;">→</div>
+      <div style="background:rgba(34,197,94,0.25);color:var(--green);padding:18px 32px;border-radius:12px;font-weight:700;">交付</div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:40px;margin-bottom:auto;justify-content:center;max-width:1920px;margin-left:auto;margin-right:auto;">
+    <div style="flex:1;background:linear-gradient(135deg,rgba(34,197,94,0.08),rgba(34,197,94,0.02));border:2px solid rgba(34,197,94,0.15);border-radius:24px;padding:36px 44px;text-align:center;">
+      <div style="font-size:1.2rem;margin-bottom:12px;">🛡️</div>
+      <div style="font-size:0.82rem;font-weight:700;color:var(--green);margin-bottom:8px;">质量内建</div>
+      <div style="color:rgba(255,255,255,0.6);font-size:0.82rem;">TDD + 三维度审查 + 自动修复</div>
+    </div>
+    <div style="flex:1;background:linear-gradient(135deg,rgba(15,52,96,0.15),rgba(15,52,96,0.05));border:2px solid rgba(100,150,220,0.15);border-radius:24px;padding:36px 44px;text-align:center;">
+      <div style="font-size:1.2rem;margin-bottom:12px;">🔄</div>
+      <div style="font-size:0.82rem;font-weight:700;color:rgba(150,190,255,0.9);margin-bottom:8px;">自动化闭环</div>
+      <div style="color:rgba(255,255,255,0.6);font-size:0.82rem;">审查发现问题 → 自动修复 → 验证通过</div>
+    </div>
+    <div style="flex:1;background:linear-gradient(135deg,rgba(233,69,96,0.08),rgba(233,69,96,0.02));border:2px solid rgba(233,69,96,0.15);border-radius:24px;padding:36px 44px;text-align:center;">
+      <div style="font-size:1.2rem;margin-bottom:12px;">📋</div>
+      <div style="font-size:0.82rem;font-weight:700;color:var(--accent-light);margin-bottom:8px;">过程可追溯</div>
+      <div style="color:rgba(255,255,255,0.6);font-size:0.82rem;">全链路日志 · Git 原子提交</div>
+    </div>
+    <div style="flex:1;background:linear-gradient(135deg,rgba(245,158,11,0.08),rgba(245,158,11,0.02));border:2px solid rgba(245,158,11,0.15);border-radius:24px;padding:36px 44px;text-align:center;">
+      <div style="font-size:1.2rem;margin-bottom:12px;">🏗️</div>
+      <div style="font-size:0.82rem;font-weight:700;color:var(--orange);margin-bottom:8px;">规模化可控</div>
+      <div style="color:rgba(255,255,255,0.6);font-size:0.82rem;">文件驱动 · 独立上下文 · 增量交付</div>
+    </div>
+  </div>
+
+  <div style="margin-top:auto;border-top:2px solid rgba(255,255,255,0.1);padding-top:48px;text-align:center;">
+    <div style="color:rgba(255,255,255,0.5);font-size:0.95rem;">保留 Vibe 的简洁，加上 Wire 的可靠性 —— 这就是 Vibewire</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 15: Closing -->
+<!-- ============================================================ -->
+<div class="slide cover" id="page-17">
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;">
+    <div class="tag">Thank You</div>
+    <h1 style="font-size:3.2rem;margin-bottom:32px;">Vibewire</h1>
+    <p class="subtitle" style="margin-bottom:96px;">Vibe + Wire<br>让 AI 自主完成从需求到交付的完整工程</p>
+
+    <div style="display:flex;gap:80px;">
+      <div>
+        <div style="font-size:0.8rem;color:var(--gray-400);margin-bottom:8px;">项目地址</div>
+        <div style="font-size:1rem;color:var(--blue);font-weight:600;">github.com/vibewire</div>
+      </div>
+      <div>
+        <div style="font-size:0.8rem;color:var(--gray-400);margin-bottom:8px;">技术栈</div>
+        <div style="font-size:1rem;color:var(--gray-600);">Claude Code Plugin · Multi-Agent</div>
+      </div>
+      <div>
+        <div style="font-size:0.8rem;color:var(--gray-400);margin-bottom:8px;">日期</div>
+        <div style="font-size:1rem;color:var(--gray-600);">2026.04</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
