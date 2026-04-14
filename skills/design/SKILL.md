@@ -1,9 +1,9 @@
 ---
-name: global-design
-description: Use ONLY when the user explicitly invokes /vibewire:global-design. Do not auto-trigger based on the existence of architecture documents or planning artifacts.
+name: design
+description: Use ONLY when the user explicitly invokes /vibewire:design. Do not auto-trigger based on the existence of architecture documents or planning artifacts.
 ---
 
-# Global Design: From Architecture to Milestones
+# Design: From Architecture to Milestones
 
 ## Overview
 
@@ -11,7 +11,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:global-design. 
 
 ## Parameters
 
-调用方式：`/vibewire:global-design {seq}`
+调用方式：`/vibewire:design {seq}`
 
 - `{seq}`：spec 目录的编号（如 `001`、`002`）
 - 根据 `{seq}` 在 `.vibewire/` 下匹配 `{seq}-*` 目录

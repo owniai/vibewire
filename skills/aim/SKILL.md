@@ -30,7 +30,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 7. **Present Architecture Design** — 仅需求级增量：模块划分、数据流；项目级决策同步更新 project.md
 8. **Write and Self-Check Architecture** — 写入 architecture.md，更新 project.md 和 CHANGELOG.md，自检
 9. **User Review Architecture** — 请用户审阅架构文档文件
-10. **Transition to Execution** — 总结对话，提示用户使用 /vibewire:global-design
+10. **Transition to Execution** — 总结对话，提示用户使用 /vibewire:design
 
 ## Process
 
@@ -44,7 +44,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 - 如果任务描述了多个独立子系统（如"构建一个包含聊天、文件存储、计费和分析的平台"），立即标记
 - 不要花大量问题去细化一个需要拆分的项目的细节
 - 如果项目对单个规划来说太大，帮助用户拆分为子项目：哪些是独立的部分，它们如何关联，应该以什么顺序构建？然后对第一个子项目走正常的规划流程
-- 每个子项目拥有自己的 aim→global-design→go 周期
+- 每个子项目拥有自己的 aim→design→go 周期
 
 ### 3. Requirements Clarification
 
@@ -159,8 +159,8 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 规划已完成！需求文档和架构设计已保存到 .vibewire/{seq-name}/ 目录。
 
 下一步：
-- 当前会话：直接运行 /vibewire:global-design 进行全局设计
-- 新会话：在新会话中运行 /vibewire:global-design，系统会读取最新的规划文档
+- 当前会话：直接运行 /vibewire:design 进行全局设计
+- 新会话：在新会话中运行 /vibewire:design，系统会读取最新的规划文档
 ```
 
 ## Key Principles
