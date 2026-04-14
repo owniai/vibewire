@@ -7,7 +7,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 
 ## Overview
 
-通过协作对话将用户任务转化为 requirements.md + architecture.md。
+通过协作对话澄清需求，探索多种方案并权衡取舍，将用户任务转化为结构化的需求与架构设计。
 
 <HARD-GATE>
 在用户审阅并批准架构设计文档之前，不要调用任何实现技能、编写任何代码或采取任何实现行动。这适用于每个项目，无论感知的简单程度如何。

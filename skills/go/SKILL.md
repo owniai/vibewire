@@ -7,7 +7,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:go. Do not auto
 
 ## Overview
 
-读取需求文档、架构设计和里程碑规划，通过调度三个专业 Agent（stager、tester、implementer），按里程碑和阶段迭代完成代码实现和测试验证。
+按里程碑迭代调度专业 Agent，以 TDD 严格纪律驱动从阶段设计到代码实现的端到端交付。
 
 ## Process
 

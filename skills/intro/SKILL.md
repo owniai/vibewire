@@ -5,7 +5,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:intro. Do not a
 
 # Intro: Scan and Establish Documentation Baseline
 
-扫描项目代码库，创建 `.vibewire/project.md` 和 `.vibewire/CHANGELOG.md`，建立文档基线。
+扫描项目现状，建立文档基线，为后续工作流提供可引用的项目上下文。
 
 ## Process
 

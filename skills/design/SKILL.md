@@ -7,7 +7,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:design. Do not 
 
 ## Overview
 
-接收编号参数，读取对应 spec 目录的需求文档和架构设计，将工作拆分为可独立交付的里程碑规划。
+结合项目代码现状，将架构设计拆分为最小可行优先、可独立交付的里程碑序列。
 
 ## Parameters
 
