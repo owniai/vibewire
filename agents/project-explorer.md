@@ -1,6 +1,6 @@
 ---
 name: project-explorer
-description: "项目探索与文档初始化专家 — 由 spec skill 调用，探索项目代码库，首次使用时创建 project.md 和 CHANGELOG.md，返回结构化项目摘要供后续规划使用。"
+description: "For vibewire:go flow scheduling. Explores the project codebase, initializes project.md and CHANGELOG.md on first use, and returns a structured project summary for downstream planning."
 tools: ["Read", "Write", "Bash", "Grep", "Glob"]
 model: sonnet
 ---

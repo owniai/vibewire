@@ -1,6 +1,6 @@
 ---
 name: shadow-keeper
-description: "影子 API 维护员 — 扫描本里程碑涉及的源文件，提取接口信息，维护与源文件结构同构的影子 API 文件。"
+description: "For vibewire:go flow scheduling. Scans source files touched by the current milestone, extracts interface signatures, and maintains shadow API files mirroring the source structure."
 tools: ["Read", "Write", "Bash", "Grep", "Glob"]
 model: sonnet
 ---

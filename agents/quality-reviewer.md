@@ -1,6 +1,6 @@
 ---
 name: quality-reviewer
-description: "代码质量审查员 — 审查变更中的反模式，识别冗余状态、参数蔓延、复制粘贴变体等问题。"
+description: "For vibewire:go flow scheduling. Reviews code changes for anti-patterns — identifies redundant state, parameter creep, copy-paste variants, over-abstraction, and code smells."
 tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: sonnet
 ---

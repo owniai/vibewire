@@ -1,6 +1,6 @@
 ---
 name: resolver
-description: "裁决修复员 — 汇总三方审阅意见，去重交叉验证问题真实性，裁决修复范围并执行修复。"
+description: "For vibewire:go flow scheduling. Consolidates review reports from all three reviewers, deduplicates findings, cross-validates issues, adjudicates fix scope, and executes minimal fixes."
 tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: sonnet
 ---

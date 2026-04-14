@@ -1,6 +1,6 @@
 ---
 name: reuse-reviewer
-description: "代码复用审查员 — 审查变更中的重复代码，搜索已有工具函数和模式，识别可复用的代码。"
+description: "For vibewire:go flow scheduling. Reviews code changes for duplication — searches existing utilities and patterns to identify reusable code opportunities."
 tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: sonnet
 ---

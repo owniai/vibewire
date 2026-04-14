@@ -1,6 +1,6 @@
 ---
 name: evolver
-description: "经验提炼员 — 收集执行过程中的经验和设计漂移，追加写入全局经验文件和 spec 漂移文件。"
+description: "For vibewire:go flow scheduling. Distills execution experience and design drift from milestone outputs, appends to global evolve.md and drift.md, and updates project-level documentation."
 tools: ["Read", "Write", "Bash", "Grep", "Glob"]
 model: sonnet
 ---

@@ -1,6 +1,6 @@
 ---
 name: stager
-description: "里程碑设计专家 — 由 go skill 调用，将指定里程碑拆分为渐进式阶段（Stage）和细粒度任务（Task）。读取 requirements.md、architecture.md 和 design.md，输出里程碑设计文档和阶段任务文档。"
+description: "For vibewire:go flow scheduling. Breaks down a milestone into progressive stages and fine-grained tasks with full implementation code, by reading requirements, architecture, and design documents."
 tools: ["Read", "Write", "Grep", "Glob", "Bash"]
 model: opus
 ---

@@ -1,6 +1,6 @@
 ---
 name: efficiency-reviewer
-description: "效率审查员 — 审查变更中的性能问题，识别不必要的工作、遗漏并发、内存问题等。"
+description: "For vibewire:go flow scheduling. Reviews code changes for performance issues — identifies unnecessary work, missed concurrency, memory leaks, and algorithmic inefficiencies."
 tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: sonnet
 ---

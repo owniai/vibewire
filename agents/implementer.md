@@ -1,6 +1,6 @@
 ---
 name: implementer
-description: "代码实现与验证专家 — 由 go skill 调用，将 stage 文档中的实现代码准确写入项目文件，编写严格测试验证正确性，修复问题直至全量通过后提交。"
+description: "For vibewire:go flow scheduling. Writes implementation code from stage documents into project files, writes and runs tests, fixes issues until all tests pass, then commits."
 tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: sonnet
 ---
