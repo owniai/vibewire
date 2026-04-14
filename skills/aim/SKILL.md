@@ -7,7 +7,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 
 ## Overview
 
-通过协作对话将用户任务转化为 requirements.md + architecture.md。项目文档（project.md、CHANGELOG.md）由 `/vibewire:intro` skill 初始化。
+通过协作对话将用户任务转化为 requirements.md + architecture.md。
 
 <HARD-GATE>
 在用户审阅并批准架构设计文档之前，不要调用任何实现技能、编写任何代码或采取任何实现行动。这适用于每个项目，无论感知的简单程度如何。
@@ -27,8 +27,8 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 4. **Present Requirements** — 向用户展示完整需求描述
 5. **Write and Self-Check Requirements** — 创建规划目录，写入 requirements.md，自检占位符/矛盾/歧义/范围
 6. **Explore Solutions** — 附带权衡和你的建议
-7. **Present Architecture Design** — 仅需求级增量：模块划分、数据流；项目级决策同步更新 project.md
-8. **Write and Self-Check Architecture** — 写入 architecture.md，更新 project.md 和 CHANGELOG.md，自检
+7. **Present Architecture Design** — 仅需求级增量：模块划分、数据流；项目级决策变更在 architecture.md 中标注
+8. **Write and Self-Check Architecture** — 写入 architecture.md，自检
 9. **User Review Architecture** — 请用户审阅架构文档文件
 10. **Transition to Execution** — 总结对话，提示用户使用 /vibewire:design
 
@@ -115,37 +115,17 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 - 不要提出无关的重构，保持聚焦于当前目标
 
 **项目级决策变更：**
-如果本需求需要变更 `project.md` 中的项目级决策（如新增依赖、变更技术栈），在此一并提出并说明理由，获得用户确认。
+如果本需求需要变更 `project.md` 中的项目级决策（如新增依赖、变更技术栈），在此一并提出并说明理由，获得用户确认。变更提案记录在 architecture.md 中，由 evolver 在里程碑执行后同步到 project.md。
 
 ### 8. Write and Self-Check Architecture
 
-获得用户确认后，写入架构文档 `.vibewire/{seq-name}/architecture.md`，并同步更新项目级文档。
+获得用户确认后，写入架构文档。
 
-**写入 architecture.md：** 仅包含需求级架构增量（模块划分、数据流），不含项目级信息。
-
-**更新 project.md：**
-
-将本需求的架构增量合并到项目文档中：
-- 更新首行元信息：`> Last updated: yyyy-mm-dd | {seq-name}`
-- 更新"当前架构"段落：新增/变更的模块及其职责
-- 更新"目录结构"段落：新增/变更的文件及其职责描述
-- 若有项目级决策变更（step 7 中确认的），更新"技术栈"或"约定与规范"段落
-
-**追加 CHANGELOG.md：**
-
-在文件顶部追加本需求的变更条目：
-
-```markdown
-## yyyy-mm-dd | {seq-name}
-- 新增模块：[模块名及职责]
-- 变更：[变更的模块/文件及原因]
-```
+**写入 architecture.md：** 仅包含需求级架构增量（模块划分、数据流），以及 Step 7 中确认的项目级决策变更提案（标注为"待同步至 project.md"）。不含其他项目级信息。
 
 **文档自检：**
 
 与需求文档相同的自检流程——扫描占位符、内部一致性、范围、歧义。修复后继续。
-
-额外检查 architecture.md 与 project.md 的一致性：architecture.md 中的模块是否已反映到 project.md 的"当前架构"和"目录结构"中。
 
 ### 9. User Review Architecture
 
