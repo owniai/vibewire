@@ -1,7 +1,7 @@
 ---
 name: shadow-keeper
 description: "For vibewire:go flow scheduling. Scans source files touched by the current stages, extracts interface signatures, and maintains shadow API files mirroring the source structure."
-tools: ["Read", "Write", "Bash", "Grep", "Glob"]
+tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: sonnet
 ---
 

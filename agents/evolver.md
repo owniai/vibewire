@@ -1,7 +1,7 @@
 ---
 name: evolver
 description: "For vibewire:go flow scheduling. Distills execution experience and design drift from stage outputs, appends to evolve.md and drift.md, and updates project-level documentation."
-tools: ["Read", "Write", "Bash", "Grep", "Glob"]
+tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 model: sonnet
 ---
 

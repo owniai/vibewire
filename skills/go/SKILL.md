@@ -33,7 +33,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:go. Do not auto
 调用 stager 产出全部阶段设计文档：
 
 ```
-subagent_type: "stager"
+subagent_type: "vibewire:stager"
 description: "stager {N}-{name}"
 prompt: |
   执行阶段设计。
@@ -49,7 +49,7 @@ stager 完成后，从其状态报告中获取阶段列表。
 #### 3.1 Implementer
 
 ```
-subagent_type: "implementer"
+subagent_type: "vibewire:implementer"
 description: "implementer Stage {M}-{name}"
 prompt: |
   执行全部实现步骤。
@@ -70,7 +70,7 @@ prompt: |
 implementer 完成后，同时启动三个审查 agent：
 
 ```
-subagent_type: "efficiency-reviewer"
+subagent_type: "vibewire:efficiency-reviewer"
 description: "efficiency-reviewer Stage {M}-{name}"
 prompt: |
   执行效率审查。
@@ -79,7 +79,7 @@ prompt: |
 ```
 
 ```
-subagent_type: "quality-reviewer"
+subagent_type: "vibewire:quality-reviewer"
 description: "quality-reviewer Stage {M}-{name}"
 prompt: |
   执行质量审查。
@@ -88,7 +88,7 @@ prompt: |
 ```
 
 ```
-subagent_type: "reuse-reviewer"
+subagent_type: "vibewire:reuse-reviewer"
 description: "reuse-reviewer Stage {M}-{name}"
 prompt: |
   执行复用审查。
@@ -102,7 +102,7 @@ prompt: |
 - **存在至少一个问题** → 启动 resolver：
 
 ```
-subagent_type: "resolver"
+subagent_type: "vibewire:resolver"
 description: "resolver Stage {M}-{name}"
 prompt: |
   执行审查修复。
@@ -122,7 +122,7 @@ resolver 完成后根据状态码处理：
 所有 stage 完成后，并行调用 evolver 和 shadow-keeper：
 
 ```
-subagent_type: "evolver"
+subagent_type: "vibewire:evolver"
 description: "evolver {N}-{name}"
 prompt: |
   执行经验提炼与漂移记录。
@@ -131,7 +131,7 @@ prompt: |
 ```
 
 ```
-subagent_type: "shadow-keeper"
+subagent_type: "vibewire:shadow-keeper"
 description: "shadow-keeper {N}-{name}"
 prompt: |
   执行影子 API 维护。
@@ -154,7 +154,7 @@ prompt: |
 1. 调用 stager 修复相关阶段文档：
 
 ```
-subagent_type: "stager"
+subagent_type: "vibewire:stager"
 description: "stager fix stage-{M}-{name}"
 prompt: |
   实现阶段报告了问题，请修改相关阶段文档以解决。
