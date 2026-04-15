@@ -80,7 +80,19 @@ Status: DOC_ISSUE
 
 同一问题连续 3 次未解决 → 状态设为 BLOCKED。
 
-### 6. Write Log
+### 6. Update Shadow
+
+基于已处理的文件上下文，为涉及的源代码文件更新 `.shadow/` 目录下的对应声明文件：
+
+- 提取依赖引入语句（`import`、`require`、`#include`、`use` 等）、所有函数签名、类（含全部属性和方法签名）、接口、类型、枚举、常量声明
+- 省略所有函数体和初始化逻辑，保留原始注释
+- 格式：文件首行 `// [shadow] Total Line: {num}`（根据语言使用 `//`、`#`、`--` 等注释符），每个声明行尾追加 `// [shadow]:{start}-{end}`
+- 增量更新：已存在的 shadow 文件仅更新变更声明，不存在则创建
+- 排除非源码文件（`*.json`、`*.md`、`*.yaml`、`*.lock`、`*.test.*`、`*.spec.*`、`*.config.*`、`*.css`、`*.html` 等）
+
+若无源代码变更（仅测试/文档变更），跳过本步骤。
+
+### 7. Write Log
 
 追加到 `.vibewire/{N}-{name}/log-implementer.md`（若无则创建），记录每个 Task 的状态，并在末尾记录整个 Stage 的状态。
 
@@ -129,42 +141,13 @@ FIXED 状态的修改内容按以下分类：
 提交代码：
 
 ```
-git add {本次 stage 涉及的所有文件}
+git add {本次 stage 涉及的所有文件} .shadow/
 git commit -m "[{N}-{name}/stage-{M}-{name}] feat: {阶段名称}"
 ```
 
-### 8. Update Shadow API
+### 8. Status Report
 
-更新本 stage 变更文件对应的 shadow-api：
-
-1. 获取本 stage 变更的源代码文件：
-
-   ```bash
-   git diff --name-only HEAD~1 HEAD
-   ```
-
-   过滤出源代码文件（排除 `*.json`、`*.md`、`*.yaml`、`*.lock`、`*.test.*`、`*.spec.*`、`*.config.*`、`*.css`、`*.html` 等非 API 文件）。
-
-2. 对每个变更的源文件，提取导出签名并写入 `.shadow-api/{path}/{name}.shadow.{ext}`：
-   - 提取：文件头注释、`export interface`/`type`、`export class`（含公开方法签名）、`export function`、`export const`
-   - 保留原始注释，签名行尾追加行范围 `// L{start}-{end}`
-   - 省略函数体、私有成员、内部变量
-   - 目录不存在则创建，已存在则全量覆盖
-
-3. 若有被删除的源文件，删除对应 shadow-api 文件。
-
-4. 将 shadow 变更合入同一 commit：
-
-   ```bash
-   git add .shadow-api/
-   git commit --amend --no-edit
-   ```
-
-若无源代码变更（仅测试/文档变更），跳过本步骤。
-
-### 9. Status Report
-
-完成工作后，报告与 §6 日志中 Stage 级状态一致的结果。
+完成工作后，报告与 §7 日志中 Stage 级状态一致的结果。
 
 ```
 Status: DONE | BLOCKED

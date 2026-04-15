@@ -36,7 +36,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:intro. Do not a
 
 创建 `.vibewire/` 目录，按以下格式写入文件。
 
-**project.md** 结构：
+**.vibewire/project.md** 结构：
 
 ```markdown
 > Last updated: yyyy-mm-dd | Intro
@@ -57,7 +57,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:intro. Do not a
 {编码规范、目录约定、公共模式。若无显著特征可省略此节}
 ```
 
-**CHANGELOG.md** 结构：
+**.vibewire/CHANGELOG.md** 结构：
 
 ```markdown
 # 变更记录
@@ -68,13 +68,13 @@ description: Use ONLY when the user explicitly invokes /vibewire:intro. Do not a
 
 ### 4. Shadow Baseline
 
-为项目中的源代码文件生成 shadow-api 基线，供后续工作流引用。收集项目中的源代码文件（排除测试、配置、文档、样式等非 API 文件），按模块或目录分组（每组 10-20 个文件），分批并行派发 shadow-scan agent：
+为项目中的源代码文件生成 shadow 基线，供后续工作流引用。收集项目中的源代码文件（排除测试、配置、文档、样式等非源码文件），按代码量分批派发 shadow-writer agent（每批总行数不超过 5000 行，大文件单独一批）：
 
 ```
-subagent_type: "vibewire:shadow-scan"
-description: "shadow-scan {group-name}"
+subagent_type: "vibewire:shadow-writer"
+description: "shadow-writer {group-name}"
 prompt: |
-  生成 shadow-api 文件。
+  生成 shadow 文件。
   文件列表：
   - {path/to/file1}
   - {path/to/file2}
@@ -88,7 +88,7 @@ prompt: |
 检查本次执行是否符合规范：
 1. 文档结构是否符合 Write Docs 中定义的格式要求
 2. 内容是否遵守 Key Principles（可验证、精确路径、不遗漏、排除噪音）
-3. shadow-api 文件是否覆盖了所有源代码模块
+3. shadow 文件是否覆盖了所有源代码模块
 4. 若发现问题，修正对应部分
 
 ### 6. Commit
@@ -96,7 +96,7 @@ prompt: |
 一次性提交所有变更：
 
 ```bash
-git add .vibewire/project.md .vibewire/CHANGELOG.md .shadow-api/
+git add .vibewire/project.md .vibewire/CHANGELOG.md .shadow/
 git commit -m "[vibewire/intro] docs: init project documentation and shadow API baseline"
 ```
 
