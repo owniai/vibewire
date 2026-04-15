@@ -133,7 +133,36 @@ git add {本次 stage 涉及的所有文件}
 git commit -m "[{N}-{name}/stage-{M}-{name}] feat: {阶段名称}"
 ```
 
-### 8. Status Report
+### 8. Update Shadow API
+
+更新本 stage 变更文件对应的 shadow-api：
+
+1. 获取本 stage 变更的源代码文件：
+
+   ```bash
+   git diff --name-only HEAD~1 HEAD
+   ```
+
+   过滤出源代码文件（排除 `*.json`、`*.md`、`*.yaml`、`*.lock`、`*.test.*`、`*.spec.*`、`*.config.*`、`*.css`、`*.html` 等非 API 文件）。
+
+2. 对每个变更的源文件，提取导出签名并写入 `.shadow-api/{path}/{name}.shadow.{ext}`：
+   - 提取：文件头注释、`export interface`/`type`、`export class`（含公开方法签名）、`export function`、`export const`
+   - 保留原始注释，签名行尾追加行范围 `// L{start}-{end}`
+   - 省略函数体、私有成员、内部变量
+   - 目录不存在则创建，已存在则全量覆盖
+
+3. 若有被删除的源文件，删除对应 shadow-api 文件。
+
+4. 将 shadow 变更合入同一 commit：
+
+   ```bash
+   git add .shadow-api/
+   git commit --amend --no-edit
+   ```
+
+若无源代码变更（仅测试/文档变更），跳过本步骤。
+
+### 9. Status Report
 
 完成工作后，报告与 §6 日志中 Stage 级状态一致的结果。
 

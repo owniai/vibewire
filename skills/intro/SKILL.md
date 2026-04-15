@@ -66,20 +66,38 @@ description: Use ONLY when the user explicitly invokes /vibewire:intro. Do not a
 - {项目基线摘要，列出主要模块和技术栈}
 ```
 
-### 4. Self-Review
+### 4. Shadow Baseline
+
+为项目中的源代码文件生成 shadow-api 基线，供后续工作流引用。收集项目中的源代码文件（排除测试、配置、文档、样式等非 API 文件），按模块或目录分组（每组 10-20 个文件），分批并行派发 shadow-scan agent：
+
+```
+subagent_type: "vibewire:shadow-scan"
+description: "shadow-scan {group-name}"
+prompt: |
+  生成 shadow-api 文件。
+  文件列表：
+  - {path/to/file1}
+  - {path/to/file2}
+  ...
+```
+
+若无源代码文件（纯文档/配置项目），跳过本步骤。
+
+### 5. Self-Review
 
 检查本次执行是否符合规范：
 1. 文档结构是否符合 Write Docs 中定义的格式要求
 2. 内容是否遵守 Key Principles（可验证、精确路径、不遗漏、排除噪音）
-3. 若发现问题，修正对应部分
+3. shadow-api 文件是否覆盖了所有源代码模块
+4. 若发现问题，修正对应部分
 
-### 5. Commit
+### 6. Commit
 
-执行以下命令提交变更：
+一次性提交所有变更：
 
 ```bash
-git add .vibewire/project.md .vibewire/CHANGELOG.md
-git commit -m "[vibewire/intro] docs: init project documentation"
+git add .vibewire/project.md .vibewire/CHANGELOG.md .shadow-api/
+git commit -m "[vibewire/intro] docs: init project documentation and shadow API baseline"
 ```
 
 ## Key Principles

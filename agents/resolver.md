@@ -146,7 +146,36 @@ git add {修复涉及的文件及审阅报告}
 git commit -m "[{N}-{name}/stage-{M}-{name}] resolve: 审查修复"
 ```
 
-### 9. Status Report
+### 9. Update Shadow API
+
+更新本 stage 修复涉及的 shadow-api：
+
+1. 获取修复变更的源代码文件：
+
+   ```bash
+   git diff --name-only HEAD~1 HEAD
+   ```
+
+   过滤出源代码文件（排除 `*.json`、`*.md`、`*.yaml`、`*.lock`、`*.test.*`、`*.spec.*`、`*.config.*`、`*.css`、`*.html` 等非 API 文件）。
+
+2. 对每个变更的源文件，提取导出签名并写入 `.shadow-api/{path}/{name}.shadow.{ext}`：
+   - 提取：文件头注释、`export interface`/`type`、`export class`（含公开方法签名）、`export function`、`export const`
+   - 保留原始注释，签名行尾追加行范围 `// L{start}-{end}`
+   - 省略函数体、私有成员、内部变量
+   - 目录不存在则创建，已存在则全量覆盖
+
+3. 若有被删除的源文件，删除对应 shadow-api 文件。
+
+4. 将 shadow 变更合入同一 commit：
+
+   ```bash
+   git add .shadow-api/
+   git commit --amend --no-edit
+   ```
+
+若无源代码变更，跳过本步骤。
+
+### 10. Status Report
 
 完成工作后，报告与 §7 日志中 Stage 级状态一致的结果。
 

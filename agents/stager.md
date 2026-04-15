@@ -38,7 +38,7 @@ model: opus
 
 #### 1.3 Analyze Project Code
 
-有目的地探索代码库，建立实现上下文。接口信息优先从 `.shadow-api/` 获取，按需决定是否深入源文件及聚焦范围；若影子文件与源文件冲突，以源文件为准。
+有目的地探索代码库，建立实现上下文。接口信息优先从 `.shadow-api/` 获取，按需决定是否深入源文件及聚焦范围；若 shadow-api 文件与源文件冲突，以源文件为准。
 
 - **项目结构** — 通过 Glob 扫描目录布局，理解文件组织约定
 - **现有 API 契约** — 通过 `.shadow-api/` 目录（如存在）掌握已有模块的导出接口和类型签名，辅助任务设计时对齐既有契约
@@ -76,6 +76,7 @@ model: opus
 2. 按功能边界划分 — 每个阶段是一个独立可验证的功能单元，完成后能独立运行测试
 3. 保持适度粒度 — 每个阶段聚焦单一职责，包含 2-5 个实现任务
 4. 每个阶段须有明确的验收标准 — 一句话说明"完成意味着什么"
+5. 标注集成验证阶段 — 选定完成端到端路径的阶段（通常是最后一个阶段，但不一定）承载跨 stage 集成验证，该阶段的 Integration Test 须覆盖所有前序阶段的联合行为
 
 #### 2.4 Stage Plan Document
 
@@ -106,6 +107,7 @@ model: opus
   - 验收标准：[完成后应达到的状态]
 - Stage 2-{name} — [一句话描述]
   - 验收标准：[完成后应达到的状态]
+- 🔗 Integration Stage: Stage {M}-{name} — 跨 stage 端到端验证由本阶段承载
 ```
 
 ### 3. Stage Design
@@ -119,6 +121,7 @@ model: opus
 - **Goal** — 本阶段在全局 plan 中的位置，完成后应达到的状态
 - **File Changes** — 本阶段涉及的文件变更清单，确认与前后阶段的文件边界无重叠
 - **Integration Test** — 当阶段包含多个 Task 且 Task 间有协作关系时，思考本阶段的端到端验证方式和预期结果；单 Task 阶段可省略
+- **Cross-Stage Integration**（仅集成验证阶段）— 当本阶段被 stage-plan.md 标注为 Integration Stage 时，额外规划跨 stage 的集成验证：识别前序阶段间的关键接口契约和数据流转路径，设计覆盖完整端到端场景的测试用例，验证所有 stage 的联合行为符合 requirements.md 的成功标准
 
 #### 3.2 Task Breakdown
 
@@ -156,6 +159,11 @@ model: opus
 ## Integration Test
 验证 {端到端场景}：{具体验证方式和预期结果}
 
+### Cross-Stage Integration（仅集成验证阶段包含此节）
+验证跨 stage 端到端场景：
+- {场景描述}：调用 {前序 stage 产出的模块/接口} → 经过 {当前 stage 的处理} → 验证 {预期端到端结果}
+- {场景描述}：...
+
 ## Task {K}: {任务名称}
 
 **依赖：** 无 / Task {K-1}
@@ -185,6 +193,7 @@ Checklist:
 - **Type Consistency** — 跨阶段的函数定义与调用必须前后匹配
 - **Testability** — 每个 Task 的测试指导须具体到可编写测试用例的程度（有明确的输入、预期输出、场景分类）
 - **Quality Gate** — 不得出现以下问题：跨阶段重复实现同一功能；Task 缺少测试指导或精确文件路径；Stage 超过 5 个 Task；阶段间依赖顺序不清晰
+- **Integration Stage Coverage** — stage-plan.md 中须恰好标注一个 Integration Stage；该 stage 的文档须包含 Cross-Stage Integration 节，且测试场景覆盖所有前序阶段的关键接口和数据流转路径
 
 ### 5. Commit
 

@@ -119,7 +119,7 @@ resolver 完成后根据状态码处理：
 
 ### 4. Wrap-Up
 
-所有 stage 完成后，并行调用 evolver 和 shadow-keeper：
+所有 stage 完成后，调用 evolver：
 
 ```
 subagent_type: "vibewire:evolver"
@@ -130,16 +130,7 @@ prompt: |
   起点 tag：vibewire/{N}-{name}/start
 ```
 
-```
-subagent_type: "vibewire:shadow-keeper"
-description: "shadow-keeper {N}-{name}"
-prompt: |
-  执行影子 API 维护。
-  规划目录：.vibewire/{N}-{name}/
-  起点 tag：vibewire/{N}-{name}/start
-```
-
-两者完成后，报告整体完成状态，然后询问用户如何合并，使用 AskUserQuestion 提供以下选项：
+evolver 完成后，报告整体完成状态，然后询问用户如何合并，使用 AskUserQuestion 提供以下选项：
 1. **Merge 到原始分支** — `git checkout {original-branch} && git merge feature/{N}-{name}`
 2. **Squash merge 到原始分支** — `git checkout {original-branch} && git merge --squash feature/{N}-{name} && git commit`
 3. **创建 Pull Request** — 使用 `gh pr create` 向 `{original-branch}` 发起 PR
