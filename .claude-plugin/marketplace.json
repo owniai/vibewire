@@ -10,7 +10,7 @@
     {
       "name": "vibewire",
       "source": "./",
-      "description": "Agent自主开发流程插件 - 完全自动化从需求到代码的端到端开发",
+      "description": "Autonomous development workflow plugin — fully automated end-to-end from requirements to code",
       "version": "0.2.0",
       "author": {
         "name": "owniai"
