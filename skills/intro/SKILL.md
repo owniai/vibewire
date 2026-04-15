@@ -11,23 +11,22 @@ description: Use ONLY when the user explicitly invokes /vibewire:intro. Do not a
 
 ### 1. Confirm Scope
 
-- 检查项目是否为 git 仓库，若不是则执行 `git init` 初始化
-- 确认 `.vibewire/` 未被 `.gitignore` 排除
-- 若 `.vibewire/` 不存在，直接进入 Explore
-- 若已存在，提示用户确认是否覆盖重建（旧文件将被删除后全量重建）
+1. 检查 `.vibewire/project.md` 和 `.vibewire/CHANGELOG.md` 是否存在
+   - 若均存在：提示用户确认是否覆盖重建（旧文件将被删除后全量重建）
+   - 若不存在或用户确认重建：继续下一步
+2. 检查项目是否为 git 仓库，若不是则执行 `git init` 初始化
+3. 确认 `.vibewire/` 未被 `.gitignore` 排除
 
 ### 2. Explore
 
 从项目根目录结构扫描开始，识别目录划分和特征文件。
 
 **扫描范围控制：**
-
 - 排除目录：`node_modules`, `vendor`, `.git`, `__pycache__`, `.next`, `dist`, `build`, `target`, `.venv`, `venv`, `env`
 - 排除文件：锁文件（`package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `Cargo.lock`, `poetry.lock`）、二进制文件
 - 深度策略：优先扫描前 3 层目录结构，对深层模块按需深入
 
 **扫描维度：**
-
 - **项目概述** — 优先从 README、CLAUDE.md、package.json description 等已有文档提取
 - **技术栈** — 通过特征文件识别（package.json, Cargo.toml, go.mod, pyproject.toml, pom.xml 等）
 - **模块架构** — 通过目录划分和 import/require 依赖关系识别模块职责
@@ -67,14 +66,12 @@ description: Use ONLY when the user explicitly invokes /vibewire:intro. Do not a
 - {项目基线摘要，列出主要模块和技术栈}
 ```
 
-### 4. Verify
+### 4. Self-Review
 
-对 project.md 中引用的内容进行结构化验证：
-
-1. 提取文档中出现的所有文件路径和目录路径
-2. 逐个验证路径是否存在
-3. 抽查技术栈版本号与实际依赖文件是否一致
-4. 若发现不存在的路径或版本偏差，回退到 Explore 修正对应部分
+检查本次执行是否符合规范：
+1. 文档结构是否符合 Write Docs 中定义的格式要求
+2. 内容是否遵守 Key Principles（可验证、精确路径、不遗漏、排除噪音）
+3. 若发现问题，修正对应部分
 
 ### 5. Commit
 
@@ -91,3 +88,9 @@ git commit -m "[vibewire/intro] docs: init project documentation"
 - **精确路径** — 文档中引用的文件路径必须精确完整，不含猜测路径
 - **不遗漏** — 扫描范围内所有文件和模块都必须反映在文档中
 - **排除噪音** — 依赖包、构建产物、锁文件不纳入文档范围
+
+## Anti-Pattern
+
+- **推测性记录** — 未在代码库中观察到的事实不应出现在文档中
+- **遗漏后继续** — 发现未覆盖的模块时不得跳过，必须补充探索
+- **过度深入** — 不对单个模块做逐文件分析，保持架构层面的概览

@@ -150,7 +150,7 @@ git commit -m "[{N}-{name}/stage-{M}-{name}] resolve: 审查修复"
 完成工作后，报告与 §7 日志中 Stage 级状态一致的结果。
 
 ```
-Resolver — Stage {M}-{name} [DONE / DONE_WITH_DEFERRED]:
+Status: DONE | DONE_WITH_DEFERRED
 Fix {n} | Skip {n} | Deferred {n}
 ```
 

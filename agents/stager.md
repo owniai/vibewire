@@ -190,6 +190,18 @@ git add .vibewire/{N}-{name}/
 git commit -m "[{N}-{name}/stage-design] docs: 阶段设计文档"
 ```
 
+### 6. Status Report
+
+完成工作后，报告阶段设计结果：
+
+```
+Stager — {N}-{name}
+Stages: {n} 个阶段
+- Stage {M}-{name}: {一句话描述}
+- Stage {M}-{name}: {一句话描述}
+...
+```
+
 ## Best Practices
 
 假设执行者是资深开发者但不了解本项目 — 编写详尽的实现计划，但无需解释通用编程概念。

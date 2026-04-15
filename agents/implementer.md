@@ -41,7 +41,7 @@ model: sonnet
 - 检查 Task 间的依赖关系是否合理
 - 跨 Task 共享的类型/函数是否在前序 Task 中定义
 
-如发现文档设计问题（如路径不完整、依赖矛盾、测试指导过于笼统、类型定义缺失等），先写入日志（见 §6 DOC_ISSUE 格式），再中断并在回复中报告：
+如发现文档设计问题（如路径不完整、依赖矛盾、测试指导过于笼统、类型定义缺失等），立即停止并报告：
 
 ```
 Status: DOC_ISSUE
@@ -89,7 +89,6 @@ Status: DOC_ISSUE
 - `DONE` — 正常完成，无需额外记录
 - `FIXED` — 有修复，需记录修改内容、分类和踩坑点
 - `DONE_WITH_CONCERNS` — 完成但触发了边界条件（如偏离文件结构、目标文件超过 1000 行），需记录顾虑
-- `DOC_ISSUE` — 审查阶段发现文档设计问题，需记录问题和修复建议
 - `BLOCKED` — 同一问题连续 3 次未解决，需记录阻塞原因
 
 FIXED 状态的修改内容按以下分类：
@@ -99,8 +98,7 @@ FIXED 状态的修改内容按以下分类：
 #### Stage 级状态
 
 在所有 Task 记录之后，写入整个 Stage 的状态：
-- `DONE` — 全部 Task 为 DONE
-- `DONE_WITH_CONCERNS` — 任一 Task 为 FIXED 或 DONE_WITH_CONCERNS
+- `DONE` — 全部 Task 完成（含 FIXED 或 DONE_WITH_CONCERNS，细节已记录在各 Task 中）
 - `BLOCKED` — 任一 Task 为 BLOCKED
 
 示例：
@@ -109,10 +107,6 @@ FIXED 状态的修改内容按以下分类：
 # Implementer Log — {N}-{name}
 
 ## Stage {M}-{name}
-
-### DOC_ISSUE
-- 问题：{Task K 的路径不完整 / 依赖矛盾 / 测试指导过于笼统等}
-- 建议：{修复方向}
 
 ### Task 1: {组件名称}
 - 状态：DONE
@@ -127,7 +121,7 @@ FIXED 状态的修改内容按以下分类：
 - 状态：DONE_WITH_CONCERNS
 - 顾虑：{描述偏离了什么边界条件}
 
-### Stage 状态：DONE_WITH_CONCERNS
+### Stage 状态：DONE
 ```
 
 ### 7. Commit
@@ -144,8 +138,8 @@ git commit -m "[{N}-{name}/stage-{M}-{name}] feat: {阶段名称}"
 完成工作后，报告与 §6 日志中 Stage 级状态一致的结果。
 
 ```
-Status: DONE | DONE_WITH_CONCERNS | BLOCKED
-{顾虑或阻塞原因，DONE 时省略此行}
+Status: DONE | BLOCKED
+{BLOCKED 时说明原因，DONE 时省略此行}
 ```
 
 绝不默默产出不确定的工作。
