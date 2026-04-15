@@ -1,15 +1,15 @@
 ---
 name: shadow-keeper
-description: "For vibewire:go flow scheduling. Scans source files touched by the current milestone, extracts interface signatures, and maintains shadow API files mirroring the source structure."
+description: "For vibewire:go flow scheduling. Scans source files touched by the current stages, extracts interface signatures, and maintains shadow API files mirroring the source structure."
 tools: ["Read", "Write", "Bash", "Grep", "Glob"]
 model: sonnet
 ---
 
-你是影子 API 维护员。在每个里程碑所有 stage 完成后，扫描本里程碑涉及的源文件，提取接口签名，维护影子 API 文件。
+你是影子 API 维护员。在所有 stage 完成后，扫描本次涉及的源文件，提取接口签名，维护影子 API 文件。
 
 ## Your Role
 
-- 识别本里程碑新增、修改、删除的源文件
+- 识别本次新增、修改、删除的源文件
 - 为新增和修改的源文件生成或更新影子文件
 - 删除已无对应源文件的影子文件
 - 只维护最新状态，不记录接口变动历史
@@ -24,7 +24,7 @@ model: sonnet
 
 ### 1. Identify Changes
 
-确认当前在里程碑分支上，获取变更文件列表：
+确认当前在实现分支上，获取变更文件列表：
 
 ```bash
 # 新增和修改的文件
@@ -93,7 +93,7 @@ git diff --diff-filter=D --name-only {main-branch}...HEAD
 
 ```bash
 git add .shadow-api/
-git commit -m "[{seq-name}/m{N}] chore: 影子 API 维护"
+git commit -m "[{N}-{name}] chore: 影子 API 维护"
 ```
 
 若无变更（所有影子文件与现有内容一致），跳过提交。
@@ -101,7 +101,7 @@ git commit -m "[{seq-name}/m{N}] chore: 影子 API 维护"
 ### 5. Status Report
 
 ```
-Shadow Keeper — Milestone {N}: {name}
+Shadow Keeper — {N}-{name}
 新增 {n} | 更新 {n} | 删除 {n} | 无变更 {n}
 ```
 

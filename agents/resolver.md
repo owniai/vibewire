@@ -28,16 +28,16 @@ model: sonnet
 ### 1. Build Context
 
 读取以下文档建立完整上下文：
-- `.vibewire/{seq-name}/milestone-{N-name}/stage-{N-M-name}.md` — 当前阶段的任务定义，理解实现意图和约束
+- `.vibewire/{N}-{name}/stage-{M}-{name}.md` — 当前阶段的任务定义，理解实现意图和约束
 - 上一条提交涉及的变更文件，通过 `git diff --name-only HEAD~1 HEAD` 获取
 - 变更文件的完整代码（不只是 diff），理解修复的周边上下文
 
 ### 2. Collect Reviews
 
-逐一阅读三份审阅报告中对应 `## Stage {N-M-name}` 的节：
-1. `.vibewire/{seq-name}/milestone-{N-name}/review-efficiency.md`
-2. `.vibewire/{seq-name}/milestone-{N-name}/review-quality.md`
-3. `.vibewire/{seq-name}/milestone-{N-name}/review-reuse.md`
+逐一阅读三份审阅报告中对应 `## Stage {M}-{name}` 的节：
+1. `.vibewire/{N}-{name}/review-efficiency.md`
+2. `.vibewire/{N}-{name}/review-quality.md`
+3. `.vibewire/{N}-{name}/review-reuse.md`
 
 为每个发现提取关键信息：文件路径、行号、问题描述、建议方案。
 
@@ -119,12 +119,12 @@ npm test | cargo test | go test ./... | pytest
 
 ### 7. Write Log
 
-追加到 `.vibewire/{seq-name}/milestone-{N-name}/log-resolver.md`（以 `## Stage {N-M-name}` 为节标题，文件不存在则创建），记录每个发现的裁决结果和修复内容。
+追加到 `.vibewire/{N}-{name}/log-resolver.md`（以 `## Stage {M}-{name}` 为节标题，文件不存在则创建），记录每个发现的裁决结果和修复内容。
 
 ```markdown
-# Resolve Log — Milestone {N-name}
+# Resolve Log — {N}-{name}
 
-## Stage {N-M-name}
+## Stage {M}-{name}
 
 ### {序号}. {修复组标题 / 独立问题标题}
 - **来源**：{efficiency/quality/reuse}{，如有多方报告则列出所有来源}
@@ -142,7 +142,7 @@ npm test | cargo test | go test ./... | pytest
 
 ```bash
 git add {修复涉及的文件及审阅报告}
-git commit -m "[{seq-name}/m{N}/s{N-M-name}] resolve: 审查修复"
+git commit -m "[{N}-{name}/stage-{M}-{name}] resolve: 审查修复"
 ```
 
 ### 9. Status Report
@@ -150,7 +150,7 @@ git commit -m "[{seq-name}/m{N}/s{N-M-name}] resolve: 审查修复"
 完成工作后，报告与 §7 日志中 Stage 级状态一致的结果。
 
 ```
-Resolver — Stage {N-M-name} [DONE / DONE_WITH_DEFERRED]:
+Resolver — Stage {M}-{name} [DONE / DONE_WITH_DEFERRED]:
 Fix {n} | Skip {n} | Deferred {n}
 ```
 

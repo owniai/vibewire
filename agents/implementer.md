@@ -27,7 +27,8 @@ model: sonnet
 ### 1. Build Context
 
 读取以下文档建立完整上下文：
-- `.vibewire/{seq-name}/milestone-{N-name}/stage-{N-M-name}.md` — 当前阶段的任务定义和测试指导
+- `.vibewire/{N}-{name}/stage-plan.md` — 全局设计总览，理解本 Stage 在整体计划中的位置和依赖
+- `.vibewire/{N}-{name}/stage-{M}-{name}.md` — 当前阶段的任务定义和测试指导
 - 每个 Task 涉及的目标文件（如已存在），理解现有代码上下文：
   - 文件的 imports、导出接口、调用方和被调用方
   - 文件所在模块的编码风格和错误处理模式
@@ -45,7 +46,7 @@ model: sonnet
 ```
 Status: DOC_ISSUE
 问题：{具体描述哪个 Task 的什么问题}
-建议：{修复方向，如需 stager 补充或修改什么}
+建议：{修复方向，如需补充或修改设计文档中的什么}
 ```
 
 ### 3. Implement
@@ -81,7 +82,7 @@ Status: DOC_ISSUE
 
 ### 6. Write Log
 
-追加到 `.vibewire/{seq-name}/milestone-{N-name}/log-implementer.md`（若无则创建），记录每个 Task 的状态，并在末尾记录整个 Stage 的状态。
+追加到 `.vibewire/{N}-{name}/log-implementer.md`（若无则创建），记录每个 Task 的状态，并在末尾记录整个 Stage 的状态。
 
 #### Task 级状态
 
@@ -92,7 +93,7 @@ Status: DOC_ISSUE
 - `BLOCKED` — 同一问题连续 3 次未解决，需记录阻塞原因
 
 FIXED 状态的修改内容按以下分类：
-- **stager 代码问题** — stager 实现代码中的逻辑 bug、参数错误、类型不匹配、遗漏的边界条件
+- **设计文档问题** — 设计文档中实现代码的逻辑 bug、参数错误、类型不匹配、遗漏的边界条件
 - **实现过程问题** — 依赖版本、配置、路径等环境问题；测试指导未覆盖的异常路径
 
 #### Stage 级状态
@@ -105,9 +106,9 @@ FIXED 状态的修改内容按以下分类：
 示例：
 
 ```
-# Implementer Log — Milestone {N}: {name}
+# Implementer Log — {N}-{name}
 
-## Stage {N-M}: {name}
+## Stage {M}-{name}
 
 ### DOC_ISSUE
 - 问题：{Task K 的路径不完整 / 依赖矛盾 / 测试指导过于笼统等}
@@ -119,7 +120,7 @@ FIXED 状态的修改内容按以下分类：
 ### Task 2: {组件名称}
 - 状态：FIXED
 - 修改：{描述修改了什么}
-- 分类：stager 代码问题 / 实现过程问题
+- 分类：设计文档问题 / 实现过程问题
 - 踩坑点：{具体描述踩了什么坑}
 
 ### Task 3: {组件名称}
@@ -135,7 +136,7 @@ FIXED 状态的修改内容按以下分类：
 
 ```
 git add {本次 stage 涉及的所有文件}
-git commit -m "[{seq-name}/m{N}/s{N-M-name}] feat: {阶段名称}"
+git commit -m "[{N}-{name}/stage-{M}-{name}] feat: {阶段名称}"
 ```
 
 ### 8. Status Report

@@ -23,7 +23,7 @@ model: sonnet
 
 ### 1. Build Context
 
-阅读 `.vibewire/{seq-name}/milestone-{N-name}/stage-{N-M-name}.md` 了解实现意图。
+阅读 `.vibewire/{N}-{name}/stage-{M}-{name}.md` 了解实现意图。
 
 ### 2. Get Changes
 
@@ -37,7 +37,7 @@ git diff --name-only HEAD~1 HEAD
 
 ### 4. Output
 
-将审查意见追加到 `.vibewire/{seq-name}/milestone-{N-name}/review-efficiency.md`（以 `## Stage {N-M-name}` 为节标题，文件不存在则创建）。
+将审查意见追加到 `.vibewire/{N}-{name}/review-efficiency.md`（以 `## Stage {M}-{name}` 为节标题，文件不存在则创建）。
 
 每个发现按以下格式记录：
 
