@@ -122,7 +122,6 @@ npm test | cargo test | go test ./... | pytest
 ### 7. Update Shadow
 
 基于已修复的文件上下文，为涉及的源代码文件更新 `.shadow/` 目录下的对应声明文件：
-
 - 提取依赖引入语句（`import`、`require`、`#include`、`use` 等）、所有函数签名、类（含全部属性和方法签名）、接口、类型、枚举、常量声明
 - 省略所有函数体和初始化逻辑，保留原始注释
 - 格式：文件首行 `// [shadow] Total Line: {num}`（根据语言使用 `//`、`#`、`--` 等注释符），每个声明行尾追加 `// [shadow]:{start}-{end}`
