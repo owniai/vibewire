@@ -28,25 +28,40 @@ description: Use ONLY when the user explicitly invokes /vibewire:go. Do not auto
    ```
 3. 运行项目测试确认基线干净（如项目无测试则跳过）。若失败 → 暂停，报告失败信息，等待用户处理
 
-### 2. Stage Design
+### 2. Global Planning
 
-调用 stager 产出全部阶段设计文档：
+调用 planner 产出全局阶段规划：
 
 ```
-subagent_type: "vibewire:stager"
-description: "stager {N}-{name}"
+subagent_type: "vibewire:planner"
+description: "planner {N}-{name}"
 prompt: |
-  执行阶段设计。
+  执行全局阶段规划。
   规划目录：.vibewire/{N}-{name}/
 ```
 
-stager 完成后，从其状态报告中获取阶段列表。
+planner 完成后，从其状态报告中获取阶段列表。
 
 ### 3. Stage Loop
 
 对 §2 获取的阶段列表中的每个 Stage，按顺序执行以下步骤。
 
-#### 3.1 Implementer
+#### 3.1 Stager
+
+调用 stager 设计当前阶段：
+
+```
+subagent_type: "vibewire:stager"
+description: "stager Stage {M}-{name}"
+prompt: |
+  执行阶段设计。
+  规划目录：.vibewire/{N}-{name}/
+  阶段：Stage {M}-{name}
+```
+
+stager 完成后继续下一步骤。
+
+#### 3.2 Implementer
 
 ```
 subagent_type: "vibewire:implementer"
@@ -65,7 +80,7 @@ prompt: |
 | DOC_ISSUE | 文档设计问题 | 按 §BLOCKED 处理流程修复 |
 | BLOCKED | 连续修复失败 | 按 §BLOCKED 处理流程修复 |
 
-#### 3.2 Reviewers
+#### 3.3 Reviewers
 
 implementer 完成后，同时启动三个审查 agent：
 
@@ -146,16 +161,16 @@ evolver 完成后，报告整体完成状态，然后询问用户如何合并，
 
 ```
 subagent_type: "vibewire:stager"
-description: "stager fix stage-{M}-{name}"
+description: "stager fix Stage {M}-{name}"
 prompt: |
   实现阶段报告了问题，请修改相关阶段文档以解决。
   规划目录：.vibewire/{N}-{name}/
-  阶段：stage-{M}-{name}
+  阶段：Stage {M}-{name}
   问题来源：implementer
   问题描述：{implementer 报告的问题内容}
 ```
 
-2. 修复后重新调用 implementer（使用 §3.1 原模板）
+2. 修复后重新调用 implementer（使用 §3.2 原模板）
 3. 若 2 次修复后仍有问题 → 暂停，列出未解决问题，等待用户介入
 
 暂停时输出：
