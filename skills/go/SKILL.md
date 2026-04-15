@@ -20,10 +20,9 @@ description: Use ONLY when the user explicitly invokes /vibewire:go. Do not auto
 解析用户参数获取 `{N}-{name}`，完成以下检查：
 1. 确认 `.vibewire/{N}-{name}/` 目录存在，且包含 `requirements.md` 和 `architecture.md`
    - 若缺失 → 提示用户先运行 `/vibewire:aim`
-2. 记录当前分支名（后续合并需要），打 tag 标记起点，创建 feature 分支：
+2. 记录当前分支名（后续合并需要），创建 feature 分支：
    ```
    {original-branch} = git rev-parse --abbrev-ref HEAD
-   git tag vibewire/{N}-{name}/start
    git checkout -b feature/{N}-{name}
    ```
 3. 运行项目测试确认基线干净（如项目无测试则跳过）。若失败 → 暂停，报告失败信息，等待用户处理
@@ -142,7 +141,6 @@ description: "evolver {N}-{name}"
 prompt: |
   执行经验提炼与漂移记录。
   规划目录：.vibewire/{N}-{name}/
-  起点 tag：vibewire/{N}-{name}/start
 ```
 
 evolver 完成后，报告整体完成状态，然后询问用户如何合并，使用 AskUserQuestion 提供以下选项：
