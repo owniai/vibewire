@@ -31,7 +31,20 @@ model: sonnet
 - `.vibewire/evolve.md`（如存在）— 跨里程碑的历史归纳经验，用于识别跨里程碑重复出现的模式
 - `.vibewire/{N}-{name}/evolve.md`（如存在）— 各 stage 由 implementer/resolver 追加的原始经验记录
 
-### 2. Synthesize Experience
+### 2. Requirements Traceability
+
+逐条对照 requirements.md 中的功能需求，基于各 stage 文档和实际代码确认实现状态。只关注未完成的需求，将"部分实现"和"未实现"的条目追加到 `.vibewire/{N}-{name}/drift.md`（文件不存在则创建）：
+
+```markdown
+## Requirements Gap — {N}-{name}
+
+- {需求条目}：部分实现 — {缺失说明}（涉及 stage-{M}）
+- {需求条目}：未实现 — {原因}
+```
+
+全部已实现时跳过本步骤。
+
+### 3. Synthesize Experience
 
 读取 evolve.md 中由 implementer/resolver 在各 stage 追加的原始经验记录，按以下维度归纳跨 stage 模式。只记录有实质内容的维度，空维度省略：
 - **设计偏差** — 多个 stage 中出现的同类设计文档问题，归纳共性盲区
@@ -48,7 +61,7 @@ model: sonnet
 - 保留足够的具体信息（文件路径、函数名、场景描述）使经验可操作
 - 单 stage 的偶发问题不值得跨 stage 归纳，保留原始记录即可
 
-### 3. Write evolve.md
+### 4. Write evolve.md
 
 归纳后的模式追加到 `.vibewire/evolve.md`（跨里程碑共享，文件不存在则创建）。`.vibewire/{N}-{name}/evolve.md` 中的原始 per-stage 记录保留不动。
 
@@ -70,7 +83,7 @@ model: sonnet
 - 每条经验应是从多个 stage 发现中抽象出的可操作模式，不标注来源 stage 位置
 - 跨 {N}-{name} 反复出现的模式应强调其普遍性（对比 §1 中读取的历史归纳经验识别）
 
-### 4. Update project.md
+### 5. Update project.md
 
 基于实际实现，将架构增量合并到项目文档中：
 - 更新首行元信息：`> Last updated: yyyy-mm-dd | {N}-{name}`
@@ -78,7 +91,7 @@ model: sonnet
 - 更新"目录结构"段落：新增/变更的文件及其职责描述
 - 若有项目级决策变更（architecture.md 中标注为"待同步至 project.md"的），更新对应段落
 
-### 5. Update CHANGELOG.md
+### 6. Update CHANGELOG.md
 
 在文件顶部追加变更条目：
 
@@ -88,21 +101,24 @@ model: sonnet
 - 变更：[变更的模块/文件及原因]
 ```
 
-### 6. Commit
+### 7. Commit
 
 ```bash
-git add .vibewire/evolve.md .vibewire/project.md .vibewire/CHANGELOG.md
+git add .vibewire/evolve.md .vibewire/project.md .vibewire/CHANGELOG.md {§4 中写入的 drift.md，若无则省略}
 git commit -m "[{N}-{name}] docs: 经验、项目文档更新"
 ```
 
-### 7. Status Report
+### 8. Status Report
 
 ```
 Evolver — {N}-{name}
+requirements: {n} 条需求已覆盖, {n} 条存在缺口（部分实现 {n}, 未实现 {n}）
 evolve.md: {n} 维度, {n} 条经验
 project.md: 已更新
 CHANGELOG.md: 已追加 {n} 条变更
 ```
+
+若存在需求缺口，在报告后额外列出 drift.md 中记录的具体条目。
 
 ## Best Practices
 

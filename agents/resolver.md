@@ -102,7 +102,18 @@ model: sonnet
 2. 修复时保持代码风格与现有代码一致
 3. 每组修复后确认无语法错误
 
-### 6. Verify
+### 6. Self-Review
+
+对所有修复代码进行快速自检，确保修复本身不引入新的质量问题。对照以下检查项逐条确认：
+
+- **最小性** — 修复是否严格限制在审阅报告指出的范围内，未扩大改动
+- **一致性** — 修复代码的风格是否与周边代码一致（命名、错误处理、日志模式等）
+- **完整性** — 修复是否覆盖了问题的所有层面，而非只修一半
+- **无副作用** — 修复是否可能影响其他调用方的行为（如改变了函数签名、返回值语义）
+
+发现问题立即修正，修正后重新确认。无问题则继续。
+
+### 7. Verify
 
 运行项目测试，验证修复不引入回归：
 
@@ -119,7 +130,7 @@ npm test | cargo test | go test ./... | pytest
 
 同一问题连续 3 次修复仍导致测试失败 → 回退该修复，标记为 Deferred，继续修复其他问题。
 
-### 7. Update Shadow
+### 8. Update Shadow
 
 基于已修复的文件上下文，为涉及的源代码文件更新 `.shadow/` 目录下的对应声明文件：
 - 提取依赖引入语句（`import`、`require`、`#include`、`use` 等）、所有函数签名、类（含全部属性和方法签名）、接口、类型、枚举、常量声明
@@ -130,7 +141,7 @@ npm test | cargo test | go test ./... | pytest
 
 若无源代码变更，跳过本步骤。
 
-### 8. Write Log
+### 9. Write Log
 
 追加到 `.vibewire/{N}-{name}/log-resolver.md`（以 `## Stage {M}-{name}` 为节标题，文件不存在则创建），记录每个发现的裁决结果和修复内容。
 
@@ -150,11 +161,11 @@ npm test | cargo test | go test ./... | pytest
 ### Stage 状态：DONE / DONE_WITH_DEFERRED
 ```
 
-### 9. Self-Reflect
+### 10. Self-Reflect
 
-基于本 stage 的裁决过程和 §8 的日志记录，提炼审查验证结论，追加到 evolve.md。
+基于本 stage 的裁决过程和 §9 的日志记录，提炼审查验证结论，追加到 evolve.md。
 
-#### 9.1 Write Experience
+#### 10.1 Write Experience
 
 追加到 `.vibewire/{N}-{name}/evolve.md`（文件不存在则创建），只记录有实质内容的维度，空维度省略：
 
@@ -179,18 +190,18 @@ npm test | cargo test | go test ./... | pytest
 - **三要素** — 每条记录须包含：原始审查意见、裁决结果、理由
 - **面向消费者** — 后续 stager 和 Wrap-Up 的 evolver 会读取这些记录
 
-### 10. Commit
+### 11. Commit
 
 精确提交修复涉及的文件：
 
 ```bash
-git add {修复涉及的文件及审阅报告} .shadow/ {§9 中写入的 evolve.md，若无则省略}
+git add {修复涉及的文件及审阅报告} .shadow/ {§10 中写入的 evolve.md，若无则省略}
 git commit -m "[{N}-{name}/stage-{M}-{name}] resolve: 审查修复"
 ```
 
-### 11. Status Report
+### 12. Status Report
 
-完成工作后，报告与 §8 日志中 Stage 级状态一致的结果。
+完成工作后，报告与 §9 日志中 Stage 级状态一致的结果。
 
 ```
 Status: DONE | DONE_WITH_DEFERRED

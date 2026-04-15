@@ -97,7 +97,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 
 ### 7. Write Architecture
 
-获得用户确认后，写入架构文档 `./vibewire/{N}-{name}/architecture.md`：** 包含模块划分、数据流，以及步骤 6 中确认的项目级决策变更提案（标注为"待同步至 project.md"）。不含其他项目级信息。
+获得用户确认后，写入架构文档 `.vibewire/{N}-{name}/architecture.md`：** 包含模块划分、数据流，以及步骤 6 中确认的项目级决策变更提案（标注为"待同步至 project.md"）。不含其他项目级信息。
 
 ### 8. User Review
 
