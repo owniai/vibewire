@@ -1,241 +1,209 @@
 ---
 name: go
-description: "执行调度器 — 读取规划文档和全局设计，调度 stager/tester/implementer 完成从里程碑设计到代码实现的端到端流程。在 /global-design 完成后由用户调用 /go {seq}-{name} 启动。"
+description: Use ONLY when the user explicitly invokes /vibewire:go. Do not auto-trigger based on the existence of design documents or planning artifacts.
 ---
 
-# Go：从设计到实现
+# Go: From Architecture to Implementation
 
-## 概述
+## Overview
 
-读取需求文档、架构设计和里程碑规划，通过调度三个专业 Agent（stager、tester、implementer），按里程碑和阶段迭代完成代码实现和测试验证。
-
-## 流程
-
-### 1. 初始化
-
-- 确认 `.vibewire/{seq}-{name}/` 目录存在
-- 读取 `requirements.md`、`architecture.md` 和 `design.md`
-- 确认文件内容完整，否则提示用户先运行 `/spec` 和 `/global-design`
-- 检测当前目录是否为 git 仓库，若不是则 `git init` 初始化
-- 根据项目信息（语言、框架等）创建或更新 `.gitignore`
-- 若仓库无任何提交，创建初始提交
-- 运行项目测试确认基线干净（如项目无测试则跳过）。若失败 → 暂停，报告失败信息，等待用户处理
+按阶段迭代调度专业 Agent，从阶段设计到代码实现的端到端交付。
 
 <HARD-RULE>
-所有 Agent 调用必须严格按照本文档中的模板使用 Agent 工具执行，不得自行修改、省略或替换模板内容。模板中的 `{变量}` 需替换为实际值。
+你是调度者，不是执行者。专注于流程推进和 Agent 派发，任何时候不要深入实现细节——所有具体任务都必须派发给对应职责的 Agent 去操作。所有 Agent 调用必须严格按照本文档中的模板使用 Agent 工具执行，不得自行修改、省略或替换模板内容。模板中的 `{变量}` 需替换为实际值。
 </HARD-RULE>
 
-### 2. 里程碑循环
+## Process
 
-对 `design.md` 中列出的每个里程碑，按顺序执行：
+### 1. Initialize
 
-#### 2.1 里程碑设计
+解析用户参数获取 `{N}-{name}`，完成以下检查：
+1. 确认 `.vibewire/{N}-{name}/` 目录存在，且包含 `requirements.md` 和 `architecture.md`
+   - 若缺失 → 提示用户先运行 `/vibewire:aim`
+2. 记录当前分支名（后续合并需要），创建 feature 分支：
+   ```
+   {original-branch} = git rev-parse --abbrev-ref HEAD
+   git checkout -b feature/{N}-{name}
+   ```
+3. 运行项目测试确认基线干净（如项目无测试则跳过）。若失败 → 暂停，报告失败信息，等待用户处理
 
-创建里程碑分支：
+### 2. Global Planning
+
+调用 planner 产出全局阶段规划：
 
 ```
-git checkout -b milestone-{N}-{name}
-```
-
-调用 stager 执行 Milestone Design：
-
-```
-subagent_type: "stager"
-description: "stager Milestone Design {N}-{name}"
+subagent_type: "vibewire:planner"
+description: "planner {N}-{name}"
 prompt: |
-  执行 Milestone Design。
-  里程碑序号：{N}，里程碑名称：{name}
-  规划目录：.vibewire/{seq-name}/
+  执行全局阶段规划。
+  规划目录：.vibewire/{N}-{name}/
 ```
 
-stager 完成后，提交设计文档并进入阶段循环：
+planner 完成后，从其状态报告中获取阶段列表。
+
+### 3. Stage Loop
+
+对 §2 获取的阶段列表中的每个 Stage，按顺序执行以下步骤。
+
+#### 3.1 Stager
+
+调用 stager 设计当前阶段：
 
 ```
-git add .vibewire/{seq-name}/milestone-{N}-{name}/
-git commit -m "docs(milestone-{N}): 里程碑设计文档"
-```
-
-#### 2.2 阶段循环
-
-对当前里程碑中的每个 stage，按顺序执行：
-
-**步骤 1 — tester（Red）：**
-
-```
-subagent_type: "tester"
-description: "tester Stage {N}-{M}"
+subagent_type: "vibewire:stager"
+description: "stager Stage {M}-{name}"
 prompt: |
-  执行测试编写。
-  规划目录：.vibewire/{seq-name}/
-  Stage 文档：.vibewire/{seq-name}/milestone-{N}-{name}/stage-{N}-{M}.md
+  执行阶段设计。
+  规划目录：.vibewire/{N}-{name}/
+  阶段：Stage {M}-{name}
 ```
 
-根据 tester 状态码处理：
+stager 完成后继续下一步骤。
+
+#### 3.2 Implementer
+
+```
+subagent_type: "vibewire:implementer"
+description: "implementer Stage {M}-{name}"
+prompt: |
+  执行全部实现步骤。
+  规划目录：.vibewire/{N}-{name}/
+  Stage 文档：.vibewire/{N}-{name}/stage-{M}-{name}.md
+```
+
+根据 implementer 状态码处理：
 
 | 状态 | 含义 | 处理方式 |
 |------|------|----------|
-| DONE | 测试编写完成 | 继续下一步骤 |
-| DONE_WITH_CONCERNS | 完成但有顾虑 | 记录顾虑到日志，继续下一步骤 |
-| BLOCKED | 无法继续 | 调用 stager 修复文档后重试（最多 2 次），仍失败则暂停等用户 |
-| NEEDS_CONTEXT | 需要额外信息 | 补充缺失上下文后调度新的 agent |
+| DONE | 完成 | 继续下一步骤 |
+| DOC_ISSUE | 文档设计问题 | 按 §BLOCKED 处理流程修复 |
+| BLOCKED | 连续修复失败 | 按 §BLOCKED 处理流程修复 |
 
-**步骤 2 — implementer（Green）：**
+#### 3.3 Reviewers
 
-tester 完成后，启动 implementer 执行全部步骤：
+implementer 完成后，同时启动三个审查 agent：
 
 ```
-subagent_type: "implementer"
-description: "implementer Stage {N}-{M}"
+subagent_type: "vibewire:efficiency-reviewer"
+description: "efficiency-reviewer Stage {M}-{name}"
 prompt: |
-  执行全部实现步骤（Review → Implement → Verify → Self-Review → Commit）。
-  规划目录：.vibewire/{seq-name}/
-  Stage 文档：.vibewire/{seq-name}/milestone-{N}-{name}/stage-{N}-{M}.md
+  执行效率审查。
+  规划目录：.vibewire/{N}-{name}/
+  阶段：{M}-{name}
 ```
 
-根据 implementer 状态码处理（同 tester 状态码表）。
+```
+subagent_type: "vibewire:quality-reviewer"
+description: "quality-reviewer Stage {M}-{name}"
+prompt: |
+  执行质量审查。
+  规划目录：.vibewire/{N}-{name}/
+  阶段：{M}-{name}
+```
 
-**步骤 3 — review-code（审查）：**
+```
+subagent_type: "vibewire:reuse-reviewer"
+description: "reuse-reviewer Stage {M}-{name}"
+prompt: |
+  执行复用审查。
+  规划目录：.vibewire/{N}-{name}/
+  阶段：{M}-{name}
+```
 
-implementer 完成且状态为 DONE 后，执行 reuse, quality, and efficiency 三维度代码审查。从 `references/review-agents.md` 读取提示词模板，使用 Agent 工具同时启动三个 agent。
-
-等待三个 agent 完成，根据各自输出的一行摘要判断结果：
+等待三个 agent 完成，根据各自输出的摘要判断结果：
 
 - **全部无问题** → 继续下一 stage
-- **存在至少一个问题** → 从 `references/review-approver.md` 读取提示词模板，使用 Agent 工具启动修复 agent。修复 agent 完成后检查其输出的测试结果：
-  - **PASS** → 继续下一 stage
-  - **FAIL** → 暂停，报告失败信息，等待用户处理
-
-#### 2.3 里程碑总结
-
-所有 stage 完成后，生成 `.vibewire/{seq-name}/milestone-{N}-{name}/summary.md`：
-
-```markdown
-# Milestone {N}: {里程碑名称} — 总结
-
-## 完成概况
-- 阶段数：{N}
-- 总任务数：{N}
-
-## 阶段完成情况
-| Stage | 名称 | 任务数 | 状态 |
-| ----- | ----- | ----- | ----- |
-| {N}-{M} | {名称} | {N} | ✅ 通过 |
-
-## 修改文件
-- [列出所有新建和修改的文件]
-
-## Issues 遗留
-- [列出未解决的问题]
-```
-
-提交总结，运行全量测试验证后合并回主分支：
+- **存在至少一个问题** → 启动 resolver：
 
 ```
-git add .vibewire/{seq-name}/milestone-{N}-{name}/summary.md
-git commit -m "docs(milestone-{N}): 里程碑总结"
-```
-
-运行全量测试：
-
-- **Green** → 合并回主分支：
-
-```
-git checkout {main-branch}
-git merge milestone-{N}-{name}
-```
-
-- **Red** → 暂停，报告失败信息，等待用户处理
-
-### 3. 最终总结
-
-所有里程碑完成后，生成 `.vibewire/{seq-name}/final-summary.md`：
-
-```markdown
-# 最终总结 — {任务名称}
-
-## 概况
-- 规划目录：.vibewire/{seq-name}/
-- 总里程碑数：{N}
-- 总阶段数：{N}
-- 总任务数：{N}
-
-## 里程碑完成情况
-| Milestone | 名称 | 阶段数 | 任务数 | 状态 |
-| --------- | ----- | ----- | ----- | ----- |
-| {N} | {名称} | {N} | {N} | ✅ 通过 |
-
-## 修改文件汇总
-- [列出所有新建和修改的文件]
-
-## Issues 遗留
-- [列出所有未解决的问题]
-
-## 下一步
-- 运行项目测试确认完整性
-- 检查遗留问题是否需要处理
-```
-
-### BLOCKED 处理流程
-
-1. 调用 stager 修复相关文档：
-
-```
-subagent_type: "stager"
-description: "stager fix {agent-name} issues"
+subagent_type: "vibewire:resolver"
+description: "resolver Stage {M}-{name}"
 prompt: |
-  执行者报告了问题，请修改相关文档以解决。
-  规划目录：.vibewire/{seq-name}/
-  里程碑序号：{N}，里程碑名称：{name}
-  问题来源：{agent-name}
-  问题描述：{agent 报告的问题内容}
+  执行审查修复。
+  规划目录：.vibewire/{N}-{name}/
+  阶段：{M}-{name}
 ```
 
-2. 修复后重新调用报告问题的 agent（使用原模板）
-3. 若 2 次修复后仍 BLOCKED → 暂停，列出未解决问题，等待用户介入
+resolver 完成后根据状态码处理：
+
+| 状态 | 处理方式 |
+|------|----------|
+| DONE | 继续下一 stage |
+| DONE_WITH_DEFERRED | 继续下一 stage（延后项已由 resolver 记录） |
+
+### 4. Wrap-Up
+
+所有 stage 完成后，调用 evolver：
+
+```
+subagent_type: "vibewire:evolver"
+description: "evolver {N}-{name}"
+prompt: |
+  执行经验提炼与漂移记录。
+  规划目录：.vibewire/{N}-{name}/
+```
+
+evolver 完成后，报告整体完成状态，然后询问用户如何合并，使用 AskUserQuestion 提供以下选项：
+1. **Merge 到原始分支** — `git checkout {original-branch} && git merge feature/{N}-{name}`
+2. **Squash merge 到原始分支** — `git checkout {original-branch} && git merge --squash feature/{N}-{name} && git commit`
+3. **创建 Pull Request** — 使用 `gh pr create` 向 `{original-branch}` 发起 PR
+4. **暂不合并** — 保留 feature 分支，稍后手动处理
+
+用户选择后执行对应操作。
+
+## BLOCKED / DOC_ISSUE Handling
+
+当 implementer 报告 DOC_ISSUE 或 BLOCKED 时：
+
+1. 调用 stager 修复相关阶段文档：
+
+```
+subagent_type: "vibewire:stager"
+description: "stager fix Stage {M}-{name}"
+prompt: |
+  实现阶段报告了问题，请修改相关阶段文档以解决。
+  规划目录：.vibewire/{N}-{name}/
+  阶段：Stage {M}-{name}
+  问题来源：implementer
+  问题描述：{implementer 报告的问题内容}
+```
+
+2. 修复后重新调用 implementer（使用 §3.2 原模板）
+3. 若 2 次修复后仍有问题 → 暂停，列出未解决问题，等待用户介入
 
 暂停时输出：
 
 ```
-Stage {N}-{M}: {名称} 执行失败（2 次自动修复后仍有问题）
+Stage {M}-{name}: 执行失败（2 次自动修复后仍有问题）
 
 Issues 列表：
 - [列出所有未解决的问题]
 
-请手动处理后，运行 /go {seq}-{name} 继续
+请手动处理后，运行 /vibewire:go {N}-{name} 继续
 ```
 
-### NEEDS_CONTEXT 处理流程
+## Key Principles
 
-1. 分析 agent 报告的上下文需求
-2. 从项目文档或代码中提取所需信息
-3. 在 agent 的 prompt 中补充所需上下文后重新调度
-
-## 调用 Agent 通用规则
-
-- stager、tester、implementer 均按调用独立启动新 agent 实例，不跨调用复用
-- implementer 一次运行全部步骤（Review → Implement → Verify → Self-Review → Commit），无需分次调用
-- 每次调用时严格使用流程步骤中的提示词模板，仅替换 `{变量}` 为实际值
-- 不得自行修改、省略或替换模板内容
-- Agent 工作目录为项目根目录
-
-## 关键原则
-
-- **严格按序执行** — 里程碑和阶段按 design.md 中的依赖顺序执行，不跳阶段
-- **TDD 串行** — tester 完成 Red 后再启动 implementer，严格遵循 Red → Green 循环
-- **审批门控** — stager 每步输出后等待用户审批，不跳步
+- **调度者定位** — 所有 agent 按调用独立启动新实例，不跨调用复用；每次调用严格使用流程步骤中的提示词模板，仅替换 `{变量}` 为实际值
+- **严格按序执行** — 阶段按阶段列表中的依赖顺序执行，不跳阶段
 - **状态码驱动** — 根据 agent 状态码决定后续动作，不猜测
-- **自动修复** — agent BLOCKED 时自动调用 stager 修复文档后重试
+- **自动修复** — agent BLOCKED 或 DOC_ISSUE 时自动调用 stager 修复文档后重试
 - **暂停而非猜测** — 超过重试上限时暂停等用户
 - **过程可追溯** — 所有过程记录在 `.vibewire/` 目录
 
-## 错误处理
+## Anti-Pattern
+
+- **"帮 agent 补充实现"** — 调度者的职责是派发和串联，不是替 agent 写代码或改文档。如果 agent 输出不完整，应该重试或修复 agent 的输入，而不是自己动手
+- **"并行执行有依赖的 stage"** — stage 之间有明确的前后依赖（类型定义、共享状态等），并行执行会导致后续 stage 缺少前置产出而失败
+- **"跳过审查直接进入下一 stage"** — 即使 implementer 报告 DONE，reviewer 和 resolver 仍是必要环节。跳过审查会累积技术债务
+- **"修改 agent 的 prompt 模板"** — 模板是契约，不得自行增删字段或改写措辞。如果模板不满足需求，应该修改 SKILL.md 本身
+- **"自动合并到主分支"** — 合并是影响共享状态的操作，必须由用户选择时机和方式
+
+## Error Handling
 
 | 场景 | 处理方式 |
-| ------ | -------- |
-| 规划目录不存在 | 提示用户先运行 `/spec` |
-| requirements.md、architecture.md 或 design.md 缺失 | 提示文档不完整，运行 `/spec` 和 `/global-design` |
+|------|----------|
+| 规划目录不存在或缺少 requirements.md/architecture.md | 提示用户先运行 `/vibewire:aim` |
 | 基线测试失败 | 暂停，报告失败信息，等待用户处理 |
-| 里程碑全量测试失败 | 暂停，报告失败信息，等待用户处理 |
-| tester/implementer BLOCKED | 调用 stager 修复文档，修改后重新执行（最多 2 次） |
-| 2 次修复后仍 BLOCKED | 暂停，列出未解决问题，等待用户介入 |
-| tester/implementer NEEDS_CONTEXT | 提供上下文后重新调度 |
+| implementer DOC_ISSUE / BLOCKED | 调用 stager 修复文档，重新执行（最多 2 次） |
+| 2 次修复后仍有问题 | 暂停，列出未解决问题，等待用户介入 |
