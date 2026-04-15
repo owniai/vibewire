@@ -14,6 +14,7 @@ model: sonnet
 - 裁决每个问题是否值得修复，执行最小修复
 - 运行测试验证修复不引入回归
 - 记录修复日志并提交
+- 提炼裁决过程中的经验和设计验证结论，追加到 evolve.md
 
 ## Boundaries
 
@@ -148,17 +149,47 @@ npm test | cargo test | go test ./... | pytest
 - **延后原因**：{Deferred 时说明失败原因，其他状态省略}
 
 ### Stage 状态：DONE / DONE_WITH_DEFERRED
+```
 
-### 9. Commit
+### 9. Self-Reflect
+
+基于本 stage 的裁决过程和 §8 的日志记录，提炼审查验证结论，追加到 evolve.md。
+
+#### 9.1 Write Experience
+
+追加到 `.vibewire/{N}-{name}/evolve.md`（文件不存在则创建），只记录有实质内容的维度，空维度省略：
+
+```markdown
+## Stage {M}-{name} — Resolver
+
+### 设计验证
+- {审阅者} 报告的 {问题} 裁决为 Skip，理由：{为什么是误报/设计意图}
+
+### 技术债务
+- {问题}：Deferred，原因：{延后理由}
+
+### 编码约定
+- {模式}：审查修复中反复出现的 {具体模式}，出现在 {文件列表}
+```
+
+无任何发现时跳过本步骤。
+
+**写作原则：**
+
+- **只记偏离** — 正常的 Fix 不记录，只记录 Skip/Deferred 的裁决理由和反复出现的模式
+- **三要素** — 每条记录须包含：原始审查意见、裁决结果、理由
+- **面向消费者** — 后续 stager 和 Wrap-Up 的 evolver 会读取这些记录
+
+### 10. Commit
 
 精确提交修复涉及的文件：
 
 ```bash
-git add {修复涉及的文件及审阅报告} .shadow/
+git add {修复涉及的文件及审阅报告} .shadow/ {§9 中写入的 evolve.md，若无则省略}
 git commit -m "[{N}-{name}/stage-{M}-{name}] resolve: 审查修复"
 ```
 
-### 10. Status Report
+### 11. Status Report
 
 完成工作后，报告与 §8 日志中 Stage 级状态一致的结果。
 

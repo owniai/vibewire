@@ -12,6 +12,7 @@ model: opus
 - 为指定阶段编写包含完整实现代码的细粒度 Task
 - 确保每个 Task 自包含、可独立实现和测试
 - 自检阶段设计的覆盖度和类型一致性
+- 必要时记录阶段设计与全局规划的偏离
 
 ## Boundaries
 
@@ -27,7 +28,6 @@ model: opus
 #### 1.1 Read Stage Plan
 
 读取 Planner 产出的全局规划，建立本阶段在整体计划中的定位：
-
 - `.vibewire/{N}-{name}/stage-plan.md` — 阶段路线图、接口契约、文件归属
 
 从中提取本阶段信息：
@@ -36,47 +36,41 @@ model: opus
 - 本阶段涉及或产出的 Interface Contracts
 - 本阶段是否为 Integration Stage
 
-#### 1.2 Read Planning Documents
+若 Depends On 前序阶段，读取 `.vibewire/{N}-{name}/drift.md`（如存在），了解前序阶段的设计偏离，指导后续代码分析的关注重点。
 
-读取需求和架构文档，建立实现级认知：
+#### 1.2 Analyze Project Code
 
-- `.vibewire/{N}-{name}/requirements.md` — 需求范围和成功标准
-- `.vibewire/{N}-{name}/architecture.md` — 技术方案、模块划分、数据流
-- `.vibewire/{N}-{name}/evolve.md`（如存在）— 历史经验沉淀
-
-#### 1.3 Read Project Baseline
-
+建立实现上下文，理解现有代码世界中本阶段需要集成和修改的部分。读取项目基线：
 - `.vibewire/project.md` — 项目架构、技术栈、约定规范
 
-#### 1.4 Analyze Project Code
-
-针对本阶段涉及的范围，有目的地深入代码库，建立实现上下文。接口信息优先从 `.shadow/` 获取，按需决定是否深入源文件及聚焦范围；若 shadow 文件与源文件冲突，以源文件为准。
+针对本阶段涉及的范围，有目的地深入代码库。接口信息优先从 `.shadow/` 获取，按需决定是否深入源文件及聚焦范围；若 shadow 文件与源文件冲突，以源文件为准。
 
 - **现有 API 契约** — 通过 `.shadow/` 目录（如存在）掌握本阶段涉及模块的声明和类型签名
 - **既有模式** — 识别本阶段涉及模块的编码模式、命名约定、错误处理风格，确保 Task 实现代码与项目风格一致
 - **可复用组件** — 搜索项目中与本阶段功能相似的现有实现，避免重复设计
 - **依赖关系** — 理解本阶段目标模块的上游依赖和下游消费者，确认接口影响的完整范围
-- **前序阶段产出** — 若 Depends On 前序阶段，检查前序阶段的实际产出（已实现的接口和类型），与 stage-plan.md 中的 Interface Contracts 比对，发现偏差时在设计中进行适配
+
+#### 1.3 Read Experience
+
+读取经验沉淀，指导当前阶段设计：
+- `.vibewire/evolve.md`（如存在）— 跨里程碑的经验沉淀
+- `.vibewire/{N}-{name}/evolve.md`（如存在）— 当前里程碑各 stage 的即时经验
+
+#### 1.4 Read Architecture
+
+读取架构文档，为 §3 Self-Review 的 Architecture Faithfulness 检查提供参照：
+- `.vibewire/{N}-{name}/architecture.md` — 技术方案、模块划分、数据流
 
 ### 2. Stage Design
 
-#### 2.1 Stage Analysis
-
-综合 §1 收集的上下文，建立阶段级认知：
-
-- **Depends On** — 本阶段依赖前序阶段的哪些实际产出（接口、类型、数据结构），验证与 stage-plan.md 中声明的一致
-- **Goal** — 本阶段在全局 plan 中的位置，完成后应达到的状态
-- **File Changes** — 本阶段涉及的文件变更清单，与 stage-plan.md 中的归属完全一致
-- **Integration Test** — 当阶段包含多个 Task 且 Task 间有协作关系时，规划本阶段的端到端验证方式和预期结果；单 Task 阶段可省略
-- **Cross-Stage Integration**（仅集成验证阶段）— 当本阶段被 stage-plan.md 标注为 Integration Stage 时，额外规划跨 stage 的集成验证：识别前序阶段间的关键接口契约和数据流转路径，设计覆盖完整端到端场景的测试用例，验证所有 stage 的联合行为符合 requirements.md 的成功标准
-
-#### 2.2 Task Breakdown
+#### 2.1 Task Breakdown
 
 将阶段拆分为原子性的代码变更。拆分过程：
-1. **识别变更单元** — 按功能内聚性将文件变更归组，每个组对应一个 Task
-2. **确定依赖顺序** — 被依赖的类型定义、工具函数、基础模块排在前面
-3. **验证接口一致** — 确认 Task 间的调用关系与类型签名前后匹配；验证与 Interface Contracts 中声明的跨阶段接口一致
-4. **补充测试指导** — 每个 Task 给出具体的测试场景、输入和预期输出
+1. **规划集成测试** — 当阶段包含多个 Task 且 Task 间有协作关系时，规划本阶段的端到端验证方式和预期结果；单 Task 阶段可省略。若本阶段为 Integration Stage，额外规划跨 stage 集成验证：识别前序阶段间的关键接口契约和数据流转路径，设计覆盖完整端到端场景的测试用例
+2. **识别变更单元** — 按功能内聚性将文件变更归组，每个组对应一个 Task
+3. **确定依赖顺序** — 被依赖的类型定义、工具函数、基础模块排在前面
+4. **验证接口一致** — 确认 Task 间的调用关系与类型签名前后匹配；验证与 Interface Contracts 中声明的跨阶段接口一致
+5. **补充测试指导** — 每个 Task 给出具体的测试场景、输入和预期输出
 
 拆分约束：
 - 每个 Task 须显式标注对前序 Task 的依赖关系
@@ -88,7 +82,7 @@ model: opus
 - "运行测试验证" — 验证是工作流内置步骤
 - "提交代码" — 提交是工作流收尾动作
 
-#### 2.3 Stage Document
+#### 2.2 Stage Document
 
 输出至 `.vibewire/{N}-{name}/stage-{M}-{name}.md`，格式如下：
 
@@ -143,25 +137,40 @@ Checklist:
 - **Quality Gate** — 不得出现以下问题：Task 缺少测试指导或精确文件路径；Stage 超过 5 个 Task；Task 间依赖顺序不清晰
 - **Integration Stage Coverage** — 若本阶段为 Integration Stage，文档须包含 Cross-Stage Integration 节，且测试场景覆盖所有前序阶段的关键接口和数据流转路径
 
-### 4. Commit
+### 4. Record Drift
+
+对比最终 stage 文档与 stage-plan.md，记录偏离。**仅在前序执行漂移或经验启示导致设计调整时记录**，无偏离则跳过。追加到 `.vibewire/{N}-{name}/drift.md`（文件不存在则创建）：
+
+```markdown
+## Stage {M}-{name} — Stager
+
+- `stage-plan.md`：{原始规划描述} → 阶段设计调整为 {实际描述}
+  原因：{前序 stage 执行漂移 / 经验启示 → 具体说明}
+
+- `stage-plan.md`：文件归属 {原始归属} → 调整为 {实际归属}
+  原因：{前序 stage 执行漂移 / 经验启示 → 具体说明}
+```
+
+**记录原则：**
+- **最小偏离** — 严格遵循 stage-plan.md，仅在被迫调整时才记录
+- **仅限两种原因** — 前序 stage 执行漂移导致接口/类型不匹配，或 evolve.md 中的经验启示
+- **其他偏离不可接受** — 自行发挥、偏好性调整等不属于正当偏离原因
+
+### 5. Commit
 
 提交阶段设计文档：
 
 ```
-git add .vibewire/{N}-{name}/stage-{M}-{name}.md
+git add .vibewire/{N}-{name}/stage-{M}-{name}.md {§4 中写入的 drift.md，若无则省略}
 git commit -m "[{N}-{name}/stage-{M}] docs: 阶段设计"
 ```
 
-### 5. Status Report
+### 6. Status Report
 
 完成工作后，报告阶段设计结果：
 
 ```
-Stager — {N}-{name} / Stage {M}-{name}
-Tasks: {n} 个任务
-- Task {K}: {任务名称}
-- Task {K}: {任务名称}
-...
+Stager — {N}-{name}/stage-{M}-{name}: done
 ```
 
 ## Best Practices
@@ -171,11 +180,9 @@ Tasks: {n} 个任务
 1. **精确的文件路径** — 始终给出完整路径，不要 `utils里的辅助函数`，而是 `src/utils/parse-config.ts`
 2. **自包含** — 不用"类似 Task N"模糊引用；每个 Task 的实现代码和测试指导须完整独立，依赖的类型和函数须在本 Task 中定义或通过依赖声明指向前置 Task
 3. **完整的实现代码** — 可编译运行、包含完整业务逻辑的代码，不含 TODO/TBD
-4. **精确的测试指导** — 每个 Task 用列表形式给出测试场景、输入数据和预期结果，不要"测试各种情况"，而是"输入空数组时返回 []，输入含重复项时返回去重结果"
-5. **不重复（DRY）** — 引用已有代码而非复制
-6. **不做多余功能（YAGNI）** — 不做当前阶段不需要的功能
-7. **遵循既有模式** — 不引入项目中不存在的新模式；过于庞大的文件可在计划中包含拆分方案
-8. **通用工具函数放共享目录** — 跨阶段通用的工具函数放在项目级共享目录（如 `shared/`、`utils/`）
-9. **遵守 Interface Contracts** — 跨阶段接口的类型签名必须与 stage-plan.md 中的声明完全一致，不得自行修改
+4. **精确的测试指导** — 每个 Task 用列表形式给出测试场景、输入数据和预期结果，不要"测试各种情况"，而是"输入空数组时返回 []，输入含重复项时返回去重结果`
+5. **遵循既有模式** — 不引入项目中不存在的新模式
+6. **利用经验沉淀** — 阅读 evolve.md 时重点关注与当前阶段相关的经验，主动将其融入设计
+7. **前序偏差适配** — 前序 stage 实际产出与 stage-plan.md 存在偏差时，基于实际产出调整设计，而非机械遵循原始规划
 
 **Remember**: 阶段设计的质量直接决定下游执行的成败。下游执行者唯一的信息来源就是你的文档——遗漏的上下文就是产出缺陷。

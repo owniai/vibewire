@@ -34,7 +34,7 @@ model: opus
 
 - `.vibewire/{N}-{name}/requirements.md` — 本次需求范围和成功标准
 - `.vibewire/{N}-{name}/architecture.md` — 本次技术方案、模块划分、数据流
-- `.vibewire/{N}-{name}/evolve.md`（如存在）— 历史经验沉淀
+- `.vibewire/evolve.md`（如存在）— 跨里程碑的经验沉淀
 - `.vibewire/{N}-{name}/drift.md`（如存在）— 历史 spec 漂移记录
 
 #### 1.3 Analyze Project Structure
@@ -124,16 +124,23 @@ model: opus
 ## Stage Plan
 
 - Stage 1-{name} — [一句话描述]
+  - Depends On: 无
   - 验收标准：[完成后应达到的状态]
   - 文件变更：
     - 新增 `path/to/file` — [职责]
     - 修改 `path/to/file` — [修改原因]
 - Stage 2-{name} — [一句话描述]
+  - Depends On: Stage 1-{name}
   - 验收标准：[完成后应达到的状态]
   - 文件变更：
     - 新增 `path/to/file` — [职责]
     - 修改 `path/to/file` — [修改原因]
-- 🔗 Integration Stage: Stage {M}-{name} — 跨 stage 端到端验证由本阶段承载
+- 🔗 Integration Stage: Stage {M}-{name} — [一句话描述]
+  - Depends On: Stage {M-1}-{name}
+  - 验收标准：[完成后应达到的状态]
+  - 文件变更：
+    - 新增 `path/to/file` — [职责]
+    - 修改 `path/to/file` — [修改原因]
 ```
 
 ### 3. Self-Review

@@ -14,6 +14,7 @@ model: sonnet
 - 运行测试验证实现正确性
 - 测试失败时自由修复代码或测试，直至全量通过
 - 通过后提交代码
+- 提炼执行过程中的经验和设计漂移，追加到 evolve.md 和 drift.md
 
 ## Boundaries
 
@@ -136,16 +137,65 @@ FIXED 状态的修改内容按以下分类：
 ### Stage 状态：DONE
 ```
 
-### 7. Commit
+### 8. Self-Reflect
+
+基于本 stage 的执行过程和 §7 的日志记录，提炼经验和漂移，追加到对应文件。
+
+#### 8.1 Write Experience
+
+追加到 `.vibewire/{N}-{name}/evolve.md`（文件不存在则创建），只记录有实质内容的维度，空维度省略：
+
+```markdown
+## Stage {M}-{name} — Implementer
+
+### 设计偏差
+- {描述}：stage 文档中 {原始描述} → 实际修复为 {实际描述}，原因：{为什么}
+
+### 测试盲区
+- {描述}：测试指导未覆盖 {场景}，原因：{为什么}
+
+### 文档缺陷
+- {描述}：{DOC_ISSUE 的具体内容}
+
+### 依赖断裂
+- {描述}：Task {K} 的 {接口} 与 Task {L} 的调用不一致，修复：{如何修复}
+
+### 环境约束
+- {描述}：{环境问题的具体内容}
+```
+
+无任何发现时跳过本步骤。
+
+#### 8.2 Write Drift
+
+对比 stage 文档中的实现代码与实际写入的代码，追加到 `.vibewire/{N}-{name}/drift.md`（文件不存在则创建）：
+
+```markdown
+## Stage {M}-{name} — Implementer
+
+- `path/to/file`：spec 定义 {原始描述} → 实现为 {实际描述}，原因：{为什么漂移}
+- `path/to/file`：spec 未规划 → 新增 {实际描述}，原因：{为什么需要}
+- `path/to/file`：spec 规划 {原始描述} → 未实现，原因：{为什么未实现}
+```
+
+无漂移时跳过本步骤。
+
+**写作原则：**
+
+- **只记偏离** — 正常完成的 Task 不记录，只记录偏离预期的行为
+- **三要素** — 每条记录须包含：原始预期、实际结果、原因
+- **面向消费者** — 后续 stager 和 Wrap-Up 的 evolver 会读取这些记录
+
+### 9. Commit
 
 提交代码：
 
 ```
-git add {本次 stage 涉及的所有文件} .shadow/
+git add {本次 stage 涉及的所有文件} .shadow/ {§8 中写入的 evolve.md 和 drift.md，若无则省略}
 git commit -m "[{N}-{name}/stage-{M}-{name}] feat: {阶段名称}"
 ```
 
-### 8. Status Report
+### 10. Status Report
 
 完成工作后，报告与 §7 日志中 Stage 级状态一致的结果。
 
