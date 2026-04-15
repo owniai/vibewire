@@ -20,8 +20,10 @@ description: Use ONLY when the user explicitly invokes /vibewire:go. Do not auto
 解析用户参数获取 `{N}-{name}`，完成以下检查：
 1. 确认 `.vibewire/{N}-{name}/` 目录存在，且包含 `requirements.md` 和 `architecture.md`
    - 若缺失 → 提示用户先运行 `/vibewire:aim`
-2. 创建 feature 分支：
+2. 记录当前分支名（后续合并需要），打 tag 标记起点，创建 feature 分支：
    ```
+   {original-branch} = git rev-parse --abbrev-ref HEAD
+   git tag vibewire/{N}-{name}/start
    git checkout -b feature/{N}-{name}
    ```
 3. 运行项目测试确认基线干净（如项目无测试则跳过）。若失败 → 暂停，报告失败信息，等待用户处理
@@ -125,6 +127,7 @@ description: "evolver {N}-{name}"
 prompt: |
   执行经验提炼与漂移记录。
   规划目录：.vibewire/{N}-{name}/
+  起点 tag：vibewire/{N}-{name}/start
 ```
 
 ```
@@ -133,22 +136,16 @@ description: "shadow-keeper {N}-{name}"
 prompt: |
   执行影子 API 维护。
   规划目录：.vibewire/{N}-{name}/
+  起点 tag：vibewire/{N}-{name}/start
 ```
 
-两者完成后，运行全量测试验证：
+两者完成后，报告整体完成状态，然后询问用户如何合并，使用 AskUserQuestion 提供以下选项：
+1. **Merge 到原始分支** — `git checkout {original-branch} && git merge feature/{N}-{name}`
+2. **Squash merge 到原始分支** — `git checkout {original-branch} && git merge --squash feature/{N}-{name} && git commit`
+3. **创建 Pull Request** — 使用 `gh pr create` 向 `{original-branch}` 发起 PR
+4. **暂不合并** — 保留 feature 分支，稍后手动处理
 
-- **Green** → 合并回主分支：
-
-```bash
-git checkout {main-branch}
-git merge feature/{N}-{name}
-```
-
-- **Red** → 暂停，报告失败信息，等待用户处理
-
-### 5. Completion
-
-所有 stage 完成并合并后，报告整体完成状态。
+用户选择后执行对应操作。
 
 ## BLOCKED / DOC_ISSUE Handling
 

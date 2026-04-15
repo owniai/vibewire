@@ -29,6 +29,7 @@ model: sonnet
 
 读取以下文档建立完整上下文：
 - `.vibewire/{N}-{name}/stage-{M}-{name}.md` — 当前阶段的任务定义，理解实现意图和约束
+- `.vibewire/{N}-{name}/log-implementer.md`（如存在）— 实现者标记的 concerns、BLOCKED 原因、设计文档问题等，作为裁决审阅发现的辅助上下文
 - 上一条提交涉及的变更文件，通过 `git diff --name-only HEAD~1 HEAD` 获取
 - 变更文件的完整代码（不只是 diff），理解修复的周边上下文
 

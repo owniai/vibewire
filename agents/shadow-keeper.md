@@ -24,14 +24,14 @@ model: sonnet
 
 ### 1. Identify Changes
 
-确认当前在实现分支上，获取变更文件列表：
+确认当前在实现分支上，获取变更文件列表（`{start-tag}` 由调用方传入，为 `vibewire/{N}-{name}/start`）：
 
 ```bash
 # 新增和修改的文件
-git diff --name-only {main-branch}...HEAD
+git diff --name-only {start-tag}...HEAD
 
 # 删除的文件
-git diff --diff-filter=D --name-only {main-branch}...HEAD
+git diff --diff-filter=D --name-only {start-tag}...HEAD
 ```
 
 过滤出源代码文件（排除配置文件、文档、测试等非 API 文件，如 `*.json`、`*.md`、`*.yaml`、`*.lock`、`*.test.*`、`*.spec.*` 等）。

@@ -52,7 +52,11 @@ model: opus
 
 #### 2.1 Requirement-Architecture Mapping
 
-将 architecture.md 中的每个模块/数据流映射到具体的代码变更：
+建立需求→架构→实现的双层映射，确保无遗漏：
+
+**需求追溯：** 逐条对照 requirements.md 的功能需求，确认每条需求在 architecture.md 中有对应的模块/数据流承载。未映射的需求须在此显式列出并说明原因（已有实现覆盖、跨迭代拆分等）。
+
+**架构落地：** 将 architecture.md 中的每个模块/数据流映射到具体的代码变更：
 - **模块定位** — 对照 project.md 中的现有架构，确定每个新模块/变更模块在项目中的位置
 - **变更清单** — 逐模块确定需要新增、修改、删除的文件，明确每个文件的变更职责
 - **接口影响** — 识别变更对现有模块接口的影响，确认是否需要适配
@@ -174,7 +178,8 @@ model: opus
 逐项检查以下内容，发现问题直接修复。局部修复（措辞、路径、类型签名等）直接修改即可；结构性修复（增删 Task、调整阶段顺序、修改接口契约等）须从全局视角评估影响范围，重新验证所有受影响的下游 Stage 和 Task 的依赖关系与类型一致性。
 
 Checklist:
-- **Architecture Coverage** — architecture.md 中的每个需求/模块必须指向具体的阶段和任务，未覆盖的缺口须补充
+- **Requirements Traceability** — requirements.md 中的每条功能需求必须可追溯到具体的阶段和任务；未覆盖的需求须补充，或显式标注为非本迭代范围并说明理由
+- **Architecture Faithfulness** — 阶段划分须忠实反映 architecture.md 的模块边界和数据流，不得通过拆分方式隐式改变架构决策
 - **Design Consistency** — Design Decisions 必须是 architecture.md 未覆盖的实现层选择，不得通过 Design Decisions 变更架构决策
 - **Placeholder Scan** — 计划中的所有文件路径必须精确完整，不得使用模糊引用
 - **Type Consistency** — 跨阶段的函数定义与调用必须前后匹配
