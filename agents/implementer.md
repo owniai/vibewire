@@ -104,7 +104,7 @@ Status: DOC_ISSUE
 
 ### 7. Write Log
 
-追加到 `.vibewire/{N}-{name}/log-implementer.md`（若无则创建），记录每个 Task 的状态，并在末尾记录整个 Stage 的状态。
+追加到 `.vibewire/{N}-{name}/log-implementer.md`（若无则创建并写入 `# Implementer Log — {N}-{name}` 文件头），记录每个 Task 的状态，并在末尾记录整个 Stage 的状态。
 
 #### Task 级状态
 
@@ -123,27 +123,18 @@ FIXED 状态的修改内容按以下分类：
 - `DONE` — 全部 Task 完成（含 FIXED 或 DONE_WITH_CONCERNS，细节已记录在各 Task 中）
 - `BLOCKED` — 任一 Task 为 BLOCKED
 
-示例：
+仅按状态填写对应字段，其余省略：
 
-```
-# Implementer Log — {N}-{name}
-
+```markdown
 ## Stage {M}-{name}
 
-### Task 1: {组件名称}
-- 状态：DONE
+### {序号}. {组件名称} | {状态}
+- **修改**：{FIXED→修改内容（设计文档问题/实现过程问题）}
+- **踩坑点**：{FIXED→具体描述}
+- **顾虑**：{DONE_WITH_CONCERNS→偏离的边界条件}
+- **阻塞原因**：{BLOCKED→连续失败的根因}
 
-### Task 2: {组件名称}
-- 状态：FIXED
-- 修改：{描述修改了什么}
-- 分类：设计文档问题 / 实现过程问题
-- 踩坑点：{具体描述踩了什么坑}
-
-### Task 3: {组件名称}
-- 状态：DONE_WITH_CONCERNS
-- 顾虑：{描述偏离了什么边界条件}
-
-### Stage 状态：DONE
+### Stage 状态：DONE / BLOCKED
 ```
 
 ### 8. Self-Reflect
@@ -171,6 +162,9 @@ FIXED 状态的修改内容按以下分类：
 
 ### 环境约束
 - {描述}：{环境问题的具体内容}
+
+### 其他发现
+- {描述}：{以上维度均不适用的问题或经验}
 ```
 
 无任何发现时跳过本步骤。
@@ -220,5 +214,7 @@ Status: DONE | BLOCKED
 1. **严格测试验证** — 测试是验证"外来代码"正确性的核心手段，必须严谨全面
 2. **不重复（DRY）** — 如发现 stage 文档的实现代码与现有模块重复，作为顾虑报告，不要自行替换
 3. **不做多余功能（YAGNI）** — 不添加任务要求之外的功能
+
+**先读后写** — 编辑文件前先读取目标文件（追加末尾时只需读取最后几行），确认当前内容后再写入。
 
 **Remember**: 核心职责是验证实现代码的正确性。编写严格的测试，遇到问题立即修复或报告，绝不猜测。
