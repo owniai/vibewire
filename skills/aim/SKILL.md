@@ -22,17 +22,20 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 3. **Requirements Clarification** — 一次一个，理解本次任务的目的/约束/成功标准
 4. **Present Requirements** — 向用户展示完整的需求描述
 5. **Write Requirements** — 写入 requirements.md
-6. **Explore Architecture** — 提出方案、权衡、架构设计
-7. **Write Architecture** — 写入 architecture.md
-8. **User Review** — 请用户审阅需求和架构
-9. **Commit** — 提交需求文档和架构文档
-10. **Transition to Execution** — 总结对话，提示用户使用 /vibewire:go
+6. **Tech Investigation** — 可选，评估是否需要技术栈/依赖调研
+7. **Explore Architecture** — 提出方案、权衡、架构设计
+8. **Write Architecture** — 写入 architecture.md
+9. **User Review** — 请用户审阅需求和架构
+10. **Commit** — 提交需求文档和架构文档
+11. **Transition to Execution** — 总结对话，提示用户使用 /vibewire:go
 
 ## Process
 
 ### 1. Explore Project Context
 
 **读取项目文档：** 读取 `.vibewire/project.md` 和 `.vibewire/CHANGELOG.md` 获取项目全貌。若不存在，提示用户先运行 `/vibewire:intro`。
+
+**读取技术调研结果：** 读取 `.vibewire/tech-research.md`（若存在），获取之前的技术调研结论，为后续需求澄清和架构设计提供技术事实基线。
 
 **读取历史经验：** 扫描 `.vibewire/` 下所有已有目录中的 `evolve.md` 和 `drift.md`，提取历史执行中的设计偏差、测试盲点、需求漂移等经验。这些经验用于：在需求澄清阶段避免重复已知陷阱，在架构设计阶段规避已知的偏差模式。若无历史记录则跳过。
 
@@ -82,10 +85,27 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 
 写入 `.vibewire/{N}-{name}/requirements.md`
 
-### 6. Explore Architecture
+### 6. Tech Investigation
+
+评估本次需求是否涉及技术栈变更或依赖更新（新增依赖、升级大版本、引入新框架等）。若不涉及，跳过此步骤，直接进入步骤 7。若涉及，基于已读取的技术调研报告和本次需求列出需要调研的具体目标（包名、技术栈、兼容性问题等），跳过已有充分调研结论的目标，然后调用 scout 执行调研：
+
+```
+subagent_type: "vibewire:scout"
+description: "scout {调研目标摘要}"
+prompt: |
+  执行技术调研。
+  调研目标：
+  - {目标1}
+  - {目标2}
+  ...
+```
+
+等待 scout 完成后，读取其报告中的调研结果，基于调研结果更新需求文档中与技术相关的约束和前提条件。
+
+### 7. Explore Architecture
 
 在现有项目架构基础上，设计与本次需求相关的架构变更。不涉及整体项目架构，职责边界限定在已确认的需求范围内。逐层与用户确认架构决策，每层提出 2-3 个选项并附权衡分析，推荐你认为最优的方案及理由。按以下顺序逐层推进：
-1. **项目级决策变更**（若有）— 如需变更 `project.md` 中的决策（新增依赖、变更技术栈等），首先提出并说明理由，获得用户确认
+1. **项目级决策变更**（若有）— 如需变更 `project.md` 中的决策（新增依赖、变更技术栈等），首先提出并说明理由，获得用户确认。若步骤 6 已完成技术调研，以调研事实为依据
 2. **架构概览与模块划分** — 变更在当前架构中的位置、新增/变更模块及单一职责
 3. **数据流** — 确认模块边界后，定义模块间的数据流转方向和通信模式
 4. **模块内部架构** — 逐模块展开内部设计
@@ -96,24 +116,26 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 - **按复杂度缩放** — 简单需求几句话，复杂需求可展开至 200-300 字
 - **抽象层级** — 不涉及接口签名、数据 schema、实现细节、代码
 
-### 7. Write Architecture
+### 8. Write Architecture
 
-获得用户确认后，写入架构文档 `.vibewire/{N}-{name}/architecture.md`：** 包含模块划分、数据流，以及步骤 6 中确认的项目级决策变更提案（标注为"待同步至 project.md"）。不含其他项目级信息。
+获得用户确认后，写入架构文档 `.vibewire/{N}-{name}/architecture.md`：** 包含模块划分、数据流、模块内部架构，以及步骤 7 中确认的项目级决策变更提案（标注为"待同步至 project.md"）。若步骤 6 完成了技术调研，项目级决策变更提案应以调研事实为依据。不含其他项目级信息。
 
-### 8. User Review
+### 9. User Review
 
 请用户审阅需求文档和架构文档。如用户要求修改，修改后重新请用户审阅。仅在用户确认后继续。
 
-### 9. Commit
+### 10. Commit
 
-将需求文档和架构文档提交到版本控制，作为规划的检查点：
+将需求文档、架构文档和技术调研报告（若有）提交到版本控制，作为规划的检查点：
 
 ```
 git add .vibewire/{N}-{name}/requirements.md .vibewire/{N}-{name}/architecture.md
+# 若步骤 6 执行了技术调研：
+git add .vibewire/tech-research.md
 git commit -m "[vibewire/aim] docs: add requirements and architecture for {N}-{name}"
 ```
 
-### 10. Transition to Execution
+### 11. Transition to Execution
 
 提示用户下一步：
 
@@ -142,3 +164,4 @@ git commit -m "[vibewire/aim] docs: add requirements and architecture for {N}-{n
 - **"一次呈现完整架构"** — 将所有架构决策打包抛给用户，缺乏逐层确认。应按决策依赖顺序逐层推进
 - **"顺便重构一下"** — 在架构设计中夹带无关的重构提案，模糊了当前需求的焦点
 - **"不读代码直接规划"** — 跳过上下文探索就设计方案，导致架构与现有实现脱节
+- **"引入新技术不做调研"** — 需求涉及新依赖或技术栈变更时跳过技术调研，导致实施阶段才发现兼容性问题或环境约束
