@@ -61,6 +61,10 @@ model: opus
 读取架构文档，为 §4 Self-Review 的 Architecture Faithfulness 检查提供参照：
 - `.vibewire/{N}-{name}/architecture.md` — 技术方案、模块划分、数据流
 
+#### 1.5 Read Experiment Results
+
+若 `.vibewire/experiments/{N}-{name}/experiment-report.md` 存在，读取实验报告，获取真实的技术数据（API 响应结构、AST 格式、性能数据等）作为编写 Task 实现代码的直接依据。实验报告中的原始数据是 architecture.md 不会记录的实现层细节，但编写正确代码不可或缺。若无实验报告则跳过。
+
 ### 2. Drift Assessment
 
 对比 stage-plan.md 与实际项目状态，评估本阶段是否需要偏离原始规划。仅接受以下两种偏离原因，其余偏离不可接受：
