@@ -22,10 +22,13 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 3. **Requirements Clarification** — 一次一个，理解本次任务的目的/约束/成功标准
 4. **Present Requirements** — 向用户展示完整的需求描述
 5. **Write Requirements** — 写入 requirements.md
-6. **Explore Architecture** — 提出方案、权衡、架构设计
-7. **Write Architecture** — 写入 architecture.md
-8. **User Review** — 请用户审阅需求和架构
-9. **Transition to Execution** — 总结对话，提示用户使用 /vibewire:go
+6. **Tech Investigation** — 可选，评估是否需要技术栈/依赖调研
+7. **Tech Experiment** — 可选，评估是否需要技术实验获取真实数据
+8. **Explore Architecture** — 提出方案、权衡、架构设计
+9. **Write Architecture** — 写入 architecture.md
+10. **User Review** — 请用户审阅需求和架构
+11. **Commit** — 提交需求文档和架构文档
+12. **Transition to Execution** — 总结对话，提示用户使用 /vibewire:go
 
 ## Process
 
@@ -33,9 +36,11 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 
 **读取项目文档：** 读取 `.vibewire/project.md` 和 `.vibewire/CHANGELOG.md` 获取项目全貌。若不存在，提示用户先运行 `/vibewire:intro`。
 
+**读取技术调研结果：** 读取 `.vibewire/tech-research.md`（若存在），获取之前的技术调研结论，为后续需求澄清和架构设计提供技术事实基线。
+
 **读取历史经验：** 扫描 `.vibewire/` 下所有已有目录中的 `evolve.md` 和 `drift.md`，提取历史执行中的设计偏差、测试盲点、需求漂移等经验。这些经验用于：在需求澄清阶段避免重复已知陷阱，在架构设计阶段规避已知的偏差模式。若无历史记录则跳过。
 
-**聚焦探索：** 若 `.shadow/` 存在，先读取与本次任务相关的 shadow 文件，快速了解现有模块的声明和类型定义。再根据需求定位重点源文件深入阅读。仅读取为评估本次变更所必需的文件，不发散探索无关模块，不逐行阅读大文件（优先读文件头部和关键导出）。
+**聚焦探索：** 若 `.shadow/` 存在，先读取与本次任务相关的 shadow 文件，快速了解现有模块的声明和类型定义。Shadow 文件是源文件的声明镜像（类似 .h 头文件），目录结构与源文件严格同构（如 `src/utils/helper.ts` 对应 `.shadow/src/utils/helper.ts`），保留 import、类型、接口、类签名、函数签名，省略函数体；行尾 `// L{start}-{end}` 标注指向源文件位置。再根据需求定位重点源文件深入阅读。仅读取为评估本次变更所必需的文件，不发散探索无关模块，不逐行阅读大文件（优先读文件头部和关键导出）。
 
 ### 2. Assess Task Scope
 
@@ -43,18 +48,18 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 
 **可一次交付的信号：**
 - 用一句话能描述完整交付物
-- 涉及模块 ≤ 4 个
+- 变更沿单一链路推进，无分支
 - 无独立的中间交付价值节点
+- 即使存在可拆分的中间节点，拆分后各部分工作量均较小，合并执行的开销低于拆分的开销
 
 **需要收窄的信号：**
 - 描述了多个独立子系统或能力维度
-- 涉及模块 > 5 个
+- 存在可独立交付且工作量充足的中间节点
 - 有明确的"先做 X 才能做 Y"的分层依赖
 
 **收窄策略：**
 - 优先选择能跑通核心端到端路径的最小功能集
 - 每个交付单元应可独立合并和验证
-- 超过 5 个模块变更的范围应考虑进一步收窄
 - 使用 AskUserQuestion 工具向用户展示收窄建议，先说明收窄原因和收窄后的范围，再提问确认
 
 ### 3. Requirements Clarification
@@ -81,38 +86,98 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 
 写入 `.vibewire/{N}-{name}/requirements.md`
 
-### 6. Explore Architecture
+### 6. Tech Investigation
 
-在现有项目架构基础上，设计与本次需求相关的架构变更。不涉及整体项目架构，职责边界限定在已确认的需求范围内。逐层与用户确认架构决策，每层提出 2-3 个选项并附权衡分析，推荐你认为最优的方案及理由。按以下顺序逐层推进：
+评估本次需求是否涉及技术栈变更或依赖更新（新增依赖、升级大版本、引入新框架等）。若不涉及，跳过此步骤，直接进入步骤 7。若涉及，基于已读取的技术调研报告和本次需求列出需要调研的具体目标（包名、技术栈、兼容性问题等），跳过已有充分调研结论的目标，然后调用调研 agent 执行调研：
+
+```
+subagent_type: "vibewire:scout"
+description: "scout {调研目标摘要}"
+prompt: |
+  执行技术调研。
+  调研目标：
+  - {目标1}
+  - {目标2}
+  ...
+```
+
+等待调研完成后，读取报告中的调研结果，基于调研结果更新需求文档中与技术相关的约束和前提条件。
+
+### 7. Tech Experiment
+
+评估架构设计是否依赖未验证的技术假设——需要获取真实结构、API 行为、性能数据等才能做出正确设计决策的场景。若不涉及，跳过此步骤，直接进入步骤 8。
+
+**需要实验的信号：**
+- 需要对接外部 API 且响应结构/认证流程未明确
+- 依赖的库/框架的文档与实际行为可能不一致
+- 性能敏感场景需要实测数据支撑架构选型
+- 需要解析/处理特定格式数据但不确定真实结构（如 AST、协议格式等）
+- 多个技术方案需要原型对比
+
+**不需要实验的信号：**
+- 使用熟知的内部模块，行为可从源码推断
+- 纯逻辑/结构重构，无外部依赖不确定性
+- 技术调研（步骤 6）已给出充分的事实依据
+
+若需要实验，基于需求和调研结果列出具体实验清单，每个实验须明确：实验意图（要获取什么信息）和预期产出（期望的数据形式），然后调用实验 agent 执行实验：
+
+```
+subagent_type: "vibewire:experimenter"
+description: "experimenter {实验目标摘要}"
+prompt: |
+  执行技术实验。规划目录：{N}-{name}
+  实验目标：
+  - {目标1}：{意图}，预期产出：{数据形式}
+  - {目标2}：{意图}，预期产出：{数据形式}
+  ...
+```
+
+等待实验完成后，读取 `.vibewire/experiments/{N}-{name}/experiment-report.md` 中的实验结果，将关键发现纳入架构设计的参考依据。
+
+### 8. Explore Architecture
+
+在现有项目架构基础上，设计与本次需求相关的架构变更。不涉及整体项目架构，职责边界限定在已确认的需求范围内。逐层与用户确认架构决策，每层提出 2-3 个选项并附权衡分析，推荐你认为最优的方案及理由。若步骤 6 已完成技术调研，所有架构层级的决策应以调研事实为依据；若步骤 7 已完成技术实验，所有架构层级的决策应以实验数据为依据。按以下顺序逐层推进：
 1. **项目级决策变更**（若有）— 如需变更 `project.md` 中的决策（新增依赖、变更技术栈等），首先提出并说明理由，获得用户确认
-2. **架构概览与模块划分** — 变更在当前架构中的位置、新增/变更模块及单一职责
-3. **数据流** — 确认模块边界后，定义模块间的数据流转方向和通信模式
+2. **架构概览与模块划分** — 变更在当前架构中的位置、新增/变更模块及单一职责、路径、依赖和被依赖关系
+3. **数据流** — 确认模块边界后，定义模块间的数据流转方向、通信模式和关键数据格式
 4. **模块内部架构** — 逐模块展开内部设计
+5. **关键类型与接口** — 跨模块共享的类型定义（标注产出自和消费于），以及需修改的既有接口（标注位置和影响范围）。若步骤 7 执行了技术实验，从实验报告中提取实验验证的真实结构作为类型基线
 
 **设计约束：**
 - **模块化** — 每个单元有单一明确的用途，边界清晰，可独立理解和测试
 - **遵循既有模式** — 不提出无关重构，保持聚焦于当前目标
 - **按复杂度缩放** — 简单需求几句话，复杂需求可展开至 200-300 字
-- **抽象层级** — 不涉及接口签名、数据 schema、实现细节、代码
+- **抽象层级** — 不涉及实现细节和代码；但跨模块共享的关键类型定义须在此确认，作为下游全局规划定义接口契约的直接依据
 
-### 7. Write Architecture
+### 9. Write Architecture
 
-获得用户确认后，写入架构文档 `.vibewire/{N}-{name}/architecture.md`：** 包含模块划分、数据流，以及步骤 6 中确认的项目级决策变更提案（标注为"待同步至 project.md"）。不含其他项目级信息。
+获得用户确认后，将步骤 8 中逐层确认的架构决策整合写入 `.vibewire/{N}-{name}/architecture.md`。按步骤 8 的层级顺序记录：项目级决策变更（标注为"待同步至 project.md"）、模块划分、数据流、模块内部架构、关键类型与接口。技术决策注明依据来源（调研结论、实验编号或既有经验）。不含其他项目级信息。
 
-### 8. User Review
+### 10. User Review
 
 请用户审阅需求文档和架构文档。如用户要求修改，修改后重新请用户审阅。仅在用户确认后继续。
 
-### 9. Transition to Execution
+### 11. Commit
+
+将需求文档、架构文档、技术调研报告和实验报告（若有）提交到版本控制，作为规划的检查点：
+
+```
+git add .vibewire/{N}-{name}/requirements.md .vibewire/{N}-{name}/architecture.md
+# 若步骤 6 执行了技术调研：
+git add .vibewire/tech-research.md
+# 若步骤 7 执行了技术实验：
+git add .vibewire/experiments/{N}-{name}/
+git commit -m "[vibewire/aim] docs: add requirements and architecture for {N}-{name}"
+```
+
+### 12. Transition to Execution
 
 提示用户下一步：
 
 ```
 规划已完成！需求文档和架构设计已保存到 .vibewire/{N}-{name}/ 目录。
 
-下一步：
-- 当前会话：直接运行 /vibewire:go {N}-{name}
-- 新会话：在新会话中运行 /vibewire:go {N}-{name}
+下一步：在新会话中运行 /vibewire:go {N}-{name}
 ```
 
 ## Key Principles
@@ -125,6 +190,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 - **保持灵活** — 当某些内容不合理时返回去澄清
 - **模块化设计** — 系统应拆分为边界清晰、可独立理解的单元
 - **严格执行YAGNI** — 从所有设计中删除不必要的功能
+- **忽略格式检查** — markdown lint 等文档格式告警一律忽略，内部规划文档不适用项目文档格式规范
 
 ## Anti-Pattern
 
@@ -133,3 +199,5 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 - **"一次呈现完整架构"** — 将所有架构决策打包抛给用户，缺乏逐层确认。应按决策依赖顺序逐层推进
 - **"顺便重构一下"** — 在架构设计中夹带无关的重构提案，模糊了当前需求的焦点
 - **"不读代码直接规划"** — 跳过上下文探索就设计方案，导致架构与现有实现脱节
+- **"引入新技术不做调研"** — 需求涉及新依赖或技术栈变更时跳过技术调研，导致实施阶段才发现兼容性问题或环境约束
+- **"凭假设做架构决策"** — 架构设计依赖未验证的技术假设（如外部 API 结构、库的实际行为、数据格式等）时跳过实验，导致设计方案与实际情况脱节
