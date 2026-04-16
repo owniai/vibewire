@@ -58,33 +58,55 @@ model: opus
 
 #### 1.4 Read Architecture
 
-读取架构文档，为 §3 Self-Review 的 Architecture Faithfulness 检查提供参照：
+读取架构文档，为 §4 Self-Review 的 Architecture Faithfulness 检查提供参照：
 - `.vibewire/{N}-{name}/architecture.md` — 技术方案、模块划分、数据流
 
-### 2. Stage Design
+### 2. Drift Assessment
 
-#### 2.1 Task Breakdown
+对比 stage-plan.md 与实际项目状态，评估本阶段是否需要偏离原始规划。仅接受以下两种偏离原因，其余偏离不可接受：
+- **前序漂移适配** — 若前序 stage 存在 drift.md 中记录的执行漂移（接口签名变更、文件归属调整等），确定本阶段需同步调整的范围
+- **经验启示适配** — 若 evolve.md 中存在适用于本阶段的经验教训，确定需要融入的设计变更
 
-将阶段拆分为原子性的代码变更。拆分过程：
-1. **规划集成测试** — 当阶段包含多个 Task 且 Task 间有协作关系时，规划本阶段的端到端验证方式和预期结果；单 Task 阶段可省略。若本阶段为 Integration Stage，额外规划跨 stage 集成验证：识别前序阶段间的关键接口契约和数据流转路径，设计覆盖完整端到端场景的测试用例
+评估后，有偏离则立即记录，无偏离则跳过。追加至 `.vibewire/{N}-{name}/drift.md`（文件不存在则创建）：
+
+```markdown
+## Stage {M}-{name} — Stager
+
+- {原始规划描述} → 调整为 {实际描述}
+  原因：{前序 stage 执行漂移 / 经验启示 → 具体说明}
+
+- 文件归属 {原始归属} → 调整为 {实际归属}
+  原因：{前序 stage 执行漂移 / 经验启示 → 具体说明}
+```
+
+**记录原则：**
+- **最小偏离** — 严格遵循 stage-plan.md，仅在被迫调整时才记录
+- **仅限两种原因** — 前序 stage 执行漂移导致接口/类型不匹配，或 evolve.md 中的经验启示
+- **其他偏离不可接受** — 自行发挥、偏好性调整等不属于正当偏离原因
+
+### 3. Stage Design
+
+基于 §2 的评估结论，将阶段拆分为原子性的代码变更。
+
+**拆分步骤：**
+1. **规划集成验证** — 当阶段包含多个 Task 且 Task 间有协作关系时，规划本阶段的端到端验证方式和预期结果；单 Task 阶段可省略。若本阶段为 Integration Stage，额外规划跨 stage 集成验证：识别前序阶段间的关键接口契约和数据流转路径，设计覆盖完整端到端场景的验证用例
 2. **识别变更单元** — 按功能内聚性将文件变更归组，每个组对应一个 Task
 3. **确定依赖顺序** — 被依赖的类型定义、工具函数、基础模块排在前面
-4. **验证接口一致** — 确认 Task 间的调用关系与类型签名前后匹配；验证与 Interface Contracts 中声明的跨阶段接口一致
+4. **验证接口一致** — 确认 Task 间调用关系与类型签名前后匹配；与 Interface Contracts 的对齐须考虑 §2 确认的偏离（若有）
 5. **补充测试指导** — 每个 Task 给出具体的测试场景、输入和预期输出
 
-拆分约束：
+**拆分约束：**
 - 每个 Task 须显式标注对前序 Task 的依赖关系
 - 跨任务共享的类型和函数须在靠前的任务中定义
-- Task 中引用的跨阶段接口须与 stage-plan.md 中的 Interface Contracts 完全一致
+- Task 中引用的跨阶段接口须与 stage-plan.md 中的 Interface Contracts 一致；经 §2 确认的偏离除外
 
+**Task 范围边界：**
 以下不属于 Task，是工作流的内置环节而非独立任务：
-- "编写测试代码" — 测试由测试指导驱动
+- "编写测试代码" — 不产出测试代码，测试由下游执行者根据测试指导自行编写。Task 的「实现」节仅包含生产代码（业务逻辑、类型定义、工具函数等），无论目标语言是否将测试与源码置于同一文件（如 Rust 的 `#[cfg(test)]` 模块、Go 的 `_test.go` 文件），一律不生成测试函数、测试用例代码或测试辅助宏；测试指导仅以自然语言描述场景和预期结果
 - "运行测试验证" — 验证是工作流内置步骤
 - "提交代码" — 提交是工作流收尾动作
 
-#### 2.2 Stage Document
-
-输出至 `.vibewire/{N}-{name}/stage-{M}-{name}.md`，格式如下：
+**输出格式：** 输出至 `.vibewire/{N}-{name}/stage-{M}-{name}.md`，格式如下：
 
 ```markdown
 # Stage {M}-{name}
@@ -116,52 +138,34 @@ model: opus
 - 删除：`path/to/file`
 
 **实现：**
-[完整实现代码]
+[完整生产代码 — 仅业务逻辑，不含测试代码。Rust 不含 `#[cfg(test)]` 模块，Go 不含 `_test.go` 内容]
 
-**测试指导：**
+**测试指导：**（仅描述场景与预期，不生成测试函数代码）
 - 正常路径：验证 {场景} 时 {预期行为}
 - 边界/异常路径：验证 {场景} 时 {预期行为}（如：空输入、非法参数、并发冲突等）
 ```
 
-### 3. Self-Review
+### 4. Self-Review
 
 逐项检查以下内容，发现问题直接修复。局部修复（措辞、路径、类型签名等）直接修改即可；结构性修复（增删 Task、修改接口契约等）须重新验证所有受影响 Task 的依赖关系与类型一致性。
 
 Checklist:
-- **Plan Compliance** — 文件变更清单须与 stage-plan.md 中本阶段的归属完全一致，不得增删文件或变更归属
-- **Interface Contracts Adherence** — 跨阶段接口的类型签名须与 stage-plan.md 中的声明完全匹配
+- **Plan Compliance** — 文件变更清单须与 stage-plan.md 中本阶段的归属一致；§2 中记录的偏离除外
+- **Interface Contracts Adherence** — 跨阶段接口的类型签名须与 stage-plan.md 中的声明匹配；§2 中记录的偏离除外
 - **Architecture Faithfulness** — Task 设计须忠实反映 architecture.md 的模块边界和数据流
 - **Placeholder Scan** — 文件路径必须精确完整，不得使用模糊引用
 - **Type Consistency** — Task 间的函数定义与调用须前后匹配
-- **Testability** — 每个 Task 的测试指导须具体到可编写测试用例的程度（有明确的输入、预期输出、场景分类）
+- **Testability** — 每个 Task 的测试指导须具体到可编写测试用例的程度（有明确的输入、预期输出、场景分类），且实现代码中不得混入测试代码
+- **Task Scope** — 每个 Task 须为实质性的代码变更任务（功能实现、类型定义、接口实现等），不得出现 Task 范围边界中排除的类型：独立测试编写、验证运行、提交操作等
 - **Quality Gate** — 不得出现以下问题：Task 缺少测试指导或精确文件路径；Stage 超过 5 个 Task；Task 间依赖顺序不清晰
 - **Integration Stage Coverage** — 若本阶段为 Integration Stage，文档须包含 Cross-Stage Integration 节，且测试场景覆盖所有前序阶段的关键接口和数据流转路径
-
-### 4. Record Drift
-
-对比最终 stage 文档与 stage-plan.md，记录偏离。**仅在前序执行漂移或经验启示导致设计调整时记录**，无偏离则跳过。追加到 `.vibewire/{N}-{name}/drift.md`（文件不存在则创建）：
-
-```markdown
-## Stage {M}-{name} — Stager
-
-- `stage-plan.md`：{原始规划描述} → 阶段设计调整为 {实际描述}
-  原因：{前序 stage 执行漂移 / 经验启示 → 具体说明}
-
-- `stage-plan.md`：文件归属 {原始归属} → 调整为 {实际归属}
-  原因：{前序 stage 执行漂移 / 经验启示 → 具体说明}
-```
-
-**记录原则：**
-- **最小偏离** — 严格遵循 stage-plan.md，仅在被迫调整时才记录
-- **仅限两种原因** — 前序 stage 执行漂移导致接口/类型不匹配，或 evolve.md 中的经验启示
-- **其他偏离不可接受** — 自行发挥、偏好性调整等不属于正当偏离原因
 
 ### 5. Commit
 
 提交阶段设计文档：
 
 ```
-git add .vibewire/{N}-{name}/stage-{M}-{name}.md {§4 中写入的 drift.md，若无则省略}
+git add .vibewire/{N}-{name}/stage-{M}-{name}.md {§2 中写入的 drift.md，若无则省略}
 git commit -m "[{N}-{name}/stage-{M}] docs: 阶段设计"
 ```
 
@@ -179,8 +183,8 @@ Stager — {N}-{name}/stage-{M}-{name}: done
 
 1. **精确的文件路径** — 始终给出完整路径，不要 `utils里的辅助函数`，而是 `src/utils/parse-config.ts`
 2. **自包含** — 不用"类似 Task N"模糊引用；每个 Task 的实现代码和测试指导须完整独立，依赖的类型和函数须在本 Task 中定义或通过依赖声明指向前置 Task
-3. **完整的实现代码** — 可编译运行、包含完整业务逻辑的代码，不含 TODO/TBD
-4. **精确的测试指导** — 每个 Task 用列表形式给出测试场景、输入数据和预期结果，不要"测试各种情况"，而是"输入空数组时返回 []，输入含重复项时返回去重结果`
+3. **完整的实现代码** — 可编译运行、包含完整业务逻辑的生产代码，不含 TODO/TBD，不含测试代码（Rust 不含 `#[cfg(test)]`，Go 不含 `_test.go`）
+4. **精确的测试指导** — 每个 Task 用列表形式给出测试场景、输入数据和预期结果，不要"测试各种情况"，而是"输入空数组时返回 []，输入含重复项时返回去重结果"；仅描述场景和预期，不生成测试函数代码
 5. **遵循既有模式** — 不引入项目中不存在的新模式
 6. **利用经验沉淀** — 阅读 evolve.md 时重点关注与当前阶段相关的经验，主动将其融入设计
 7. **前序偏差适配** — 前序 stage 实际产出与 stage-plan.md 存在偏差时，基于实际产出调整设计，而非机械遵循原始规划
