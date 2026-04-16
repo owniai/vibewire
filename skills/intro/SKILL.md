@@ -68,7 +68,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:intro. Do not a
 
 ### 4. Shadow Baseline
 
-为项目中的源代码文件生成 shadow 基线，供后续工作流引用。收集项目中的源代码文件（排除测试、配置、文档、样式等非源码文件），按代码量分批派发 shadow-writer agent（每批总行数不超过 5000 行，大文件单独一批）：
+为项目中的源代码文件生成 shadow 基线，供后续工作流引用。收集项目中的源代码文件（排除测试、配置、文档、样式等非源码文件），按代码量分批派发 shadow-writer agent（每批总行数不超过 3000 行，大文件单独一批）：
 
 ```
 subagent_type: "vibewire:shadow-writer"

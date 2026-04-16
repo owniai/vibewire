@@ -10,7 +10,7 @@ VibeWire orchestrates a pipeline of specialized agents that plan, implement, rev
 
 It starts with your project. Run `/vibewire:intro` once to scan the codebase and establish a documentation baseline.
 
-When you have a task, run `/vibewire:aim`. Through a structured conversation, the aim skill clarifies requirements with you, narrows scope if needed, and produces a requirements document and architecture design. You review and approve both before any code is written.
+When you have a task, run `/vibewire:aim`. Through a structured conversation, the aim skill clarifies requirements with you, narrows scope if needed, and produces a requirements document and architecture design. When the task involves new technologies or unverified assumptions, aim dispatches **scout** to investigate tech facts and **experimenter** to run real-world experiments — grounding architecture decisions in verified data. You review and approve both before any code is written.
 
 Then run `/vibewire:go`. The go skill dispatches agents through a stage-by-stage pipeline:
 
@@ -79,6 +79,8 @@ cp -r vibewire/skills ~/.claude/skills/
 /vibewire:intro → .vibewire/project.md, .vibewire/CHANGELOG.md, .shadow/
 
 /vibewire:aim → .vibewire/{N}-{name}/requirements.md
+              → scout (if tech unknowns) → .vibewire/tech-research.md
+              → experimenter (if unverified assumptions) → .vibewire/experiments/{N}-{name}/
               → .vibewire/{N}-{name}/architecture.md
               → (user reviews and approves)
 
@@ -102,22 +104,24 @@ cp -r vibewire/skills ~/.claude/skills/
 | Skill | Description |
 |-------|-------------|
 | **intro** | Scans the project, establishes documentation baseline (`.vibewire/project.md`, `.vibewire/CHANGELOG.md`), generates shadow API files |
-| **aim** | Collaborative requirement clarification and architecture design. Produces `requirements.md` and `architecture.md` |
+| **aim** | Collaborative requirement clarification and architecture design. Dispatches scout for tech investigation and experimenter for real-world validation when needed. Produces `requirements.md` and `architecture.md` |
 | **go** | Execution orchestrator. Dispatches agents in sequence through planning, implementation, and review stages |
 
-### Agents (9)
+### Agents (11)
 
-| Agent | Role |
-|-------|------|
-| **planner** | Reads requirements and architecture, produces a global stage breakdown with interface contracts |
-| **stager** | Converts a stage plan into fine-grained tasks with full implementation code |
-| **implementer** | Writes code from stage documents, writes and runs tests, fixes issues until all tests pass, then commits |
-| **efficiency-reviewer** | Reviews for performance issues — unnecessary work, missed concurrency, memory leaks, algorithmic inefficiency |
-| **quality-reviewer** | Reviews for anti-patterns — redundant state, parameter creep, copy-paste variants, over-abstraction, code smells |
-| **reuse-reviewer** | Reviews for duplication — searches existing utilities and patterns to identify reusable code opportunities |
-| **resolver** | Consolidates review reports from all three reviewers, deduplicates findings, cross-validates issues, executes minimal fixes |
-| **evolver** | Distills execution experience and design drift from stage outputs, updates project-level documentation |
-| **shadow-writer** | Extracts declarations from source files — all definitions without function bodies |
+| Agent | Role | Used By |
+|-------|------|---------|
+| **scout** | Investigates specified technologies and dependencies with factual findings — versions, compatibility, constraints | aim |
+| **experimenter** | Runs specified experiments to obtain real structures, API behaviors, or performance data | aim |
+| **planner** | Reads requirements and architecture, produces a global stage breakdown with interface contracts | go |
+| **stager** | Converts a stage plan into fine-grained tasks with full implementation code | go |
+| **implementer** | Writes code from stage documents, writes and runs tests, fixes issues until all tests pass, then commits | go |
+| **efficiency-reviewer** | Reviews for performance issues — unnecessary work, missed concurrency, memory leaks, algorithmic inefficiency | go |
+| **quality-reviewer** | Reviews for anti-patterns — redundant state, parameter creep, copy-paste variants, over-abstraction, code smells | go |
+| **reuse-reviewer** | Reviews for duplication — searches existing utilities and patterns to identify reusable code opportunities | go |
+| **resolver** | Consolidates review reports from all three reviewers, deduplicates findings, cross-validates issues, executes minimal fixes | go |
+| **evolver** | Distills execution experience and design drift from stage outputs, updates project-level documentation | go |
+| **shadow-writer** | Extracts declarations from source files — all definitions without function bodies | intro |
 
 ---
 
@@ -129,7 +133,9 @@ cp -r vibewire/skills ~/.claude/skills/
 vibewire/
 ├── .claude-plugin/
 │   └── plugin.json           # Plugin metadata
-├── agents/                   # 9 specialized agents
+├── agents/                   # 11 specialized agents
+│   ├── scout.md
+│   ├── experimenter.md
 │   ├── planner.md
 │   ├── stager.md
 │   ├── implementer.md
@@ -155,6 +161,9 @@ All process artifacts are stored in `.vibewire/` within the target project:
 .vibewire/
 ├── project.md                          # Project overview (created by intro)
 ├── CHANGELOG.md                        # Change log (created by intro)
+├── tech-research.md                    # Tech investigation results (created by scout)
+├── experiments/{N}-{name}/             # Experiment reports (created by experimenter)
+│   └── experiment-report.md
 ├── {N}-{name}/                         # Planning directory per task
 │   ├── requirements.md                 # Requirements document (created by aim)
 │   ├── architecture.md                 # Architecture design (created by aim)
@@ -168,34 +177,49 @@ All process artifacts are stored in `.vibewire/` within the target project:
 
 ### Agent Pipeline
 
-```
-User runs /vibewire:go {N}-{name}
-         │
-         ▼
-      planner ─── stages.md
-         │
-         ▼ (for each stage)
-      stager ─── stage-{M}-{name}.md
-         │
-         ▼
-      implementer ─── code + tests
-         │
-         ▼ (parallel)
-   ┌─────┼─────┐
-   │     │     │
-efficiency quality reuse
-reviewer  reviewer reviewer
-   │     │     │
-   └─────┼─────┘
-         │
-         ▼ (if issues found)
-      resolver ─── fixes
-         │
-         ▼ (after all stages)
-      evolver ─── experience + drift records
-         │
-         ▼
-   User chooses merge strategy
+```mermaid
+flowchart TD
+    subgraph aim["/vibewire:aim"]
+        direction TB
+        A1[Requirements Clarification] --> A2{Tech unknowns?}
+        A2 -- Yes --> A3["scout
+        Tech investigation"]
+        A3 --> A4{Unverified assumptions?}
+        A2 -- No --> A4
+        A4 -- Yes --> A5["experimenter
+        Run real-world experiments"]
+        A4 -- No --> A6[Architecture Design]
+        A5 --> A6
+    end
+
+    subgraph go["/vibewire:go"]
+        direction TB
+        G0[User approves] --> G1["planner
+        Stage breakdown"]
+        G1 --> G2["stager
+        Stage design"]
+        G2 --> G3["implementer
+        Code + tests"]
+        G3 --> G4{Review}
+
+        G4 --> G5["efficiency-reviewer"]
+        G4 --> G6["quality-reviewer"]
+        G4 --> G7["reuse-reviewer"]
+
+        G5 --> G8{Issues found?}
+        G6 --> G8
+        G7 --> G8
+        G8 -- Yes --> G9["resolver
+        Consolidate and fix"]
+        G8 -- No --> G10{More stages?}
+        G9 --> G10
+        G10 -- Yes --> G2
+        G10 -- No --> G11["evolver
+        Experience + drift"]
+        G11 --> G12[User chooses merge strategy]
+    end
+
+    aim --> go
 ```
 
 ---
