@@ -25,7 +25,8 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 6. **Explore Architecture** — 提出方案、权衡、架构设计
 7. **Write Architecture** — 写入 architecture.md
 8. **User Review** — 请用户审阅需求和架构
-9. **Transition to Execution** — 总结对话，提示用户使用 /vibewire:go
+9. **Commit** — 提交需求文档和架构文档
+10. **Transition to Execution** — 总结对话，提示用户使用 /vibewire:go
 
 ## Process
 
@@ -43,18 +44,18 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 
 **可一次交付的信号：**
 - 用一句话能描述完整交付物
-- 涉及模块 ≤ 4 个
+- 变更沿单一链路推进，无分支
 - 无独立的中间交付价值节点
+- 即使存在可拆分的中间节点，拆分后各部分工作量均较小，合并执行的开销低于拆分的开销
 
 **需要收窄的信号：**
 - 描述了多个独立子系统或能力维度
-- 涉及模块 > 5 个
+- 存在可独立交付且工作量充足的中间节点
 - 有明确的"先做 X 才能做 Y"的分层依赖
 
 **收窄策略：**
 - 优先选择能跑通核心端到端路径的最小功能集
 - 每个交付单元应可独立合并和验证
-- 超过 5 个模块变更的范围应考虑进一步收窄
 - 使用 AskUserQuestion 工具向用户展示收窄建议，先说明收窄原因和收窄后的范围，再提问确认
 
 ### 3. Requirements Clarification
@@ -103,16 +104,23 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 
 请用户审阅需求文档和架构文档。如用户要求修改，修改后重新请用户审阅。仅在用户确认后继续。
 
-### 9. Transition to Execution
+### 9. Commit
+
+将需求文档和架构文档提交到版本控制，作为规划的检查点：
+
+```
+git add .vibewire/{N}-{name}/requirements.md .vibewire/{N}-{name}/architecture.md
+git commit -m "[vibewire/aim] docs: add requirements and architecture for {N}-{name}"
+```
+
+### 10. Transition to Execution
 
 提示用户下一步：
 
 ```
 规划已完成！需求文档和架构设计已保存到 .vibewire/{N}-{name}/ 目录。
 
-下一步：
-- 当前会话：直接运行 /vibewire:go {N}-{name}
-- 新会话：在新会话中运行 /vibewire:go {N}-{name}
+下一步：在新会话中运行 /vibewire:go {N}-{name}
 ```
 
 ## Key Principles
@@ -125,6 +133,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 - **保持灵活** — 当某些内容不合理时返回去澄清
 - **模块化设计** — 系统应拆分为边界清晰、可独立理解的单元
 - **严格执行YAGNI** — 从所有设计中删除不必要的功能
+- **忽略格式检查** — markdown lint 等文档格式告警一律忽略，内部规划文档不适用项目文档格式规范
 
 ## Anti-Pattern
 

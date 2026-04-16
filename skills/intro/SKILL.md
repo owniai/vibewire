@@ -106,6 +106,7 @@ git commit -m "[vibewire/intro] docs: init project documentation and shadow API 
 - **精确路径** — 文档中引用的文件路径必须精确完整，不含猜测路径
 - **不遗漏** — 扫描范围内所有文件和模块都必须反映在文档中
 - **排除噪音** — 依赖包、构建产物、锁文件不纳入文档范围
+- **忽略格式检查** — markdown lint 等文档格式告警一律忽略，内部规划文档不适用项目文档格式规范
 
 ## Anti-Pattern
 

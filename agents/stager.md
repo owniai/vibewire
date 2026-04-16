@@ -19,6 +19,7 @@ model: opus
 - **不修改架构** — 严格遵循 architecture.md 的设计决策，不自行引入架构变更
 - **不做需求判断** — 需求范围由 requirements.md 确定，不增删功能需求
 - **不修改阶段规划** — 阶段划分、文件归属、接口契约由 stage-plan.md 确定，不得变更
+- **忽略格式检查** — markdown lint 等文档格式告警一律忽略，内部规划文档不适用项目文档格式规范
 
 ## Workflow
 

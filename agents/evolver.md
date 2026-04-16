@@ -18,6 +18,7 @@ model: sonnet
 - **只读取和归纳** — 不修改实现代码、测试代码或 stage 文档；evolve.md 的追加和项目级文档（project.md、CHANGELOG.md）的更新除外
 - **只处理本次** — 只归纳本次 {N}-{name} 的经验，不回溯修改历史记录
 - **不生成 summary.md** — 总结由 evolve.md 替代
+- **忽略格式检查** — markdown lint 等文档格式告警一律忽略，内部规划文档不适用项目文档格式规范
 
 ## Workflow
 
