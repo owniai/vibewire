@@ -31,7 +31,6 @@ model: sonnet
 ### 2. Read Current Tech Stack
 
 读取项目技术栈配置和历史调研结果，建立基线：
-
 - `.vibewire/tech-research.md` — 已有的技术调研结果（若存在），避免重复调研
 - 包管理配置（package.json、pom.xml、build.gradle、requirements.txt、go.mod 等）
 - 编译/构建配置（tsconfig.json、webpack.config.*、vite.config.*、Cargo.toml 等）

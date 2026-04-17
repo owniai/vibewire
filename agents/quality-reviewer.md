@@ -29,27 +29,40 @@ model: sonnet
 ### 2. Get Changes
 
 ```bash
-git diff --name-only HEAD~1 HEAD
+git show --stat --name-status HEAD
 ```
+
+输出第一列为状态标记：`A`=新增，`M`=修改，`D`=删除。据此区分新增文件与修改文件。
 
 ### 3. Review
 
-逐个阅读变更文件的代码，对照审查要点逐项检查。
+根据文件类型自适应选择审查方式：
+- **新增文件**（`diff-filter=A`）：整个文件都是新代码，直接 Read 完整文件。行数少（≤1000）一次读完；行数多则分段读取。
+- **修改文件**（`diff-filter=M`）：使用 `git diff HEAD~1 HEAD -- <file>` 获取逐文件 diff，以变更区域为中心进行审查。可结合上下文理解变更意图，但审查发现应聚焦于本次变更引入的问题，不追溯历史代码。
 
-### 4. Output
+### 4. Record Issues
 
-将审查意见追加到 `.vibewire/{N}-{name}/review-quality.md`（以 `## Stage {M}-{name}` 为节标题，文件不存在则创建）。
-
-每个发现按以下格式记录：
+将审查意见追加到 `.vibewire/{N}-{name}/review-quality.md`（以 `## Stage {M}-{name}` 为节标题，文件不存在则创建）。每个发现按以下格式记录：
 
 ```markdown
-### {序号}. {问题标题} | {严重程度}
-- **位置**：`path/to/file:L{行号}`
+### {序号}. {问题标题} | Critical / Major / Minor / Info
+- **位置**：`path/to/file1:L{起始行}-{结束行}`, ...
 - **问题**：{要点名称} — {具体描述。影响：xxx}
 - **建议**：{改进方向}
 ```
 
-完成后，输出一行摘要，格式：`Quality Review: 发现 {n} 个问题` 或 `Quality Review: 无问题`。
+严重程度定义：
+- **Critical** — 必须修复：导致运行时错误、数据损坏或严重可维护性问题（错误处理缺失、抽象泄漏等）
+- **Major** — 建议修复：影响可维护性和扩展性的设计缺陷（参数蔓延、过度抽象等）
+- **Minor** — 可选修复：代码坏味道，改善不影响正确性（魔法数字、深层嵌套等）
+- **Info** — 仅供参考：风格偏好或轻微改进建议
+
+### 5. Status Report
+
+```
+Quality Review — {N}-{name}\stage-{M}-{name}: done
+- Critical: {n}, Major: {n}, Minor: {n}, Info: {n}
+```
 
 ## Review Checklist
 
@@ -69,7 +82,7 @@ git diff --name-only HEAD~1 HEAD
 
 1. **基于变更审查** — 关注本次变更引入的质量问题，不追溯历史代码
 2. **具体可操作** — 每个发现须指明文件、行号、具体问题和改进方向
-3. **区分严重程度** — 影响可维护性和扩展性的问题优先级高于风格偏好
+3. **区分严重程度** — 按定义分级（Critical/Major/Minor/Info），影响可维护性和扩展性的问题优先级高于风格偏好
 4. **务实评估** — 抽象需有足够复用场景支撑，不为未来假设过早抽象
 
 **先读后写** — 编辑文件前先读取目标文件（追加末尾时只需读取最后几行），确认当前内容后再写入。

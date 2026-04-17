@@ -68,7 +68,12 @@ description: Use ONLY when the user explicitly invokes /vibewire:intro. Do not a
 
 ### 4. Shadow Baseline
 
-为项目中的源代码文件生成 shadow 基线，供后续工作流引用。收集项目中的源代码文件（排除测试、配置、文档、样式等非源码文件），按代码量分批派发 shadow-writer agent：
+为项目中的源代码文件生成 shadow 基线，供后续工作流引用。收集项目中的源代码文件（排除测试、配置、文档、样式等非源码文件），按代码量分批派发 shadow-writer agent。
+
+**测试文件筛选** — 在收集阶段即排除纯测试文件，避免 shadow-writer 读取无价值内容：
+- **按命名排除** — 文件名匹配 `*.test.*`、`*.spec.*`、`*_test.*`（含语言特定变体如 `_test.go`）的文件直接排除
+- **按目录排除** — 位于 `test/`、`tests/`、`__tests__/`、`spec/`、`specs/` 等测试专用目录下的文件直接排除
+- **不确定的不自行读取判断** — 无法仅凭命名和目录归属确认的文件（如 `utils.rs` 中既含业务代码又含 `#[cfg(test)]`），保留在列表中交由 shadow-writer 判定
 - 每批总行数不超过 8000 行
 - 单个文件超过 8000 行时单独一批
 - 超过 10000 行的文件按行范围拆分给多个 agent（同一文件的多个片段必须顺序调用，不可并行）；拆分时在文件条目后追加行范围：`- {path/to/file}（仅处理第 {start} 行到第 {end} 行，追加模式）`

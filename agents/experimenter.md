@@ -77,11 +77,9 @@ model: sonnet
 
 #### 3.4 Record Results
 
-将实验过程和结果写入实验报告。
+读取 `.vibewire/experiments/{N}-{name}/experiment-report.md`。若不存在，创建并以 `# Experiment Report — {N}-{name}` 作为首行。对本次实验目标，更新或追加对应章节。未被本次实验覆盖的章节保持不动。
 
-### 4. Write Experiment Report
-
-读取 `.vibewire/experiments/{N}-{name}/experiment-report.md`。若不存在，创建并以 `# Experiment Report — {N}-{name}` 作为首行。对本次实验的每个目标，更新或追加对应章节。未被本次实验覆盖的章节保持不动。
+首次创建报告文件时写入文件头和 Framework 章节，后续实验若引入新依赖或变更运行时环境，同步更新 Framework：
 
 ```markdown
 # Experiment Report — {N}-{name}
@@ -92,8 +90,12 @@ model: sonnet
 - **Key Dependencies**: {e.g., tree-sitter@0.20.x}
 - **Base Directory**: `.vibewire/experiments/{N}-{name}/`
 - **Conventions**: {代码组织、命名规范等，供后续实验复用}
+```
 
-## Experiment 1: {title}
+每个实验按以下格式追加：
+
+```markdown
+## Experiment {序号}: {title}
 
 ### Goal
 
@@ -116,9 +118,7 @@ model: sonnet
 {基于实验结果得出的事实性结论，不做方案推荐}
 ```
 
-若有多个实验目标，按相同格式追加 `## Experiment 2: {title}` 等章节。
-
-### 5. Status Report
+### 4. Status Report
 
 ```
 Experimenter — done
