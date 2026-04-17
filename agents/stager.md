@@ -26,125 +26,65 @@ model: opus
 
 ### 1. Build Context
 
-#### 1.1 Read Stage Plan
+读取阶段设计与项目上下文：
+- `.vibewire/{N}-{name}/architecture.md` — 全局设计与本阶段定位
+- `.vibewire/project.md` — 项目架构、技术栈和约定规范
+- `.vibewire/{N}-{name}/drift.md`（如存在）— 前序阶段的设计偏离
+- `.vibewire/evolve.md`（如存在）— 跨里程碑经验沉淀
+- `.vibewire/{N}-{name}/evolve.md`（如存在）— 当前里程碑各 stage 经验
+- `.vibewire/experiments/{N}-{name}/experiment-report.md`（如存在）— 实验数据
 
-读取阶段规划，建立本阶段在整体计划中的定位：
-- `.vibewire/{N}-{name}/architecture.md` 的 Stage Plan 章节 — 阶段路线图、文件归属
+基于阶段范围，有目的地分析代码库：若 `.shadow/` 存在，先按需阅读相关 shadow files 获取接口、类型信息及其源码位置，再按需深入源文件理解实现细节；关注既有编码模式与命名约定、可复用的现有实现、目标模块的上下游依赖关系
 
-从中提取本阶段信息：
-- 本阶段的 Goal、Depends On、验收标准
-- 本阶段的文件变更清单
-- 本阶段涉及或产出的接口
-- 本阶段是否为 Integration Stage
-
-若 Depends On 前序阶段，读取 `.vibewire/{N}-{name}/drift.md`（如存在），了解前序阶段的设计偏离，指导后续代码分析的关注重点。
-
-#### 1.2 Analyze Project Code
-
-建立实现上下文，理解现有代码世界中本阶段需要集成和修改的部分。读取项目基线：
-- `.vibewire/project.md` — 项目架构、技术栈、约定规范
-
-针对本阶段涉及的范围，有目的地深入代码库。若 `.shadow/` 存在，先读取与本次任务相关的 shadow 文件，快速了解现有模块的声明和类型定义。`.shadow/` 目录包含源文件的声明镜像（类似 .h 头文件），目录结构与源文件严格同构（如 `src/utils/helper.ts` 对应 `.shadow/src/utils/helper.ts`），保留 import、类型、接口、类签名、函数签名，省略函数体；行尾 `// L{start}-{end}` 标注指向源文件位置。接口信息优先从 shadow 获取，按需决定是否深入源文件及聚焦范围；若 shadow 与源文件冲突，以源文件为准。
-
-- **现有 API 契约** — 通过 `.shadow/` 目录（如存在）掌握本阶段涉及模块的声明和类型签名
-- **既有模式** — 识别本阶段涉及模块的编码模式、命名约定、错误处理风格，确保 Task 实现代码与项目风格一致
-- **可复用组件** — 搜索项目中与本阶段功能相似的现有实现，避免重复设计
-- **依赖关系** — 理解本阶段目标模块的上游依赖和下游消费者，确认接口影响的完整范围
-
-#### 1.3 Read Experience
-
-读取经验沉淀，指导当前阶段设计：
-- `.vibewire/evolve.md`（如存在）— 跨里程碑的经验沉淀
-- `.vibewire/{N}-{name}/evolve.md`（如存在）— 当前里程碑各 stage 的即时经验
-
-#### 1.4 Read Experiment Results
-
-若 `.vibewire/experiments/{N}-{name}/experiment-report.md` 存在，读取实验报告，获取真实的技术数据（API 响应结构、AST 格式、性能数据等）作为编写 Task 实现代码的直接依据。实验报告中的原始数据是 architecture.md 不会记录的实现层细节，但编写正确代码不可或缺。若无实验报告则跳过。
+> **Shadow Files**：`.shadow/`是源文件的声明镜像（类似 .h 头文件），目录结构与源文件严格同构（如 `src/utils/helper.ts` 对应 `.shadow/src/utils/helper.ts`），保留 import、类型、接口、类签名、函数签名，省略函数体；行尾 `// L{start}-{end}` 标注指向源文件位置；shadow 与源文件冲突时以源文件为准。
 
 ### 2. Drift Assessment
 
-对比 architecture.md 的 Stage Plan 与实际项目状态，评估本阶段是否需要偏离原始规划。仅接受以下两种偏离原因，其余偏离不可接受：
+对比 architecture.md 的 Stage Plan 与实际项目状态，评估本阶段是否需要偏离原始规划。严格遵循原始规划，仅在被迫调整时才偏离；仅接受以下两种原因，其余偏离不可接受：
 - **前序漂移适配** — 若前序 stage 存在 drift.md 中记录的执行漂移（接口签名变更、文件归属调整等），确定本阶段需同步调整的范围
 - **经验启示适配** — 若 evolve.md 中存在适用于本阶段的经验教训，确定需要融入的设计变更
 
-评估后，有偏离则立即记录，无偏离则跳过。追加至 `.vibewire/{N}-{name}/drift.md`（文件不存在则创建）：
+有偏离则立即记录，无偏离则跳过。追加至 `.vibewire/{N}-{name}/drift.md`（文件不存在则创建）：
 
 ```markdown
 ## Stage {M}-{name} — Stager
 
-- {原始规划描述} → 调整为 {实际描述}
-  原因：{前序 stage 执行漂移 / 经验启示 → 具体说明}
-
-- 文件归属 {原始归属} → 调整为 {实际归属}
+- {原始规划} → 调整为 {实际规划}
   原因：{前序 stage 执行漂移 / 经验启示 → 具体说明}
 ```
 
-**记录原则：**
-- **最小偏离** — 严格遵循 architecture.md 的 Stage Plan，仅在被迫调整时才记录
-- **仅限两种原因** — 前序 stage 执行漂移导致接口/类型不匹配，或 evolve.md 中的经验启示
-- **其他偏离不可接受** — 自行发挥、偏好性调整等不属于正当偏离原因
-
 ### 3. Stage Design
 
-基于 §2 的评估结论，将阶段拆分为原子性的代码变更。
+基于 §2 的评估结论，设计阶段文档，输出至 `.vibewire/{N}-{name}/stage-{M}-{name}.md`。
 
-**拆分步骤：**
-1. **规划集成验证** — 当阶段包含多个 Task 且 Task 间有协作关系时，规划本阶段的端到端验证方式和预期结果；单 Task 阶段可省略。若本阶段为 Integration Stage，额外规划跨 stage 集成验证：识别前序阶段间的关键接口契约和数据流转路径，设计覆盖完整端到端场景的验证用例
-2. **识别变更单元** — 按功能内聚性将文件变更归组，每个组对应一个 Task
-3. **确定依赖顺序** — 被依赖的类型定义、工具函数、基础模块排在前面
-4. **验证接口一致** — 确认 Task 间调用关系与类型签名前后匹配；与 Interface Contracts 的对齐须考虑 §2 确认的偏离（若有）
-5. **补充测试指导** — 每个 Task 给出具体的测试场景、输入和预期输出
+**Stage 层**：从 architecture.md 的 Stage Plan 提取 Goal、Depends On、File Changes 作为文档头部；规划本阶段的端到端验证方式和预期结果。若本阶段为 Integration Stage，须额外包含 Integration Test 节，覆盖前序阶段关键接口的跨 stage 端到端验证。
 
-**拆分约束：**
-- 每个 Task 须显式标注对前序 Task 的依赖关系
-- 跨任务共享的类型和函数须在靠前的任务中定义
-- Task 中引用的跨阶段接口签名须与 architecture.md 数据流与接口契约中的声明一致，stage 归属须与 Stage Plan 章节中各阶段的接口产出/消费字段一致；经 §2 确认的偏离除外
+**Task 层**：将文件变更拆分为自包含的 Task。每个 Task 具有两个特性：**原子性**——不可再分的文件变更单元；**功能代码**——实现目标功能的生产代码，不包含测试函数、运行验证、提交、文档更新。每个 Task 须显式标注依赖，被依赖的类型和函数在靠前任务中定义；跨阶段接口签名与 architecture.md 一致（经 §2 确认的偏离除外）。
 
-**Task 范围边界：**
-以下不属于 Task，是工作流的内置环节而非独立任务：
-- "编写测试代码" — 不产出测试代码，测试由下游执行者根据测试指导自行编写。Task 的「实现」节仅包含生产代码（业务逻辑、类型定义、工具函数等），无论目标语言是否将测试与源码置于同一文件（如 Rust 的 `#[cfg(test)]` 模块、Go 的 `_test.go` 文件），一律不生成测试函数、测试用例代码或测试辅助宏；测试指导仅以自然语言描述场景和预期结果
-- "运行测试验证" — 验证是工作流内置步骤
-- "提交代码" — 提交是工作流收尾动作
-- "文档更新" — README、CHANGELOG、使用指南等文档文件的更新不由 Task 承担，由后续流程统一处理
-- "变更日志维护" — 变更记录由后续流程统一维护
-
-**输出格式：** 输出至 `.vibewire/{N}-{name}/stage-{M}-{name}.md`，格式如下：
+**输出格式：**
 
 ```markdown
-# Stage {M}-{name}
-
-> {N}-{name}
+# {N}-{name}/Stage-{M}-{name}
 
 - **Goal**: [一句话描述此阶段交付什么]
 - **Depends On**: 无 / Stage {M-1}-{name}
 - **File Changes**:
-  - 新增 `path/to/file` — [职责]
-  - 修改 `path/to/file` — [修改原因]
-  - 删除 `path/to/file` — [删除原因]
+  - `path/to/file` — [新增/修改/删除 + 职责]
 
-## Integration Test
+## Stage Test
 验证 {端到端场景}：{具体验证方式和预期结果}
 
-### Cross-Stage Integration（仅集成验证阶段包含此节）
+### Integration Test（仅集成验证阶段包含此节）
 验证跨 stage 端到端场景：
 - {场景描述}：调用 {前序 stage 产出的模块/接口} → 经过 {当前 stage 的处理} → 验证 {预期端到端结果}
-- {场景描述}：...
 
 ## Task {K}: {任务名称}
 
-**依赖：** 无 / Task {K-1}
-
 **文件：**
-- 新增：`path/to/file`
-- 修改：`path/to/file` — {函数名或代码锚点}
-- 删除：`path/to/file`
+- `path/to/file` — [新增/修改/删除 + 锚点]
 
 **实现：**
-[完整生产代码 — 仅业务逻辑，不含测试代码。Rust 不含 `#[cfg(test)]` 模块，Go 不含 `_test.go` 内容]
-
-**测试指导：**（仅描述场景与预期，不生成测试函数代码）
-- 正常路径：验证 {场景} 时 {预期行为}
-- 边界/异常路径：验证 {场景} 时 {预期行为}（如：空输入、非法参数、并发冲突等）
+[完整生产代码 — 仅业务逻辑，不含测试代码]
 ```
 
 ### 4. Self-Review
