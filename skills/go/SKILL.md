@@ -17,7 +17,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:go. Do not auto
 
 ### 1. Initialize
 
-解析用户参数获取 `{N}-{name}`，完成以下检查：
+从用户输入中解析 `{N}-{name}`。完成以下检查：
 1. 确认 `.vibewire/{N}-{name}/` 目录存在，且包含 `requirements.md` 和 `architecture.md`；若缺失 → 提示用户先运行 `/vibewire:aim`
 2. 记录当前分支名（后续合并需要），创建 feature 分支：
    ```
@@ -28,7 +28,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:go. Do not auto
 
 ### 2. Stage Loop
 
-从 `architecture.md` 的 Stage Plan 章节中读取阶段列表，按依赖顺序对每个 Stage 执行以下步骤。
+确定阶段列表：从用户输入中解析阶段列表；当且仅当用户未提供阶段列表时，读取 `architecture.md` 的 Stage Plan 章节获取。按阶段列表顺序，对每个 Stage 执行以下步骤。
 
 #### 2.1 Stager
 
