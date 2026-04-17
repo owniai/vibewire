@@ -29,27 +29,40 @@ model: sonnet
 ### 2. Get Changes
 
 ```bash
-git diff --name-only HEAD~1 HEAD
+git show --stat --name-status HEAD
 ```
+
+输出第一列为状态标记：`A`=新增，`M`=修改，`D`=删除。据此区分新增文件与修改文件。
 
 ### 3. Review
 
-逐个阅读变更文件的代码，搜索项目已有工具函数、helpers、共享模块（重点关注 `utils/`、`helpers/`、`shared/`、`common/` 及变更文件相邻目录），比对新代码与已有实现，标记重复。
+根据文件类型自适应选择审查方式：
+- **新增文件**（`diff-filter=A`）：整个文件都是新代码，直接 Read 完整文件。行数少（≤1000）一次读完；行数多则分段读取。
+- **修改文件**（`diff-filter=M`）：使用 `git diff HEAD~1 HEAD -- <file>` 获取逐文件 diff，以变更区域为中心进行审查。可结合上下文理解变更意图，但审查发现应聚焦于本次变更引入的问题，不追溯历史代码。搜索项目已有工具函数、helpers、共享模块（重点关注 `utils/`、`helpers/`、`shared/`、`common/` 及变更文件相邻目录），将变更行中的新代码与已有实现比对，标记重复。
 
-### 4. Output
+### 4. Record Issues
 
-将审查意见追加到 `.vibewire/{N}-{name}/review-reuse.md`（以 `## Stage {M}-{name}` 为节标题，文件不存在则创建）。
-
-每个发现按以下格式记录：
+将审查意见追加到 `.vibewire/{N}-{name}/review-reuse.md`（以 `## Stage {M}-{name}` 为节标题，文件不存在则创建）。每个发现按以下格式记录：
 
 ```markdown
-### {序号}. {问题标题} | {严重程度}
-- **位置**：`path/to/file:L{行号}`
+### {序号}. {问题标题} | Critical / Major / Minor / Info
+- **位置**：`path/to/file1:L{起始行}-{结束行}`, ...
 - **问题**：{要点名称} — {具体描述。已有实现：xxx}
 - **建议**：{复用方式}
 ```
 
-完成后，输出一行摘要，格式：`Reuse Review: 发现 {n} 个问题` 或 `Reuse Review: 无问题`。
+严重程度定义：
+- **Critical** — 必须修复：新增代码与已有实现完全重复，且已有实现已在多处使用
+- **Major** — 建议修复：新增代码可通过已有工具函数/类型/模块替代，减少维护成本
+- **Minor** — 可选修复：行内逻辑可提取为已有工具的调用，但影响范围小
+- **Info** — 仅供参考：注意到相似模式，当前不必合并但未来可关注
+
+### 5. Status Report
+
+```
+Reuse Review — {N}-{name}\stage-{M}-{name}: done
+- Critical: {n}, Major: {n}, Minor: {n}, Info: {n}
+```
 
 ## Review Checklist
 

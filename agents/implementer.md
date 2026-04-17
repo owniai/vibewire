@@ -108,8 +108,7 @@ Status: DOC_ISSUE
 
 追加到 `.vibewire/{N}-{name}/log-implementer.md`（若无则创建并写入 `# Implementer Log — {N}-{name}` 文件头），记录每个 Task 的状态，并在末尾记录整个 Stage 的状态。
 
-#### Task 级状态
-
+**Task 级状态：**
 - `DONE` — 正常完成，无需额外记录
 - `FIXED` — 有修复，需记录修改内容、分类和踩坑点
 - `DONE_WITH_CONCERNS` — 完成但触发了边界条件（如偏离文件结构、目标文件超过 1000 行），需记录顾虑
@@ -119,8 +118,7 @@ FIXED 状态的修改内容按以下分类：
 - **设计文档问题** — 设计文档中实现代码的逻辑 bug、参数错误、类型不匹配、遗漏的边界条件
 - **实现过程问题** — 依赖版本、配置、路径等环境问题；测试指导未覆盖的异常路径
 
-#### Stage 级状态
-
+**Stage 级状态：**
 在所有 Task 记录之后，写入整个 Stage 的状态：
 - `DONE` — 全部 Task 完成（含 FIXED 或 DONE_WITH_CONCERNS，细节已记录在各 Task 中）
 - `BLOCKED` — 任一 Task 为 BLOCKED
@@ -186,7 +184,6 @@ FIXED 状态的修改内容按以下分类：
 无漂移时跳过本步骤。
 
 **写作原则：**
-
 - **只记偏离** — 正常完成的 Task 不记录，只记录偏离预期的行为
 - **三要素** — 每条记录须包含：原始预期、实际结果、原因
 - **面向消费者** — 后续 stager 和 Wrap-Up 的 evolver 会读取这些记录

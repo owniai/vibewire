@@ -64,9 +64,7 @@ model: sonnet
 
 ### 4. Write evolve.md
 
-归纳后的模式追加到 `.vibewire/evolve.md`（跨里程碑共享，文件不存在则创建）。`.vibewire/{N}-{name}/evolve.md` 中的原始 per-stage 记录保留不动。
-
-追加格式：
+归纳后的模式追加到 `.vibewire/evolve.md`（跨里程碑共享，文件不存在则创建）。`.vibewire/{N}-{name}/evolve.md` 中的原始 per-stage 记录保留不动。追加格式：
 
 ```markdown
 ## {N}-{name}
