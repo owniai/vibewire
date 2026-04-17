@@ -7,16 +7,15 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 
 ## Overview
 
-通过协作对话澄清需求，探索多种方案并权衡取舍，将用户任务转化为结构化的需求文档、架构设计和阶段执行计划。在任务规模较大时，帮助用户收窄范围，聚焦于本次可交付的范围。
+通过协作对话澄清需求，探索多种方案并权衡取舍，将用户任务转化为结构化的需求文档和包含阶段划分的架构设计。在任务规模较大时，帮助用户收窄范围，聚焦于本次可交付的范围。
 
 <HARD-GATE>
-在用户审阅并批准全部规划文档（需求、架构、阶段计划）之前，不要调用任何实现技能、编写任何代码或采取任何实现行动。这适用于每个项目，无论感知的简单程度如何。
+在用户审阅并批准全部规划文档（需求、架构）之前，不要调用任何实现技能、编写任何代码或采取任何实现行动。这适用于每个项目，无论感知的简单程度如何。
 </HARD-GATE>
 
 ## Checklist
 
 你必须为以下每个项目创建任务并按顺序完成：
-
 1. **Explore Project Context** — 读取项目文档，若无则提示运行 /vibewire:intro
 2. **Assess Task Scope** — 评估任务规模，收窄范围（如需要）
 3. **Requirements Clarification** — 一次一个，理解本次任务的目的/约束/成功标准
@@ -24,12 +23,11 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 5. **Write Requirements** — 写入 requirements.md
 6. **Tech Investigation** — 可选，评估是否需要技术栈/依赖调研
 7. **Tech Experiment** — 可选，评估是否需要技术实验获取真实数据
-8. **Explore Architecture** — 提出方案、权衡、架构设计
+8. **Explore Architecture** — 提出方案、权衡、架构设计，含阶段划分
 9. **Write Architecture** — 写入 architecture.md
-10. **Stage Breakdown** — 基于已确认的架构，拆分阶段执行计划
-11. **User Review** — 请用户审阅需求文档、架构文档和阶段计划
-12. **Commit** — 提交全部规划文档
-13. **Transition to Execution** — 总结对话，提示用户使用 /vibewire:go
+10. **User Review** — 请用户审阅需求文档和架构文档
+11. **Commit** — 提交全部规划文档
+12. **Transition to Execution** — 总结对话，提示用户使用 /vibewire:go
 
 ## Process
 
@@ -140,120 +138,62 @@ prompt: |
 在现有项目架构基础上，设计与本次需求相关的架构变更。不涉及整体项目架构，职责边界限定在已确认的需求范围内。逐层与用户确认架构决策，每层提出 2-3 个选项并附权衡分析，推荐你认为最优的方案及理由。若步骤 6 已完成技术调研，所有架构层级的决策应以调研事实为依据；若步骤 7 已完成技术实验，所有架构层级的决策应以实验数据为依据。按以下顺序逐层推进：
 1. **项目级决策变更**（若有）— 如需变更 `project.md` 中的决策（新增依赖、变更技术栈等），首先提出并说明理由，获得用户确认
 2. **架构概览与模块划分** — 变更在当前架构中的位置、新增/变更模块及单一职责、路径、依赖和被依赖关系
-3. **数据流** — 确认模块边界后，定义模块间的数据流转方向、通信模式和关键数据格式
+3. **数据流与接口契约** — 确认模块边界后，定义模块间的数据流转方向、通信模式、跨模块共享的关键类型定义（标注产出自和消费于）以及需修改的既有接口（标注位置和影响范围）。若步骤 7 执行了技术实验，从实验报告中提取实验验证的真实结构作为类型基线。此处的接口定义是 Stage Plan 中各 stage 接口声明的唯一来源
 4. **模块内部架构** — 逐模块展开内部设计
-5. **关键类型与接口** — 跨模块共享的类型定义（标注产出自和消费于），以及需修改的既有接口（标注位置和影响范围）。若步骤 7 执行了技术实验，从实验报告中提取实验验证的真实结构作为类型基线。此处的接口定义是 Stage Breakdown 中 Interface Stage Attribution 的唯一来源
+5. **Stage Plan** — 基于已确认的架构，按依赖顺序将模块拆分为渐进式阶段。每个阶段聚焦单一职责、独立可验证，包含 2-5 个实现任务。选定完成端到端路径的阶段作为 Integration Stage，须覆盖所有前序阶段的联合行为。每个阶段按以下格式描述：
+
+  ```
+  - Stage {M}-{name} — [一句话描述]
+    - Depends On: [无 / Stage {M-1}-{name}]
+    - 验收标准：[完成后应达到的状态]
+    - 文件变更：
+      - 新增 `path/to/file` — [职责]
+      - 修改 `path/to/file` — [修改原因]
+    - 接口产出：[接口名称列表]
+    - 接口消费：[接口名称列表]
+  ```
 
 **设计约束：**
 - **模块化** — 每个单元有单一明确的用途，边界清晰，可独立理解和测试
 - **遵循既有模式** — 不提出无关重构，保持聚焦于当前目标
 - **按复杂度缩放** — 简单需求几句话，复杂需求可展开至 200-300 字
-- **抽象层级** — 不涉及实现细节和代码；但跨模块共享的关键类型定义须在此确认，作为 Stage Breakdown 定义 stage 归属的直接依据
+- **抽象层级** — 不涉及实现细节和代码；但跨模块共享的关键类型定义须在此确认
+- **Stage 忠实性** — 阶段划分忠实反映模块边界和数据流，不通过拆分隐式改变架构决策；每个接口有且仅有一个产出阶段
+- **Integration Stage** — 恰好选定一个完成端到端路径的阶段承载跨 stage 集成验证
+- **精确路径** — 文件路径必须精确完整，不得使用模糊引用
 
 ### 9. Write Architecture
 
-获得用户确认后，将步骤 8 中逐层确认的架构决策整合写入 `.vibewire/{N}-{name}/architecture.md`。按步骤 8 的层级顺序记录：项目级决策变更（标注为"待同步至 project.md"）、模块划分、数据流、模块内部架构、关键类型与接口。技术决策注明依据来源（调研结论、实验编号或既有经验）。不含其他项目级信息。
+获得用户确认后，将步骤 8 中逐层确认的架构决策整合写入 `.vibewire/{N}-{name}/architecture.md`。技术决策注明依据来源（调研结论、实验编号或既有经验）。文档须包含以下内容（按实际确认的层级组装，无则省略）：
+- 项目级决策变更
+- 模块划分
+- 数据流与接口契约
+- 模块内部架构
+- Stage Plan
 
-### 10. Stage Breakdown
+### 10. User Review
 
-架构设计完成后，基于已确认的需求和架构，产出阶段执行计划。
+请用户审阅需求文档和架构文档。如用户要求修改，修改后重新请用户审阅。仅在用户确认后继续。
 
-#### 10.1 Requirement Traceability
-
-逐条对照 requirements.md 的功能需求，确认每条需求在 architecture.md 中有对应模块承载，并标注覆盖阶段。未映射的需求须显式列出并说明原因（已有实现覆盖、跨迭代拆分等）。
-
-#### 10.2 Interface Stage Attribution
-
-从 architecture.md「关键类型与接口」中提取所有接口，为每个接口标注产出自阶段和消费于阶段。
-
-#### 10.3 Stage Breakdown
-
-将架构拆分为渐进式阶段：
-1. 按依赖顺序编排 — 底层依赖先实现
-2. 按功能边界划分 — 每个阶段是一个独立可验证的功能单元，完成后能独立运行测试
-3. 保持适度粒度 — 每个阶段聚焦单一职责，包含 2-5 个实现任务
-4. 每个阶段须有明确的验收标准 — 一句话说明"完成意味着什么"
-5. 标注集成验证阶段 — 选定完成端到端路径的阶段承载跨 stage 集成验证，该阶段的 Integration Test 须覆盖所有前序阶段的联合行为
-
-#### 10.4 Write Stage Plan
-
-输出至 `.vibewire/{N}-{name}/stage-plan.md`，格式如下：
-
-```markdown
-# {N}-{name}
-
-- **Goal**: [一句话描述本次交付什么]
-
-## Requirement Traceability
-
-| 需求 | 覆盖阶段 |
-|------|---------|
-| FR1: ... | Stage {M}, Stage {K} |
-
-**未覆盖需求**: [无 / {需求} — {不纳入本迭代的理由}]
-
-## Interface Stage Attribution
-
-> 接口签名详见 architecture.md「关键类型与接口」
-
-| 接口 | 产出自 | 消费于 |
-|------|--------|--------|
-| extract_function_name | Stage 1 | Stage 2, 3 |
-
-## Stage Plan
-
-- Stage 1-{name} — [一句话描述]
-  - Depends On: 无
-  - 验收标准：[完成后应达到的状态]
-  - 文件变更：
-    - 新增 `path/to/file` — [职责]
-    - 修改 `path/to/file` — [修改原因]
-- Stage 2-{name} — [一句话描述]
-  - Depends On: Stage 1-{name}
-  - 验收标准：[完成后应达到的状态]
-  - 文件变更：
-    - ...
-- 🔗 Integration Stage: Stage {M}-{name} — [一句话描述]
-  - Depends On: Stage {M-1}-{name}
-  - 验收标准：[完成后应达到的状态]
-  - 文件变更：
-    - ...
-```
-
-#### 10.5 Self-Review
-
-逐项检查以下内容，发现问题直接修复 stage-plan.md。
-
-- **Requirements Traceability** — requirements.md 中的每条功能需求必须可追溯到具体的阶段；未覆盖的需求须显式标注并说明理由
-- **Architecture Faithfulness** — 阶段划分须忠实反映 architecture.md 的模块边界和数据流，不得通过拆分方式隐式改变架构决策
-- **Interface Attribution Completeness** — architecture.md「关键类型与接口」中的所有接口必须有 stage 归属
-- **Stage Boundary Clarity** — 阶段间依赖关系清晰，验收标准可验证，不遗漏依赖
-- **Integration Stage Coverage** — 须恰好标注一个 Integration Stage
-- **Placeholder Scan** — 文件路径必须精确完整，不得使用模糊引用
-
-### 11. User Review
-
-请用户审阅需求文档、架构文档和阶段计划。如用户要求修改，修改后重新请用户审阅。仅在用户确认后继续。
-
-### 12. Commit
+### 11. Commit
 
 将全部规划文档提交到版本控制，作为规划的检查点：
 
 ```
-git add .vibewire/{N}-{name}/requirements.md .vibewire/{N}-{name}/architecture.md .vibewire/{N}-{name}/stage-plan.md
+git add .vibewire/{N}-{name}/requirements.md .vibewire/{N}-{name}/architecture.md
 # 若步骤 6 执行了技术调研：
 git add .vibewire/tech-research.md
 # 若步骤 7 执行了技术实验：
 git add .vibewire/experiments/{N}-{name}/
-git commit -m "[vibewire/aim] docs: add requirements, architecture and stage plan for {N}-{name}"
+git commit -m "[vibewire/aim] docs: add requirements and architecture for {N}-{name}"
 ```
 
-### 13. Transition to Execution
+### 12. Transition to Execution
 
 提示用户下一步：
 
 ```
-规划已完成！需求文档、架构设计和阶段计划已保存到 .vibewire/{N}-{name}/ 目录。
+规划已完成！需求文档和架构设计已保存到 .vibewire/{N}-{name}/ 目录。
 
 下一步：在新会话中运行 /vibewire:go {N}-{name}
 ```
