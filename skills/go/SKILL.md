@@ -18,18 +18,17 @@ description: Use ONLY when the user explicitly invokes /vibewire:go. Do not auto
 ### 1. Initialize
 
 解析用户参数获取 `{N}-{name}`，完成以下检查：
-1. 确认 `.vibewire/{N}-{name}/` 目录存在，且包含 `requirements.md`、`architecture.md` 和 `stage-plan.md`
-   - 若缺失 → 提示用户先运行 `/vibewire:aim`
+1. 确认 `.vibewire/{N}-{name}/` 目录存在，且包含 `requirements.md` 和 `architecture.md`；若缺失 → 提示用户先运行 `/vibewire:aim`
 2. 记录当前分支名（后续合并需要），创建 feature 分支：
    ```
    {original-branch} = git rev-parse --abbrev-ref HEAD
    git checkout -b feature/{N}-{name}
    ```
-3. 运行项目测试确认基线干净（如项目无测试则跳过）。若失败 → 暂停，报告失败信息，等待用户处理
+3. 运行项目测试确认基线干净（如项目无测试则跳过）；若失败 → 暂停，报告失败信息，等待用户处理
 
 ### 2. Stage Loop
 
-从 `stage-plan.md` 中读取阶段列表，按依赖顺序对每个 Stage 执行以下步骤。
+从 `architecture.md` 的 Stage Plan 章节中读取阶段列表，按依赖顺序对每个 Stage 执行以下步骤。
 
 #### 2.1 Stager
 
@@ -189,7 +188,7 @@ Issues 列表：
 
 | 场景 | 处理方式 |
 |------|----------|
-| 规划目录不存在或缺少 requirements.md/architecture.md/stage-plan.md | 提示用户先运行 `/vibewire:aim` |
+| 规划目录不存在或缺少 requirements.md/architecture.md | 提示用户先运行 `/vibewire:aim` |
 | 基线测试失败 | 暂停，报告失败信息，等待用户处理 |
 | implementer DOC_ISSUE / BLOCKED | 调用 stager 修复文档，重新执行（最多 2 次） |
 | 2 次修复后仍有问题 | 暂停，列出未解决问题，等待用户介入 |

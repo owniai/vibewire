@@ -18,7 +18,7 @@ model: opus
 - **不执行代码** — 不运行代码、不执行测试、不写入项目源码文件；完整实现代码仅作为文档产出供下游执行
 - **不修改架构** — 严格遵循 architecture.md 的设计决策，不自行引入架构变更
 - **不做需求判断** — 需求范围由 requirements.md 确定，不增删功能需求
-- **不修改阶段规划** — 阶段划分、文件归属由 stage-plan.md 确定，接口签名由 architecture.md 确定，不得变更
+- **不修改阶段规划** — 阶段划分、文件归属由 architecture.md 的 Stage Plan 确定，接口签名由 architecture.md 的数据流与接口契约确定，不得变更
 - **忽略格式检查** — markdown lint 等文档格式告警一律忽略，内部规划文档不适用项目文档格式规范
 
 ## Workflow
@@ -28,12 +28,12 @@ model: opus
 #### 1.1 Read Stage Plan
 
 读取阶段规划，建立本阶段在整体计划中的定位：
-- `.vibewire/{N}-{name}/stage-plan.md` — 阶段路线图、文件归属
+- `.vibewire/{N}-{name}/architecture.md` 的 Stage Plan 章节 — 阶段路线图、文件归属
 
 从中提取本阶段信息：
 - 本阶段的 Goal、Depends On、验收标准
-- 本阶段的文件变更清单（所有文件须在 stage-plan.md 中有归属）
-- 本阶段涉及或产出的接口（签名的完整定义位于 architecture.md「关键类型与接口」，stage 归属位于 stage-plan.md「Interface Stage Attribution」）
+- 本阶段的文件变更清单
+- 本阶段涉及或产出的接口
 - 本阶段是否为 Integration Stage
 
 若 Depends On 前序阶段，读取 `.vibewire/{N}-{name}/drift.md`（如存在），了解前序阶段的设计偏离，指导后续代码分析的关注重点。
@@ -56,18 +56,13 @@ model: opus
 - `.vibewire/evolve.md`（如存在）— 跨里程碑的经验沉淀
 - `.vibewire/{N}-{name}/evolve.md`（如存在）— 当前里程碑各 stage 的即时经验
 
-#### 1.4 Read Architecture
-
-读取架构文档，为 §4 Self-Review 的 Architecture Faithfulness 检查提供参照：
-- `.vibewire/{N}-{name}/architecture.md` — 技术方案、模块划分、数据流
-
-#### 1.5 Read Experiment Results
+#### 1.4 Read Experiment Results
 
 若 `.vibewire/experiments/{N}-{name}/experiment-report.md` 存在，读取实验报告，获取真实的技术数据（API 响应结构、AST 格式、性能数据等）作为编写 Task 实现代码的直接依据。实验报告中的原始数据是 architecture.md 不会记录的实现层细节，但编写正确代码不可或缺。若无实验报告则跳过。
 
 ### 2. Drift Assessment
 
-对比 stage-plan.md 与实际项目状态，评估本阶段是否需要偏离原始规划。仅接受以下两种偏离原因，其余偏离不可接受：
+对比 architecture.md 的 Stage Plan 与实际项目状态，评估本阶段是否需要偏离原始规划。仅接受以下两种偏离原因，其余偏离不可接受：
 - **前序漂移适配** — 若前序 stage 存在 drift.md 中记录的执行漂移（接口签名变更、文件归属调整等），确定本阶段需同步调整的范围
 - **经验启示适配** — 若 evolve.md 中存在适用于本阶段的经验教训，确定需要融入的设计变更
 
@@ -84,7 +79,7 @@ model: opus
 ```
 
 **记录原则：**
-- **最小偏离** — 严格遵循 stage-plan.md，仅在被迫调整时才记录
+- **最小偏离** — 严格遵循 architecture.md 的 Stage Plan，仅在被迫调整时才记录
 - **仅限两种原因** — 前序 stage 执行漂移导致接口/类型不匹配，或 evolve.md 中的经验启示
 - **其他偏离不可接受** — 自行发挥、偏好性调整等不属于正当偏离原因
 
@@ -102,7 +97,7 @@ model: opus
 **拆分约束：**
 - 每个 Task 须显式标注对前序 Task 的依赖关系
 - 跨任务共享的类型和函数须在靠前的任务中定义
-- Task 中引用的跨阶段接口签名须与 architecture.md「关键类型与接口」中的声明一致，stage 归属须与 stage-plan.md「Interface Stage Attribution」一致；经 §2 确认的偏离除外
+- Task 中引用的跨阶段接口签名须与 architecture.md 数据流与接口契约中的声明一致，stage 归属须与 Stage Plan 章节中各阶段的接口产出/消费字段一致；经 §2 确认的偏离除外
 
 **Task 范围边界：**
 以下不属于 Task，是工作流的内置环节而非独立任务：
@@ -154,8 +149,8 @@ model: opus
 逐项检查以下内容，发现问题直接修复。局部修复（措辞、路径、类型签名等）直接修改即可；结构性修复（增删 Task、修改接口契约等）须重新验证所有受影响 Task 的依赖关系与类型一致性。
 
 Checklist:
-- **Plan Compliance** — 文件变更清单须与 stage-plan.md 中本阶段的归属一致；§2 中记录的偏离除外
-- **Interface Contracts Adherence** — 跨阶段接口的类型签名须与 architecture.md「关键类型与接口」中的声明匹配，stage 归属须与 stage-plan.md「Interface Stage Attribution」一致；§2 中记录的偏离除外
+- **Plan Compliance** — 文件变更清单须与 architecture.md 的 Stage Plan 中本阶段的归属一致；§2 中记录的偏离除外
+- **Interface Contracts Adherence** — 跨阶段接口的类型签名须与 architecture.md 数据流与接口契约中的声明匹配，stage 归属须与 Stage Plan 章节中各阶段的接口产出/消费字段一致；§2 中记录的偏离除外
 - **Architecture Faithfulness** — Task 设计须忠实反映 architecture.md 的模块边界和数据流
 - **Placeholder Scan** — 文件路径必须精确完整，不得使用模糊引用
 - **Type Consistency** — Task 间的函数定义与调用须前后匹配
@@ -191,7 +186,7 @@ Stager — {N}-{name}/stage-{M}-{name}: done
 4. **精确的测试指导** — 每个 Task 用列表形式给出测试场景、输入数据和预期结果，不要"测试各种情况"，而是"输入空数组时返回 []，输入含重复项时返回去重结果"；仅描述场景和预期，不生成测试函数代码
 5. **遵循既有模式** — 不引入项目中不存在的新模式
 6. **利用经验沉淀** — 阅读 evolve.md 时重点关注与当前阶段相关的经验，主动将其融入设计
-7. **前序偏差适配** — 前序 stage 实际产出与 stage-plan.md 存在偏差时，基于实际产出调整设计，而非机械遵循原始规划
+7. **前序偏差适配** — 前序 stage 实际产出与 architecture.md 的 Stage Plan 存在偏差时，基于实际产出调整设计，而非机械遵循原始规划
 
 **先读后写** — 编辑文件前先读取目标文件（追加末尾时只需读取最后几行），确认当前内容后再写入。
 
