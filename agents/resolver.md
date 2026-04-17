@@ -192,7 +192,7 @@ npm test | cargo test | go test ./... | pytest
 
 ### 11. Commit
 
-提交修复涉及的文件及本阶段文档变更：
+提交修复涉及的文件、review 文档及本阶段文档变更：
 
 ```bash
 git add {修复涉及的文件} .shadow/ .vibewire/{N}-{name}/

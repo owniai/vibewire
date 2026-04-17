@@ -18,7 +18,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:go. Do not auto
 ### 1. Initialize
 
 解析用户参数获取 `{N}-{name}`，完成以下检查：
-1. 确认 `.vibewire/{N}-{name}/` 目录存在，且包含 `requirements.md` 和 `architecture.md`
+1. 确认 `.vibewire/{N}-{name}/` 目录存在，且包含 `requirements.md`、`architecture.md` 和 `stage-plan.md`
    - 若缺失 → 提示用户先运行 `/vibewire:aim`
 2. 记录当前分支名（后续合并需要），创建 feature 分支：
    ```
@@ -27,25 +27,11 @@ description: Use ONLY when the user explicitly invokes /vibewire:go. Do not auto
    ```
 3. 运行项目测试确认基线干净（如项目无测试则跳过）。若失败 → 暂停，报告失败信息，等待用户处理
 
-### 2. Global Planning
+### 2. Stage Loop
 
-调用 planner 产出全局阶段规划：
+从 `stage-plan.md` 中读取阶段列表，按依赖顺序对每个 Stage 执行以下步骤。
 
-```
-subagent_type: "vibewire:planner"
-description: "planner {N}-{name}"
-prompt: |
-  执行全局阶段规划。
-  规划目录：.vibewire/{N}-{name}/
-```
-
-planner 完成后，从其状态报告中获取阶段列表。
-
-### 3. Stage Loop
-
-对 §2 获取的阶段列表中的每个 Stage，按顺序执行以下步骤。
-
-#### 3.1 Stager
+#### 2.1 Stager
 
 调用 stager 设计当前阶段：
 
@@ -60,7 +46,7 @@ prompt: |
 
 stager 完成后继续下一步骤。
 
-#### 3.2 Implementer
+#### 2.2 Implementer
 
 ```
 subagent_type: "vibewire:implementer"
@@ -79,7 +65,7 @@ prompt: |
 | DOC_ISSUE | 文档设计问题 | 按 §BLOCKED 处理流程修复 |
 | BLOCKED | 连续修复失败 | 按 §BLOCKED 处理流程修复 |
 
-#### 3.3 Reviewers
+#### 2.3 Reviewers
 
 implementer 完成后，同时启动三个审查 agent：
 
@@ -131,7 +117,7 @@ resolver 完成后根据状态码处理：
 | DONE | 继续下一 stage |
 | DONE_WITH_DEFERRED | 继续下一 stage（延后项已由 resolver 记录） |
 
-### 4. Wrap-Up
+### 3. Wrap-Up
 
 所有 stage 完成后，调用 evolver：
 
@@ -168,7 +154,7 @@ prompt: |
   问题描述：{implementer 报告的问题内容}
 ```
 
-2. 修复后重新调用 implementer（使用 §3.2 原模板）
+2. 修复后重新调用 implementer（使用 §2.2 原模板）
 3. 若 2 次修复后仍有问题 → 暂停，列出未解决问题，等待用户介入
 
 暂停时输出：
@@ -203,7 +189,7 @@ Issues 列表：
 
 | 场景 | 处理方式 |
 |------|----------|
-| 规划目录不存在或缺少 requirements.md/architecture.md | 提示用户先运行 `/vibewire:aim` |
+| 规划目录不存在或缺少 requirements.md/architecture.md/stage-plan.md | 提示用户先运行 `/vibewire:aim` |
 | 基线测试失败 | 暂停，报告失败信息，等待用户处理 |
 | implementer DOC_ISSUE / BLOCKED | 调用 stager 修复文档，重新执行（最多 2 次） |
 | 2 次修复后仍有问题 | 暂停，列出未解决问题，等待用户介入 |

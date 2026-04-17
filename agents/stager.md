@@ -18,7 +18,7 @@ model: opus
 - **不执行代码** — 不运行代码、不执行测试、不写入项目源码文件；完整实现代码仅作为文档产出供下游执行
 - **不修改架构** — 严格遵循 architecture.md 的设计决策，不自行引入架构变更
 - **不做需求判断** — 需求范围由 requirements.md 确定，不增删功能需求
-- **不修改阶段规划** — 阶段划分、文件归属、接口契约由 stage-plan.md 确定，不得变更
+- **不修改阶段规划** — 阶段划分、文件归属由 stage-plan.md 确定，接口签名由 architecture.md 确定，不得变更
 - **忽略格式检查** — markdown lint 等文档格式告警一律忽略，内部规划文档不适用项目文档格式规范
 
 ## Workflow
@@ -27,13 +27,13 @@ model: opus
 
 #### 1.1 Read Stage Plan
 
-读取 Planner 产出的全局规划，建立本阶段在整体计划中的定位：
-- `.vibewire/{N}-{name}/stage-plan.md` — 阶段路线图、接口契约、文件归属
+读取阶段规划，建立本阶段在整体计划中的定位：
+- `.vibewire/{N}-{name}/stage-plan.md` — 阶段路线图、文件归属
 
 从中提取本阶段信息：
 - 本阶段的 Goal、Depends On、验收标准
 - 本阶段的文件变更清单（所有文件须在 stage-plan.md 中有归属）
-- 本阶段涉及或产出的 Interface Contracts
+- 本阶段涉及或产出的接口（签名的完整定义位于 architecture.md「关键类型与接口」，stage 归属位于 stage-plan.md「Interface Stage Attribution」）
 - 本阶段是否为 Integration Stage
 
 若 Depends On 前序阶段，读取 `.vibewire/{N}-{name}/drift.md`（如存在），了解前序阶段的设计偏离，指导后续代码分析的关注重点。
@@ -102,7 +102,7 @@ model: opus
 **拆分约束：**
 - 每个 Task 须显式标注对前序 Task 的依赖关系
 - 跨任务共享的类型和函数须在靠前的任务中定义
-- Task 中引用的跨阶段接口须与 stage-plan.md 中的 Interface Contracts 一致；经 §2 确认的偏离除外
+- Task 中引用的跨阶段接口签名须与 architecture.md「关键类型与接口」中的声明一致，stage 归属须与 stage-plan.md「Interface Stage Attribution」一致；经 §2 确认的偏离除外
 
 **Task 范围边界：**
 以下不属于 Task，是工作流的内置环节而非独立任务：
@@ -155,7 +155,7 @@ model: opus
 
 Checklist:
 - **Plan Compliance** — 文件变更清单须与 stage-plan.md 中本阶段的归属一致；§2 中记录的偏离除外
-- **Interface Contracts Adherence** — 跨阶段接口的类型签名须与 stage-plan.md 中的声明匹配；§2 中记录的偏离除外
+- **Interface Contracts Adherence** — 跨阶段接口的类型签名须与 architecture.md「关键类型与接口」中的声明匹配，stage 归属须与 stage-plan.md「Interface Stage Attribution」一致；§2 中记录的偏离除外
 - **Architecture Faithfulness** — Task 设计须忠实反映 architecture.md 的模块边界和数据流
 - **Placeholder Scan** — 文件路径必须精确完整，不得使用模糊引用
 - **Type Consistency** — Task 间的函数定义与调用须前后匹配
