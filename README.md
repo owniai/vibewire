@@ -160,12 +160,13 @@ All process artifacts are stored in `.vibewire/` within the target project:
 ├── tech-research.md                    # Tech investigation results (created by scout)
 ├── experiments/{N}-{name}/             # Experiment reports (created by experimenter)
 │   └── experiment-report.md
+├── evolve.md                            # Cross-milestone experience (created by evolver)
 ├── {N}-{name}/                         # Planning directory per task
 │   ├── requirements.md                 # Requirements document (created by aim)
 │   ├── architecture.md                 # Architecture design with Stage Plan (created by aim)
 │   ├── stage-{M}-{name}.md            # Stage design (created by stager)
-│   ├── evolve.md                       # Experience log (created by evolver)
-│   └── drift.md                        # Design drift record (created by evolver)
+│   ├── evolve.md                       # Per-stage experience log (created by implementer, resolver)
+│   └── drift.md                        # Design drift record (created by implementer, stager, evolver)
 └── .shadow/                            # API declaration mirrors (created by intro)
     └── {path/to/source}.{ext}
 ```
