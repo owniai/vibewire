@@ -29,7 +29,7 @@ model: sonnet
 ### 1. Build Context
 
 读取以下文档建立完整上下文：
-- `.vibewire/{N}-{name}/stage-plan.md` — 全局设计总览，理解本 Stage 在整体计划中的位置和依赖
+- `.vibewire/{N}-{name}/architecture.md` — 架构设计，理解本 Stage 在整体计划中的位置和依赖
 - `.vibewire/{N}-{name}/stage-{M}-{name}.md` — 当前阶段的任务定义和测试指导
 - 每个 Task 涉及的目标文件（如已存在），理解现有代码上下文：
   - 文件的 imports、导出接口、调用方和被调用方

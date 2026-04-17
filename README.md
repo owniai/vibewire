@@ -14,12 +14,11 @@ When you have a task, run `/vibewire:aim`. Through a structured conversation, th
 
 Then run `/vibewire:go`. The go skill dispatches agents through a stage-by-stage pipeline:
 
-1. **Planner** breaks the architecture into execution stages
-2. For each stage, **stager** designs fine-grained tasks with full implementation code
-3. **Implementer** writes code and tests, runs them, and fixes failures until everything passes
-4. Three reviewers — **efficiency**, **quality**, **reuse** — inspect the result in parallel
-5. **Resolver** consolidates review findings and applies minimal fixes
-6. After all stages, **evolver** distills lessons learned and records design drift
+1. For each stage, **stager** designs fine-grained tasks with full implementation code
+2. **Implementer** writes code and tests, runs them, and fixes failures until everything passes
+3. Three reviewers — **efficiency**, **quality**, **reuse** — inspect the result in parallel
+4. **Resolver** consolidates review findings and applies minimal fixes
+5. After all stages, **evolver** distills lessons learned and records design drift
 
 Each stage is a self-contained loop: design → implement → review → fix. If an implementer gets blocked, the stager reworks the design and the implementer retries automatically (up to twice before escalating to you).
 
@@ -85,7 +84,6 @@ cp -r vibewire/skills ~/.claude/skills/
               → (user reviews and approves)
 
 /vibewire:go {N}-{name}
-  → planner: stage breakdown
   → for each stage:
       stager → stage design
       implementer → code + tests
@@ -107,13 +105,12 @@ cp -r vibewire/skills ~/.claude/skills/
 | **aim** | Collaborative requirement clarification and architecture design. Dispatches scout for tech investigation and experimenter for real-world validation when needed. Produces `requirements.md` and `architecture.md` |
 | **go** | Execution orchestrator. Dispatches agents in sequence through planning, implementation, and review stages |
 
-### Agents (11)
+### Agents (10)
 
 | Agent | Role | Used By |
 |-------|------|---------|
 | **scout** | Investigates specified technologies and dependencies with factual findings — versions, compatibility, constraints | aim |
 | **experimenter** | Runs specified experiments to obtain real structures, API behaviors, or performance data | aim |
-| **planner** | Reads requirements and architecture, produces a global stage breakdown with interface contracts | go |
 | **stager** | Converts a stage plan into fine-grained tasks with full implementation code | go |
 | **implementer** | Writes code from stage documents, writes and runs tests, fixes issues until all tests pass, then commits | go |
 | **efficiency-reviewer** | Reviews for performance issues — unnecessary work, missed concurrency, memory leaks, algorithmic inefficiency | go |
@@ -133,10 +130,9 @@ cp -r vibewire/skills ~/.claude/skills/
 vibewire/
 ├── .claude-plugin/
 │   └── plugin.json           # Plugin metadata
-├── agents/                   # 11 specialized agents
+├── agents/                   # 10 specialized agents
 │   ├── scout.md
 │   ├── experimenter.md
-│   ├── planner.md
 │   ├── stager.md
 │   ├── implementer.md
 │   ├── efficiency-reviewer.md
@@ -166,8 +162,7 @@ All process artifacts are stored in `.vibewire/` within the target project:
 │   └── experiment-report.md
 ├── {N}-{name}/                         # Planning directory per task
 │   ├── requirements.md                 # Requirements document (created by aim)
-│   ├── architecture.md                 # Architecture design (created by aim)
-│   ├── stages.md                       # Stage breakdown (created by planner)
+│   ├── architecture.md                 # Architecture design with Stage Plan (created by aim)
 │   ├── stage-{M}-{name}.md            # Stage design (created by stager)
 │   ├── evolve.md                       # Experience log (created by evolver)
 │   └── drift.md                        # Design drift record (created by evolver)
@@ -194,29 +189,27 @@ flowchart TD
 
     subgraph go["/vibewire:go"]
         direction TB
-        G0[User approves] --> G1["planner
-        Stage breakdown"]
-        G1 --> G2["stager
+        G0[User approves] --> G1["stager
         Stage design"]
-        G2 --> G3["implementer
+        G1 --> G2["implementer
         Code + tests"]
-        G3 --> G4{Review}
+        G2 --> G3{Review}
 
-        G4 --> G5["efficiency-reviewer"]
-        G4 --> G6["quality-reviewer"]
-        G4 --> G7["reuse-reviewer"]
+        G3 --> G4["efficiency-reviewer"]
+        G3 --> G5["quality-reviewer"]
+        G3 --> G6["reuse-reviewer"]
 
-        G5 --> G8{Issues found?}
-        G6 --> G8
-        G7 --> G8
-        G8 -- Yes --> G9["resolver
+        G4 --> G7{Issues found?}
+        G5 --> G7
+        G6 --> G7
+        G7 -- Yes --> G8["resolver
         Consolidate and fix"]
-        G8 -- No --> G10{More stages?}
-        G9 --> G10
-        G10 -- Yes --> G2
-        G10 -- No --> G11["evolver
+        G7 -- No --> G9{More stages?}
+        G8 --> G9
+        G9 -- Yes --> G1
+        G9 -- No --> G10["evolver
         Experience + drift"]
-        G11 --> G12[User chooses merge strategy]
+        G10 --> G11[User chooses merge strategy]
     end
 
     aim --> go

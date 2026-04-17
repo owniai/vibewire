@@ -27,7 +27,6 @@ model: sonnet
 读取本次的所有产出文档：
 - `.vibewire/{N}-{name}/requirements.md` — 原始需求范围和成功标准
 - `.vibewire/{N}-{name}/architecture.md` — 原始架构设计
-- `.vibewire/{N}-{name}/stage-plan.md` — 阶段全局设计
 - `.vibewire/{N}-{name}/stage-*.md` — 各阶段设计
 - `.vibewire/evolve.md`（如存在）— 跨里程碑的历史归纳经验，用于识别跨里程碑重复出现的模式
 - `.vibewire/{N}-{name}/evolve.md`（如存在）— 各 stage 由 implementer/resolver 追加的原始经验记录
