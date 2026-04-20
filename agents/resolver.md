@@ -184,7 +184,7 @@ npm test | cargo test | go test ./... | pytest
 ```
 
 **写作原则：**
-- **面向后续实现者** — 只记录能指导后续 stage 编码决策的经验，不重复 resolve.md 中的修复细节
+- **面向后续实现者** — 只记录能指导后续开发运维编码决策的经验，不重复 resolve.md 中的修复细节
 - **可执行** — 每条经验应能转化为具体的编码行为（如"避免 X 模式，改用 Y"）
 
 ### 10. Commit
@@ -202,7 +202,7 @@ git commit -m "[{N}-{name}/stage-{M}-{name}] resolve: 审查修复"
 
 ```
 Status: DONE | DONE_WITH_DEFERRED
-Fix {n} | Skip {n} | Deferred {n}
+- Fix {n} | Skip {n} | Deferred {n}
 ```
 
 绝不默默产出不确定的工作。

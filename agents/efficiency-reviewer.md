@@ -60,7 +60,7 @@ git show --stat --name-status HEAD
 ### 5. Status Report
 
 ```
-Efficiency Review — {N}-{name}\stage-{M}-{name}: done
+Status: DONE
 - Critical: {n}, Major: {n}, Minor: {n}, Info: {n}
 ```
 
