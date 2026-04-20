@@ -27,6 +27,7 @@ model: opus
 ### 1. Build Context
 
 读取阶段设计与项目上下文：
+- `.vibewire/{N}-{name}/requirements.md` — 需求范围和验收标准
 - `.vibewire/{N}-{name}/architecture.md` — 全局设计与本阶段定位
 - `.vibewire/project.md` — 项目架构、技术栈和约定规范
 - `.vibewire/{N}-{name}/drift.md`（如存在）— 前序阶段的设计偏离
@@ -59,7 +60,6 @@ model: opus
 **自检（发现问题直接修复）：**
 - 文件变更范围与 architecture.md 的 Stage Plan 一致（§2 偏离除外）
 - 跨阶段接口签名与 architecture.md 数据流与接口契约匹配
-- 不超过 5 个任务
 - 文件路径精确完整
 - 无非功能代码任务混入
 
@@ -92,7 +92,7 @@ model: opus
 运行全量测试：
 1. 全部通过 → 标记任务完成（TodoWrite status: completed），继续下一任务
 2. 有失败 → 读错误信息，判断是测试问题还是实现问题，执行最小修复
-3. 同一问题连续 3 次未解决 → 标记为 BLOCKED，跳至 §6
+3. 同一问题连续 3 次未解决 → 回退当前任务的代码变更（`git checkout -- {当前任务涉及的文件}`），恢复到该任务开始前的状态，标记为 BLOCKED，跳至 §6
 
 ### 5. Update Shadow
 
@@ -109,20 +109,15 @@ model: opus
 
 ### 6. Write Log
 
-追加到 `.vibewire/{N}-{name}/log-implementer.md`（若无则创建并写入 `# Implementer Log — {N}-{name}` 文件头），记录每个 Task 的状态和整体 Stage 状态。
+追加到 `.vibewire/{N}-{name}/log-implementer.md`（若无则创建并写入 `# Implementer Log — {N}-{name}` 文件头），记录本阶段的执行报告。此文档是下游 reviewer/resolver/evolver 的主要输入。
 
 **Task 级状态：**
-- `DONE` — 正常完成，无需额外记录
-- `FIXED` — 有修复，需记录修改内容、分类和踩坑点
-- `DONE_WITH_CONCERNS` — 完成但触发了边界条件，需记录顾虑
-- `BLOCKED` — 同一问题连续 3 次未解决，需记录阻塞原因
-
-FIXED 状态的修改内容按以下分类：
-- **架构设计问题** — architecture.md 中的逻辑 bug、参数错误、类型不匹配、遗漏的边界条件
-- **实现过程问题** — 依赖版本、配置、路径等环境问题；测试未覆盖的异常路径
+- `DONE` — 正常完成
+- `DONE_WITH_CONCERNS` — 完成但存在顾虑
+- `BLOCKED` — 同一问题连续 3 次未解决
 
 **Stage 级状态：**
-- `DONE` — 全部 Task 完成（含 FIXED 或 DONE_WITH_CONCERNS）
+- `DONE` — 全部 Task 完成（含 DONE_WITH_CONCERNS）
 - `BLOCKED` — 任一 Task 为 BLOCKED
 
 仅按状态填写对应字段，其余省略：
@@ -130,13 +125,27 @@ FIXED 状态的修改内容按以下分类：
 ```markdown
 ## Stage {M}-{name}
 
-### {序号}. {任务名称} | {状态}
-- **修改**：{FIXED→修改内容（架构设计问题/实现过程问题）}
-- **踩坑点**：{FIXED→具体描述}
-- **顾虑**：{DONE_WITH_CONCERNS→偏离的边界条件}
-- **阻塞原因**：{BLOCKED→连续失败的根因}
+### Scope
+{从 architecture.md 提炼的本阶段意图和范围}
 
-### Stage 状态：DONE / BLOCKED
+### Tasks
+
+#### Task {n}: {title} | DONE
+- **操作**：{A/M/D} `path/to/file`
+- **决策**：{关键设计决策和理由，无特殊决策则省略}
+
+#### Task {n}: {title} | DONE_WITH_CONCERNS
+- **操作**：{A/M/D} `path/to/file`
+- **决策**：{关键设计决策和理由}
+- **顾虑**：{偏离的边界条件}
+
+#### Task {n}: {title} | BLOCKED
+- **操作**：{A/M/D} `path/to/file`
+- **阻塞原因**：{连续失败的根因}
+
+### Summary
+- **状态**：DONE / BLOCKED
+- **变更文件**：`file1` (A), `file2` (M), ...
 ```
 
 ### 7. Self-Reflect
@@ -189,7 +198,7 @@ FIXED 状态的修改内容按以下分类：
 提交代码：
 
 ```
-git add {本次 stage 涉及的所有文件} .shadow/ {§7 中写入的 drift.md、evolve.md，若无则省略}
+git add {本次 stage 涉及的所有文件} .shadow/ .vibewire/{N}-{name}/log-implementer.md {§7 中写入的 drift.md、evolve.md，若无则省略}
 git commit -m "[{N}-{name}/stage-{M}-{name}] feat: {阶段名称}"
 ```
 

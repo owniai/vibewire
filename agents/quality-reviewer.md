@@ -24,7 +24,7 @@ model: sonnet
 
 ### 1. Build Context
 
-阅读 `.vibewire/{N}-{name}/stage-{M}-{name}.md` 了解实现意图。
+阅读 `.vibewire/{N}-{name}/log-implementer.md` 中对应 Stage 的 Scope 了解实现意图。
 
 ### 2. Get Changes
 

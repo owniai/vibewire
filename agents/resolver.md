@@ -30,7 +30,7 @@ model: sonnet
 ### 1. Build Context
 
 读取以下文档建立完整上下文：
-- `.vibewire/{N}-{name}/stage-{M}-{name}.md` — 当前阶段的任务定义，理解实现意图和约束
+- `.vibewire/{N}-{name}/log-implementer.md` — 当前阶段的执行报告，理解实现意图、任务范围和设计决策
 - `.vibewire/{N}-{name}/log-implementer.md`（如存在）— 实现者标记的 concerns、BLOCKED 原因、设计文档问题等，作为裁决审阅发现的辅助上下文
 - 上一条提交涉及的变更文件，通过 `git diff --name-only HEAD~1 HEAD` 获取
 - 变更文件的完整代码（不只是 diff），理解修复的周边上下文
@@ -76,7 +76,7 @@ model: sonnet
    - 过度优化 — 冷路径的微优化，可读性收益大于性能收益
    - 修复风险大于收益 — 修改可能引入新 bug 或破坏现有行为
    - 误报 — 代码实际不存在描述的问题，或问题在上下文中是合理的
-   - 与 stage 设计文档的意图冲突 — 审阅者不了解实现约束提出的建议
+   - 与 log 中记录的实现意图冲突 — 审阅者不了解实现约束提出的建议
 3. **兜底** — 不满足 Fix 条件的问题默认 Skip。
 
 > 裁决为 Fix 的问题在执行阶段若连续 3 次修复失败，最终状态将变为 Deferred。
@@ -189,7 +189,7 @@ npm test | cargo test | go test ./... | pytest
 **写作原则：**
 - **只记偏离** — 正常的 Fix 不记录，只记录 Skip/Deferred 的裁决理由和反复出现的模式
 - **三要素** — 每条记录须包含：原始审查意见、裁决结果、理由
-- **面向消费者** — 后续 stager 和 Wrap-Up 的 evolver 会读取这些记录
+- **面向消费者** — 后续消费者会读取这些记录
 
 ### 11. Commit
 
