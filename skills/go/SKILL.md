@@ -100,9 +100,41 @@ resolver 完成后根据状态码处理：
 | DONE | 继续下一 stage |
 | DONE_WITH_DEFERRED | 继续下一 stage（延后项已由 resolver 记录） |
 
-### 3. Wrap-Up
+### 3. Acceptance
 
-所有 stage 完成后，调用 evolver：
+所有 stage 完成后，调用 acceptor 进行全量验收：
+
+```
+subagent_type: "vibewire:acceptor"
+description: "acceptor {N}-{name}"
+prompt: |
+  执行验收。
+  规划目录：.vibewire/{N}-{name}/
+```
+
+根据 acceptor 的 Verdict 处理：
+
+| Verdict | 处理方式 |
+|---------|----------|
+| PASS | 继续进入 §4 Wrap-Up |
+| CONDITIONAL | 展示 Bugs 列表，使用 AskUserQuestion 询问用户是否继续 |
+| FAIL | 暂停，列出 Requirements 缺口和 Bugs，等待用户介入 |
+
+暂停时输出：
+
+```
+{N}-{name}: 验收未通过
+
+Requirements:
+- [列出 PARTIAL / MISSING 的需求]
+
+Bugs:
+- [列出 acceptor 报告的所有 bug]
+```
+
+### 4. Wrap-Up
+
+调用 evolver：
 
 ```
 subagent_type: "vibewire:evolver"
@@ -162,3 +194,4 @@ Issues 列表：
 | 基线测试失败 | 暂停，报告失败信息，等待用户处理 |
 | implementer BLOCKED | 重新执行（最多 1 次） |
 | 重试后仍 BLOCKED | 暂停，列出未解决问题，等待用户介入 |
+| acceptor FAIL | 暂停，列出未解决问题，等待用户介入 |
