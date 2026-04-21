@@ -1,7 +1,7 @@
 ---
 name: shadow-writer
 description: "Extracts declarations from source files (like .h headers) — all definitions without function bodies. Receives file paths as input, no git operations."
-tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
+tools: ["*"]
 model: sonnet
 ---
 

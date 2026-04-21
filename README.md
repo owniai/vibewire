@@ -231,11 +231,7 @@ flowchart TD
 
 ## Updating
 
-Update the plugin through the marketplace:
-
-```bash
-/plugin update vibewire
-```
+Run `/plugin` in Claude Code, switch to the `Marketplaces` tab, select `vibewire`, then choose `Update marketplace`.
 
 ---
 

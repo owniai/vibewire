@@ -1,7 +1,7 @@
 ---
 name: quality-reviewer
 description: "For vibewire:go flow scheduling. Reviews code changes for anti-patterns — identifies redundant state, parameter creep, copy-paste variants, over-abstraction, and code smells."
-tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
+tools: ["*"]
 model: sonnet
 ---
 
