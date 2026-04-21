@@ -1,7 +1,7 @@
 ---
 name: reuse-reviewer
 description: "For vibewire:go flow scheduling. Reviews code changes for duplication — searches existing utilities and patterns to identify reusable code opportunities."
-tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
+tools: ["*"]
 model: sonnet
 ---
 

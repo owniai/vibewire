@@ -1,7 +1,7 @@
 ---
 name: fixer
 description: "For vibewire:go flow scheduling. Fixes bugs and partial requirements identified during acceptance verification. Reads acceptance report, prioritizes issues, executes minimal fixes with test verification."
-tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
+tools: ["*"]
 model: opus
 ---
 

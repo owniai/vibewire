@@ -1,7 +1,7 @@
 ---
 name: resolver
 description: "For vibewire:go flow scheduling. Consolidates review reports from all three reviewers, deduplicates findings, cross-validates issues, adjudicates fix scope, and executes minimal fixes."
-tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
+tools: ["*"]
 model: sonnet
 ---
 

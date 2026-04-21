@@ -1,7 +1,7 @@
 ---
 name: implementer
 description: "For vibewire:go flow scheduling. Reads architecture context, assesses drift, breaks down tasks, then executes per-task TDD — write test, write code, verify, fix — until all tasks pass. Commits results."
-tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
+tools: ["*"]
 model: opus
 ---
 

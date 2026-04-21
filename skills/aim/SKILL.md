@@ -21,8 +21,8 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 3. **Requirements Clarification** — 一次一个，理解本次任务的目的/约束/成功标准
 4. **Present Requirements** — 向用户展示完整的需求描述
 5. **Write Requirements** — 写入 requirements.md
-6. **Tech Investigation** — 可选，评估是否需要技术栈/依赖调研
-7. **Tech Experiment** — 可选，评估是否需要技术实验获取真实数据
+6. **Tech Investigation** — 评估是否需要技术栈/依赖调研
+7. **Tech Experiment** — 评估是否需要技术实验获取真实数据
 8. **Explore Architecture** — 提出方案、权衡、架构设计，含阶段划分
 9. **Write Architecture** — 写入 architecture.md
 10. **User Review** — 请用户审阅需求文档和架构文档
@@ -88,7 +88,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 
 ### 6. Tech Investigation
 
-评估本次需求是否涉及技术栈变更或依赖更新（新增依赖、升级大版本、引入新框架等）。若不涉及，跳过此步骤，直接进入步骤 7。若涉及，基于已读取的技术调研报告和本次需求列出需要调研的具体目标（包名、技术栈、兼容性问题等），跳过已有充分调研结论的目标，然后调用调研 agent 执行调研：
+评估本次需求是否涉及技术栈变更或依赖更新（新增依赖、升级大版本、引入新框架等）。若不涉及，跳过此步骤。若涉及，基于已读取的技术调研报告和本次需求列出需要调研的具体目标（包名、技术栈、兼容性问题等），跳过已有充分调研结论的目标，然后调用调研 agent 执行调研：
 
 ```
 subagent_type: "vibewire:scout"
@@ -105,7 +105,7 @@ prompt: |
 
 ### 7. Tech Experiment
 
-评估架构设计是否依赖未验证的技术假设——需要获取真实结构、API 行为、性能数据等才能做出正确设计决策的场景。若不涉及，跳过此步骤，直接进入步骤 8。
+评估架构设计是否依赖未验证的技术假设——需要获取真实结构、API 行为、性能数据等才能做出正确设计决策的场景。若不涉及，跳过此步骤。
 
 **需要实验的信号：**
 - 需要对接外部 API 且响应结构/认证流程未明确

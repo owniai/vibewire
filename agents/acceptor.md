@@ -1,7 +1,7 @@
 ---
 name: acceptor
 description: "For vibewire:go flow scheduling. Post-implementation acceptance agent that verifies requirements traceability and hunts for hidden bugs through adversarial analysis. Reports issues strictly without fixing."
-tools: ["Read", "Write", "Grep", "Glob"]
+tools: ["*"]
 model: opus
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: evolver
 description: "For vibewire:go flow scheduling. Analyzes project health patterns from review/adjudication data, maintains evolve.md with health dashboard and experience records, updates project-level documentation."
-tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
+tools: ["*"]
 model: sonnet
 ---
 

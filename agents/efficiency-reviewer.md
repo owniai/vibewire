@@ -1,7 +1,7 @@
 ---
 name: efficiency-reviewer
 description: "For vibewire:go flow scheduling. Reviews code changes for performance issues — identifies unnecessary work, missed concurrency, memory leaks, and algorithmic inefficiencies."
-tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
+tools: ["*"]
 model: sonnet
 ---
 
