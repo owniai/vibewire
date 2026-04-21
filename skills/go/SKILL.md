@@ -45,7 +45,13 @@ prompt: |
 | 状态 | 含义 | 处理方式 |
 |------|------|----------|
 | DONE | 完成 | 继续下一步骤 |
-| BLOCKED | 连续修复失败 | 按 §BLOCKED 处理流程处理 |
+| BLOCKED | 修复失败 | 提示词添加 BLOCKED 原因，重新调用 implementer |
+
+若重试两次后仍 BLOCKED → 暂停，等待用户介入：
+
+```
+Stage {M}-{name}: 执行失败（重试后仍有问题），详见 .vibewire/{N}-{name}/log.md
+```
 
 #### 2.2 Reviewers
 
@@ -101,7 +107,11 @@ resolver 完成后根据状态码处理：
 
 ### 3. Acceptance
 
-所有 stage 完成后，调用 acceptor 进行全量验收：
+所有 stage 完成后，进入验收修复循环。初始化 `round = 1`，最大修复轮次为 2。
+
+#### 3.1 Accept
+
+调用 acceptor 进行全量验收：
 
 ```
 subagent_type: "vibewire:acceptor"
@@ -116,19 +126,39 @@ prompt: |
 | Verdict | 处理方式 |
 |---------|----------|
 | PASS | 继续进入 §4 Wrap-Up |
-| CONDITIONAL | 展示 Bugs 列表，使用 AskUserQuestion 询问用户是否继续 |
-| FAIL | 暂停，列出 Requirements 缺口和 Bugs，等待用户介入 |
+| CONDITIONAL | 进入 §3.2 Fix |
+| FAIL | 暂停，列出 MISSING 需求，等待用户介入 |
 
 暂停时输出：
 
 ```
-{N}-{name}: 验收未通过
+{N}-{name}: 验收未通过，详见 .vibewire/{N}-{name}/acceptance.md
+```
 
-Requirements:
-- [列出 PARTIAL / MISSING 的需求]
+#### 3.2 Fix
 
-Bugs:
-- [列出 acceptor 报告的所有 bug]
+启动 fixer 修复验收报告中的问题：
+
+```
+subagent_type: "vibewire:fixer"
+description: "fixer {N}-{name} round {round}"
+prompt: |
+  执行验收问题修复。
+  规划目录：.vibewire/{N}-{name}/
+  修复轮次：{round}
+```
+
+fixer 完成后根据状态码处理：
+
+| 状态 | 处理方式 |
+|------|----------|
+| DONE | `round++`，回到 §3.1 重新验收 |
+| DONE_WITH_DEFERRED | `round++`，回到 §3.1 重新验收 |
+
+若 `round > 2`（即已执行 2 轮修复后验收仍未 PASS）→ 暂停，列出遗留问题，等待用户介入：
+
+```
+{N}-{name}: 验收修复循环结束，仍有遗留问题，详见 .vibewire/{N}-{name}/acceptance.md
 ```
 
 ### 4. Wrap-Up
@@ -150,21 +180,6 @@ evolver 完成后，报告整体完成状态，然后询问用户如何合并，
 4. **暂不合并** — 保留 feature 分支，稍后手动处理
 
 用户选择后执行对应操作。
-
-## BLOCKED Handling
-
-当 implementer 报告 BLOCKED 时：
-1. 重新调用 implementer（使用 §2.1 原模板）——新实例将读取日志和漂移记录，基于前次失败经验重试
-2. 若重试后仍为 BLOCKED → 暂停，列出未解决问题，等待用户介入
-
-暂停时输出：
-
-```
-Stage {M}-{name}: 执行失败（重试后仍有问题）
-
-Issues 列表：
-- [列出所有未解决的问题]
-```
 
 ## Key Principles
 
@@ -189,4 +204,6 @@ Issues 列表：
 | 基线测试失败 | 暂停，报告失败信息，等待用户处理 |
 | implementer BLOCKED | 重新执行（最多 1 次） |
 | 重试后仍 BLOCKED | 暂停，列出未解决问题，等待用户介入 |
-| acceptor FAIL | 暂停，列出未解决问题，等待用户介入 |
+| acceptor FAIL | 暂停，列出 MISSING 需求，等待用户介入 |
+| acceptor CONDITIONAL | 进入 §3.2 Fix 循环 |
+| 验收修复 2 轮后仍未 PASS | 暂停，列出遗留问题，等待用户介入 |

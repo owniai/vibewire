@@ -103,7 +103,7 @@ model: opus
 **验证通过：**
 - 运行全量测试，循环修复直到全部通过：
   - 读错误信息，判断是测试问题还是实现问题，执行最小修复
-  - 若修复后仍失败，且无法解释为何上一次修复应该生效，立即停止 → 跳至 §8 报告 BLOCKED
+  - 若修复后仍失败，且无法解释为何上一次修复应该生效，立即停止 → 跳至 §6.2 报告 BLOCKED
 - 全部通过后，对照 §3 中该任务的描述确认实现行为与要求一致，标记任务完成
 
 ### 5. Update Shadow
@@ -119,7 +119,7 @@ model: opus
 
 ### 6. Write Records
 
-仅 stage 正常完成时写入。若 BLOCKED 则直接跳至 §8 返回状态，不写入。
+仅 stage 正常完成时写入 §6.1 和 §6.2。若 BLOCKED 则跳过 §6.1，仅写入 §6.2（记录阻塞过程中的经验教训）。
 
 #### 6.1 Execution Record
 
@@ -150,28 +150,26 @@ model: opus
 
 ### 7. Commit
 
-提交代码：
+**正常完成** — 提交代码：
 
 ```
 git add {本次 stage 涉及的所有文件} .shadow/ .vibewire/{N}-{name}/log.md .vibewire/{N}-{name}/lessons.md
 git commit -m "[{N}-{name}/stage-{M}-{name}] feat: {阶段名称}"
 ```
 
+**BLOCKED** — 回退除 lessons.md 之外的所有变更，仅提交经验教训：
+
+```
+git add .vibewire/{N}-{name}/lessons.md
+git checkout -- .
+git commit -m "[{N}-{name}/stage-{M}-{name}] blocked: 记录阻塞经验"
+```
+
 ### 8. Status Report
 
-**正常完成：**
-
 ```
-Status: DONE
-```
-
-**BLOCKED：** 回退本次 stage 的所有代码变更（包括已完成任务的修改，`git checkout -- .`），然后返回：
-
-```
-Status: BLOCKED
-
-## 原因
-{简要总结阻塞原因 + 已尝试内容}
+Status: DONE / BLOCKED
+{若 BLOCKED 总结原因}
 ```
 
 ## Best Practices

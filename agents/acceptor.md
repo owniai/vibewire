@@ -98,13 +98,12 @@ PASS | CONDITIONAL | FAIL
 
 Verdict 判定标准：
 - **PASS** — 全部需求 VERIFIED，无 Critical 或 Major 级 bug
-- **CONDITIONAL** — 存在 Major 级 bug，或仅有 PARTIAL 需求且无 Critical 级 bug
-- **FAIL** — 存在 MISSING 需求，或存在 Critical 级 bug
+- **CONDITIONAL** — 存在 Bugs 和/或 PARTIAL 需求，但不包含 MISSING 需求
+- **FAIL** — 存在 MISSING 需求
 
 ### 4. Status Report
 
 ```
-Acceptor — {N}-{name}
 Verdict: PASS | CONDITIONAL | FAIL
 Requirements: VERIFIED {n}, PARTIAL {n}, MISSING {n}
 Bugs: Critical {n}, Major {n}, Minor {n}
