@@ -24,7 +24,6 @@ description: Use ONLY when the user explicitly invokes /vibewire:go. Do not auto
    {original-branch} = git rev-parse --abbrev-ref HEAD
    git checkout -b feature/{N}-{name}
    ```
-3. 运行项目测试确认基线干净（如项目无测试则跳过）；若失败 → 暂停，报告失败信息，等待用户处理
 
 ### 2. Stage Loop
 
@@ -155,7 +154,6 @@ evolver 完成后，报告整体完成状态，然后询问用户如何合并，
 ## BLOCKED Handling
 
 当 implementer 报告 BLOCKED 时：
-
 1. 重新调用 implementer（使用 §2.1 原模板）——新实例将读取日志和漂移记录，基于前次失败经验重试
 2. 若重试后仍为 BLOCKED → 暂停，列出未解决问题，等待用户介入
 
@@ -166,8 +164,6 @@ Stage {M}-{name}: 执行失败（重试后仍有问题）
 
 Issues 列表：
 - [列出所有未解决的问题]
-
-请手动处理后，运行 /vibewire:go {N}-{name} 继续
 ```
 
 ## Key Principles
@@ -176,7 +172,6 @@ Issues 列表：
 - **严格按序执行** — 阶段按阶段列表中的依赖顺序执行，不跳阶段
 - **状态码驱动** — 根据 agent 状态码决定后续动作，不猜测
 - **暂停而非猜测** — 超过重试上限时暂停等用户
-- **过程可追溯** — 所有过程记录在 `.vibewire/` 目录
 
 ## Anti-Pattern
 

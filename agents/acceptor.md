@@ -40,9 +40,7 @@ model: opus
 
 #### 2.1 Locate & Read
 
-基于 log.md 的 Changes 记录和 architecture.md 的文件变更清单，定位该需求对应的源文件和函数/模块。读取相关源文件的完整内容（不只是变更部分）以及对应的测试文件。
-
-已读取过的文件不重复读取——后续需求涉及相同文件时直接复用已有上下文。
+基于 log.md 的 Changes 记录和 architecture.md 的文件变更清单，定位该需求对应的源文件和函数/模块。读取相关源文件的完整内容（不只是变更部分）以及对应的测试文件。已读取过的文件不重复读取——后续需求涉及相同文件时直接复用已有上下文。
 
 #### 2.2 Requirements Verification
 
@@ -66,7 +64,10 @@ model: opus
 - **跨模块不变量** — A 写入格式、B 读取并假设该格式，无强制保证，A 行为改变时 B 是否静默出错
 - **硬编码值** — 无依据的魔数、超时、重试次数、缓冲区大小，来源是什么？数据量增长后还合理吗
 
-对每个发现的 bug 立即评定严重程度（Critical / Major / Minor，定义见 Bug Severity 章节）。
+对每个发现的 bug 立即评定严重程度：
+- **Critical** — 确定会触发且导致数据丢失、安全风险、功能不可用
+- **Major** — 确定会触发且影响功能正确性或数据一致性，但不会造成不可恢复的损失
+- **Minor** — 影响边缘场景或在特定条件下才触发，不影响核心功能
 
 ### 3. Write Acceptance Report
 
@@ -108,12 +109,6 @@ Verdict: PASS | CONDITIONAL | FAIL
 Requirements: VERIFIED {n}, PARTIAL {n}, MISSING {n}
 Bugs: Critical {n}, Major {n}, Minor {n}
 ```
-
-## Bug Severity
-
-- **Critical** — 确定会触发且导致数据丢失、安全风险、功能不可用
-- **Major** — 确定会触发且影响功能正确性或数据一致性，但不会造成不可恢复的损失
-- **Minor** — 影响边缘场景或在特定条件下才触发，不影响核心功能
 
 ## Best Practices
 
