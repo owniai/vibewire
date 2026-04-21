@@ -127,7 +127,7 @@ mv .vibewire/{N}-{name}/acceptance.md .vibewire/{N}-{name}/acceptance-{round}.md
 - {问题描述} — 原因：{为什么跳过}
 ```
 
-#### 6.2 Lessons
+#### 6.3 Lessons
 
 若有实质性经验，追加到 `.vibewire/{N}-{name}/lessons.md`，无则省略。
 

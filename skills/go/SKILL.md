@@ -86,8 +86,8 @@ prompt: |
 
 等待三个 agent 完成，根据各自输出的摘要判断结果：
 
-- **全部无问题** → 继续下一 stage
-- **存在至少一个问题** → 启动 resolver：
+- **无 Critical 或 Major 问题** → 继续下一 stage
+- **存在至少一个 Critical 或 Major 问题** → 启动 resolver：
 
 ```
 subagent_type: "vibewire:resolver"
@@ -201,8 +201,7 @@ evolver 完成后，报告整体完成状态，然后询问用户如何合并，
 | 场景 | 处理方式 |
 |------|----------|
 | 规划目录不存在或缺少 requirements.md/architecture.md | 提示用户先运行 `/vibewire:aim` |
-| 基线测试失败 | 暂停，报告失败信息，等待用户处理 |
-| implementer BLOCKED | 重新执行（最多 1 次） |
+| implementer BLOCKED | 重新执行（最多 2 次） |
 | 重试后仍 BLOCKED | 暂停，列出未解决问题，等待用户介入 |
 | acceptor FAIL | 暂停，列出 MISSING 需求，等待用户介入 |
 | acceptor CONDITIONAL | 进入 §3.2 Fix 循环 |

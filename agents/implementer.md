@@ -123,7 +123,7 @@ model: opus
 
 #### 6.1 Execution Record
 
-追加到 `.vibewire/{N}-{name}/log.md`（若无则创建并写入 `# Execution Log — {N}-{name}` 文件头），记录本阶段的执行事实。此文档是下游 reviewer/resolver/evolver 理解代码状态的主要输入。
+追加到 `.vibewire/{N}-{name}/log.md`（若无则创建并写入 `# Execution Log — {N}-{name}` 文件头），记录本阶段的执行事实。
 
 ```markdown
 ## Stage {M}-{name} — Implementer
