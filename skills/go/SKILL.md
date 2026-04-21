@@ -24,28 +24,12 @@ description: Use ONLY when the user explicitly invokes /vibewire:go. Do not auto
    {original-branch} = git rev-parse --abbrev-ref HEAD
    git checkout -b feature/{N}-{name}
    ```
-3. 运行项目测试确认基线干净（如项目无测试则跳过）；若失败 → 暂停，报告失败信息，等待用户处理
 
 ### 2. Stage Loop
 
 确定阶段列表：从用户输入中解析阶段列表；当且仅当用户未提供阶段列表时，读取 `architecture.md` 的 Stage Plan 章节获取。按阶段列表顺序，对每个 Stage 执行以下步骤。
 
-#### 2.1 Stager
-
-调用 stager 设计当前阶段：
-
-```
-subagent_type: "vibewire:stager"
-description: "stager Stage {M}-{name}"
-prompt: |
-  执行阶段设计。
-  规划目录：.vibewire/{N}-{name}/
-  阶段：Stage {M}-{name}
-```
-
-stager 完成后继续下一步骤。
-
-#### 2.2 Implementer
+#### 2.1 Implementer
 
 ```
 subagent_type: "vibewire:implementer"
@@ -53,7 +37,7 @@ description: "implementer Stage {M}-{name}"
 prompt: |
   执行全部实现步骤。
   规划目录：.vibewire/{N}-{name}/
-  Stage 文档：.vibewire/{N}-{name}/stage-{M}-{name}.md
+  阶段：Stage {M}-{name}
 ```
 
 根据 implementer 状态码处理：
@@ -61,10 +45,15 @@ prompt: |
 | 状态 | 含义 | 处理方式 |
 |------|------|----------|
 | DONE | 完成 | 继续下一步骤 |
-| DOC_ISSUE | 文档设计问题 | 按 §BLOCKED 处理流程修复 |
-| BLOCKED | 连续修复失败 | 按 §BLOCKED 处理流程修复 |
+| BLOCKED | 修复失败 | 提示词添加 BLOCKED 原因，重新调用 implementer |
 
-#### 2.3 Reviewers
+若重试两次后仍 BLOCKED → 暂停，等待用户介入：
+
+```
+Stage {M}-{name}: 执行失败（重试后仍有问题），详见 .vibewire/{N}-{name}/log.md
+```
+
+#### 2.2 Reviewers
 
 implementer 完成后，同时启动三个审查 agent：
 
@@ -97,8 +86,8 @@ prompt: |
 
 等待三个 agent 完成，根据各自输出的摘要判断结果：
 
-- **全部无问题** → 继续下一 stage
-- **存在至少一个问题** → 启动 resolver：
+- **无 Critical 或 Major 问题** → 继续下一 stage
+- **存在至少一个 Critical 或 Major 问题** → 启动 resolver：
 
 ```
 subagent_type: "vibewire:resolver"
@@ -116,9 +105,65 @@ resolver 完成后根据状态码处理：
 | DONE | 继续下一 stage |
 | DONE_WITH_DEFERRED | 继续下一 stage（延后项已由 resolver 记录） |
 
-### 3. Wrap-Up
+### 3. Acceptance
 
-所有 stage 完成后，调用 evolver：
+所有 stage 完成后，进入验收修复循环。初始化 `round = 1`，最大修复轮次为 2。
+
+#### 3.1 Accept
+
+调用 acceptor 进行全量验收：
+
+```
+subagent_type: "vibewire:acceptor"
+description: "acceptor {N}-{name}"
+prompt: |
+  执行验收。
+  规划目录：.vibewire/{N}-{name}/
+```
+
+根据 acceptor 的 Verdict 处理：
+
+| Verdict | 处理方式 |
+|---------|----------|
+| PASS | 继续进入 §4 Wrap-Up |
+| CONDITIONAL | 进入 §3.2 Fix |
+| FAIL | 暂停，列出 MISSING 需求，等待用户介入 |
+
+暂停时输出：
+
+```
+{N}-{name}: 验收未通过，详见 .vibewire/{N}-{name}/acceptance.md
+```
+
+#### 3.2 Fix
+
+启动 fixer 修复验收报告中的问题：
+
+```
+subagent_type: "vibewire:fixer"
+description: "fixer {N}-{name} round {round}"
+prompt: |
+  执行验收问题修复。
+  规划目录：.vibewire/{N}-{name}/
+  修复轮次：{round}
+```
+
+fixer 完成后根据状态码处理：
+
+| 状态 | 处理方式 |
+|------|----------|
+| DONE | `round++`，回到 §3.1 重新验收 |
+| DONE_WITH_DEFERRED | `round++`，回到 §3.1 重新验收 |
+
+若 `round > 2`（即已执行 2 轮修复后验收仍未 PASS）→ 暂停，列出遗留问题，等待用户介入：
+
+```
+{N}-{name}: 验收修复循环结束，仍有遗留问题，详见 .vibewire/{N}-{name}/acceptance.md
+```
+
+### 4. Wrap-Up
+
+调用 evolver：
 
 ```
 subagent_type: "vibewire:evolver"
@@ -136,45 +181,12 @@ evolver 完成后，报告整体完成状态，然后询问用户如何合并，
 
 用户选择后执行对应操作。
 
-## BLOCKED / DOC_ISSUE Handling
-
-当 implementer 报告 DOC_ISSUE 或 BLOCKED 时：
-
-1. 调用 stager 修复相关阶段文档：
-
-```
-subagent_type: "vibewire:stager"
-description: "stager fix Stage {M}-{name}"
-prompt: |
-  实现阶段报告了问题，请修改相关阶段文档以解决。
-  规划目录：.vibewire/{N}-{name}/
-  阶段：Stage {M}-{name}
-  问题来源：implementer
-  问题描述：{implementer 报告的问题内容}
-```
-
-2. 修复后重新调用 implementer（使用 §2.2 原模板）
-3. 若 2 次修复后仍有问题 → 暂停，列出未解决问题，等待用户介入
-
-暂停时输出：
-
-```
-Stage {M}-{name}: 执行失败（2 次自动修复后仍有问题）
-
-Issues 列表：
-- [列出所有未解决的问题]
-
-请手动处理后，运行 /vibewire:go {N}-{name} 继续
-```
-
 ## Key Principles
 
 - **调度者定位** — 所有 agent 按调用独立启动新实例，不跨调用复用；每次调用严格使用流程步骤中的提示词模板，仅替换 `{变量}` 为实际值
 - **严格按序执行** — 阶段按阶段列表中的依赖顺序执行，不跳阶段
 - **状态码驱动** — 根据 agent 状态码决定后续动作，不猜测
-- **自动修复** — agent BLOCKED 或 DOC_ISSUE 时自动调用 stager 修复文档后重试
 - **暂停而非猜测** — 超过重试上限时暂停等用户
-- **过程可追溯** — 所有过程记录在 `.vibewire/` 目录
 
 ## Anti-Pattern
 
@@ -189,6 +201,8 @@ Issues 列表：
 | 场景 | 处理方式 |
 |------|----------|
 | 规划目录不存在或缺少 requirements.md/architecture.md | 提示用户先运行 `/vibewire:aim` |
-| 基线测试失败 | 暂停，报告失败信息，等待用户处理 |
-| implementer DOC_ISSUE / BLOCKED | 调用 stager 修复文档，重新执行（最多 2 次） |
-| 2 次修复后仍有问题 | 暂停，列出未解决问题，等待用户介入 |
+| implementer BLOCKED | 重新执行（最多 2 次） |
+| 重试后仍 BLOCKED | 暂停，列出未解决问题，等待用户介入 |
+| acceptor FAIL | 暂停，列出 MISSING 需求，等待用户介入 |
+| acceptor CONDITIONAL | 进入 §3.2 Fix 循环 |
+| 验收修复 2 轮后仍未 PASS | 暂停，列出遗留问题，等待用户介入 |

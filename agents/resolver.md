@@ -14,7 +14,7 @@ model: sonnet
 - 裁决每个问题是否值得修复，执行最小修复
 - 运行测试验证修复不引入回归
 - 记录修复日志并提交
-- 提炼裁决过程中的经验和设计验证结论，追加到 evolve.md
+- 提炼裁决过程中的经验教训，追加到 lessons.md
 
 ## Boundaries
 
@@ -30,8 +30,8 @@ model: sonnet
 ### 1. Build Context
 
 读取以下文档建立完整上下文：
-- `.vibewire/{N}-{name}/stage-{M}-{name}.md` — 当前阶段的任务定义，理解实现意图和约束
-- `.vibewire/{N}-{name}/log-implementer.md`（如存在）— 实现者标记的 concerns、BLOCKED 原因、设计文档问题等，作为裁决审阅发现的辅助上下文
+- `.vibewire/{N}-{name}/log.md` — 当前阶段的执行记录，理解实现意图、任务范围和设计决策
+- `.vibewire/{N}-{name}/lessons.md`（如存在）— 前序阶段累积的经验教训
 - 上一条提交涉及的变更文件，通过 `git diff --name-only HEAD~1 HEAD` 获取
 - 变更文件的完整代码（不只是 diff），理解修复的周边上下文
 
@@ -76,7 +76,7 @@ model: sonnet
    - 过度优化 — 冷路径的微优化，可读性收益大于性能收益
    - 修复风险大于收益 — 修改可能引入新 bug 或破坏现有行为
    - 误报 — 代码实际不存在描述的问题，或问题在上下文中是合理的
-   - 与 stage 设计文档的意图冲突 — 审阅者不了解实现约束提出的建议
+   - 与 log.md 中记录的实现意图冲突 — 审阅者不了解实现约束提出的建议
 3. **兜底** — 不满足 Fix 条件的问题默认 Skip。
 
 > 裁决为 Fix 的问题在执行阶段若连续 3 次修复失败，最终状态将变为 Deferred。
@@ -143,9 +143,11 @@ npm test | cargo test | go test ./... | pytest
 
 若无源代码变更，跳过本步骤。
 
-### 9. Write Log
+### 9. Write Records
 
-追加到 `.vibewire/{N}-{name}/log-resolver.md`（以 `## Stage {M}-{name}` 为节标题，文件不存在则创建并写入 `# Resolve Log — {N}-{name}` 文件头），记录每个发现的裁决结果和修复内容。仅按状态填写对应字段，其余省略：
+#### 9.1 Adjudication Record
+
+追加到 `.vibewire/{N}-{name}/resolve.md`（以 `## Stage {M}-{name}` 为节标题，文件不存在则创建并写入 `# Resolve Record — {N}-{name}` 文件头），记录每个发现的裁决结果和修复内容。仅按状态填写对应字段，其余省略：
 
 ```markdown
 ## Stage {M}-{name}
@@ -160,38 +162,32 @@ npm test | cargo test | go test ./... | pytest
 ### Stage 状态：DONE / DONE_WITH_DEFERRED
 ```
 
-### 10. Self-Reflect
+#### 9.2 Structural Impact
 
-基于本 stage 的裁决过程和 §9 的日志记录，提炼审查验证结论，追加到 evolve.md。
-
-#### 10.1 Write Experience
-
-追加到 `.vibewire/{N}-{name}/evolve.md`（文件不存在则创建），只记录有实质内容的维度，空维度省略：
+追加到 `.vibewire/{N}-{name}/log.md`，记录修复导致的架构/接口变更。无结构性变更则省略本节。
 
 ```markdown
 ## Stage {M}-{name} — Resolver
 
-### 设计验证
-- {审阅者} 报告的 {问题} 裁决为 Skip，理由：{为什么是误报/设计意图}
-
-### 技术债务
-- {问题}：Deferred，原因：{延后理由}
-
-### 编码约定
-- {模式}：审查修复中反复出现的 {具体模式}，出现在 {文件列表}
-
-### 其他发现
-- {描述}：{以上维度均不适用的问题或经验}
+### Structural Impact
+{修复导致的架构/接口变更}
 ```
 
-无任何发现时跳过本步骤。
+#### 9.3 Lessons
+
+追加到 `.vibewire/{N}-{name}/lessons.md`，记录从 review 和修复过程中获得的经验教训。后续 stage 的 implementer 会读取全部累积经验以规避已知陷阱。无实质性经验时省略本节。
+
+```markdown
+## Stage {M}-{name} — Resolver
+- {reviewer 反复指出的模式，后续实现应主动规避}
+- {修复过程中发现的编码约定或非显而易见的项目事实}
+```
 
 **写作原则：**
-- **只记偏离** — 正常的 Fix 不记录，只记录 Skip/Deferred 的裁决理由和反复出现的模式
-- **三要素** — 每条记录须包含：原始审查意见、裁决结果、理由
-- **面向消费者** — 后续 stager 和 Wrap-Up 的 evolver 会读取这些记录
+- **面向后续实现者** — 只记录能指导后续开发运维编码决策的经验，不重复 resolve.md 中的修复细节
+- **可执行** — 每条经验应能转化为具体的编码行为（如"避免 X 模式，改用 Y"）
 
-### 11. Commit
+### 10. Commit
 
 提交修复涉及的文件、review 文档及本阶段文档变更：
 
@@ -200,13 +196,13 @@ git add {修复涉及的文件} .shadow/ .vibewire/{N}-{name}/
 git commit -m "[{N}-{name}/stage-{M}-{name}] resolve: 审查修复"
 ```
 
-### 12. Status Report
+### 11. Status Report
 
-完成工作后，报告与 §9 日志中 Stage 级状态一致的结果。
+完成工作后，报告与 §9.1 裁决记录中 Stage 级状态一致的结果。
 
 ```
 Status: DONE | DONE_WITH_DEFERRED
-Fix {n} | Skip {n} | Deferred {n}
+- Fix {n} | Skip {n} | Deferred {n}
 ```
 
 绝不默默产出不确定的工作。
@@ -216,7 +212,7 @@ Fix {n} | Skip {n} | Deferred {n}
 1. **交叉验证优先** — 多个审阅者独立报告的同一问题，可信度更高，优先 Fix
 2. **最小修复** — 每个修复只做解决问题所需的最小改动，不顺便重构
 3. **保持风格一致** — 修复代码应与现有代码风格保持一致，不引入新的编码模式
-4. **可追溯** — 日志中的每个裁决须有明确的理由，便于后续回顾
+4. **可追溯** — resolve.md 中的每个裁决须有明确的理由，便于后续回顾
 5. **保守裁决** — 当不确定是否应修复时，倾向于 Skip 并记录理由
 
 **先读后写** — 编辑文件前先读取目标文件（追加末尾时只需读取最后几行），确认当前内容后再写入。

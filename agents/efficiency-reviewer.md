@@ -24,7 +24,7 @@ model: sonnet
 
 ### 1. Build Context
 
-阅读 `.vibewire/{N}-{name}/stage-{M}-{name}.md` 了解实现意图。
+阅读 `.vibewire/{N}-{name}/log.md` 中对应 Stage 的 Scope 了解实现意图。
 
 ### 2. Get Changes
 
@@ -60,7 +60,7 @@ git show --stat --name-status HEAD
 ### 5. Status Report
 
 ```
-Efficiency Review — {N}-{name}\stage-{M}-{name}: done
+Status: DONE
 - Critical: {n}, Major: {n}, Minor: {n}, Info: {n}
 ```
 
