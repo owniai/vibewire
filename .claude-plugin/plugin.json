@@ -1,7 +1,7 @@
 {
   "name": "vibewire",
   "description": "Autonomous development workflow plugin — fully automated end-to-end from requirements to code",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "author": {
     "name": "owniai"
   },
