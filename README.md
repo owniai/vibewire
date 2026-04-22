@@ -67,7 +67,7 @@ Register the marketplace first, then install the plugin:
 /vibewire:intro → .vibewire/project.md, .vibewire/CHANGELOG.md, .shadow/
 
 /vibewire:aim → .vibewire/{N}-{name}/requirements.md
-              → scout (if tech unknowns) → .vibewire/tech-research.md
+              → scout (if tech unknowns) → .vibewire/{N}-{name}/tech-research.md + .vibewire/tech-research.md
               → experimenter (if unverified assumptions) → .vibewire/experiments/{N}-{name}/
               → .vibewire/{N}-{name}/architecture.md
               → (user reviews and approves)
@@ -147,13 +147,14 @@ All process artifacts are stored in `.vibewire/` within the target project. Shad
 .vibewire/
 ├── project.md                          # Project overview (created by intro)
 ├── CHANGELOG.md                        # Change log (created by intro)
-├── tech-research.md                    # Tech investigation results (created by scout)
+├── tech-research.md                    # Global tech research summary (created by scout)
 ├── experiments/{N}-{name}/             # Experiment reports (created by experimenter)
 │   └── experiment-report.md
 ├── evolve.md                           # Cross-milestone experience (created by evolver)
 └── {N}-{name}/                         # Planning directory per task
     ├── requirements.md                 # Requirements document (created by aim)
     ├── architecture.md                 # Architecture design with Stage Plan (created by aim)
+    ├── tech-research.md                 # Detailed tech research (created by scout)
     ├── log.md                          # Execution log (created by implementer)
     ├── lessons.md                      # Accumulated lessons (created by implementer, resolver, fixer)
     ├── review-efficiency.md            # Efficiency review report

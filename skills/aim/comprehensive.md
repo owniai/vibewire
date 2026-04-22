@@ -11,7 +11,6 @@
 ## Checklist
 
 你必须为以下每个项目创建任务并按顺序完成：
-
 1. **Requirements Clarification** — 一次一个，理解本次任务的目的/约束/成功标准，确认需求
 2. **Write Requirements** — 写入 requirements.md
 3. **Tech Investigation** — 评估是否需要技术栈/依赖调研
@@ -52,7 +51,7 @@
 subagent_type: "vibewire:scout"
 description: "scout {调研目标摘要}"
 prompt: |
-  执行技术调研。
+  执行技术调研。规划目录：{N}-{name}
   调研目标：
   - {目标1}
   - {目标2}
@@ -89,7 +88,6 @@ prompt: |
 #### 5.1 Architecture Design
 
 按以下顺序逐层推进：
-
 1. **项目级决策变更**（若有）— 如需变更 `project.md` 中的决策（新增依赖、变更技术栈等），首先提出并说明理由，获得用户确认
 2. **架构概览与模块划分** — 变更在当前架构中的位置、新增/变更模块及单一职责、路径、依赖和被依赖关系
 3. **数据流与接口契约** — 确认模块边界后，定义模块间的数据流转方向、通信模式、跨模块共享的关键类型定义（标注产出自和消费于）以及需修改的既有接口（标注位置和影响范围）
@@ -136,7 +134,7 @@ Stage Plan 中每个阶段按以下格式展开：
 ```
 git add .vibewire/{N}-{name}/requirements.md .vibewire/{N}-{name}/architecture.md
 # 若步骤 3 执行了技术调研：
-git add .vibewire/tech-research.md
+git add .vibewire/tech-research.md .vibewire/{N}-{name}/tech-research.md
 # 若步骤 4 执行了技术实验：
 git add .vibewire/experiments/{N}-{name}/
 git commit -m "[vibewire/aim] docs: add requirements and architecture for {N}-{name}"
