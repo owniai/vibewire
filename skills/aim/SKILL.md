@@ -16,7 +16,6 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 读取项目文档与历史经验：
 - `.vibewire/project.md` 和 `.vibewire/CHANGELOG.md` — 项目全貌。若不存在，提示用户先运行 `/vibewire:intro`
 - `.vibewire/tech-research.md`（若存在）— 全局技术调研摘要（简要结论、途径、经验）
-- `.vibewire/{N}-{name}/tech-research.md`（若存在）— 本次任务相关的详细技术调研结果
 - `.vibewire/evolve.md`（若存在）— 历史执行经验，用于规避已知的陷阱和偏差模式
 
 聚焦探索与本次任务相关的模块：若 `.shadow/` 存在，先读取相关 shadow files 建立模块全貌，再按需定位重点源文件深入阅读；仅读取评估本次变更所必需的文件，不发散探索无关模块
