@@ -24,7 +24,7 @@ model: sonnet
 
 ### 1. Build Context
 
-阅读 `.vibewire/{N}-{name}/log.md` 中对应 Stage 的 Scope 了解实现意图。
+若 prompt 中指定了 `模式：express`，读取 prompt 中指定的任务文档了解实现意图。否则，阅读 `.vibewire/{N}-{name}/log.md` 中对应 Stage 的 Scope 了解实现意图。
 
 ### 2. Get Changes
 
@@ -42,7 +42,9 @@ git show --stat --name-status HEAD
 
 ### 4. Record Issues
 
-将审查意见追加到 `.vibewire/{N}-{name}/review-quality.md`（以 `## Stage {M}-{name}` 为节标题，文件不存在则创建）。每个发现按以下格式记录：
+若 prompt 中指定了 `模式：express`，跳过文件写入，将发现按 §5 格式附在 Status Report 中返回。
+
+否则，将审查意见追加到 `.vibewire/{N}-{name}/review-quality.md`（以 `## Stage {M}-{name}` 为节标题，文件不存在则创建）。每个发现按以下格式记录：
 
 ```markdown
 ### {序号}. {问题标题} | Critical / Major / Minor / Info
@@ -62,6 +64,15 @@ git show --stat --name-status HEAD
 ```
 Status: DONE
 - Critical: {n}, Major: {n}, Minor: {n}, Info: {n}
+```
+
+若 express 模式，在上述摘要之后附带全部发现详情：
+
+```markdown
+### {序号}. {问题标题} | Critical / Major / Minor / Info
+- **位置**：`path/to/file1:L{起始行}-{结束行}`, ...
+- **问题**：{要点名称} — {具体描述。影响：xxx}
+- **建议**：{改进方向}
 ```
 
 ## Review Checklist
