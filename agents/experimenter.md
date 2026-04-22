@@ -48,7 +48,7 @@ model: sonnet
 
 #### 2.3 Read Research Results
 
-若存在技术调研文档，先读取 `.vibewire/{N}-{name}/tech-research.md` 获取详细技术事实，再参考 `.vibewire/tech-research.md` 的全局摘要，建立实验事实基线。
+若存在技术调研文档，读取 `.vibewire/tech-research.md` 全局摘要，获取与本次实验相关的技术事实基线。
 
 ### 3. Execute Experiments
 
