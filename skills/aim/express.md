@@ -140,10 +140,21 @@ prompt: |
 - 每条必须包含根因和建议，缺少任一项说明归纳不够深入
 - 无值得归纳的经验时跳过此步骤
 
+**Step C — 项目文档更新**
+
+在 `.vibewire/CHANGELOG.md`（如不存在则创建）顶部追加变更条目：
+
+```markdown
+## yyyy-mm-dd | express/{name}
+- 变更：{变更的模块/文件及原因}
+```
+
+对照当前 `.vibewire/project.md`，若本次任务影响了架构描述（新增/变更模块、技术栈变更、目录结构变化等），更新受影响的章节。首行元信息固定更新：`> Last updated: yyyy-mm-dd | express/{name}`。无影响则跳过。
+
 ### 8. Commit
 
 ```
-git add {涉及的源代码文件} .shadow/ .vibewire/express/{name}.md .vibewire/evolve.md
+git add {涉及的源代码文件} .shadow/ .vibewire/express/{name}.md .vibewire/evolve.md .vibewire/CHANGELOG.md .vibewire/project.md
 git commit -m "[express/{name}] feat: {一句话描述}"
 ```
 
