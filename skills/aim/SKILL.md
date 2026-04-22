@@ -9,12 +9,6 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 
 读取项目上下文，评估任务规模，选择并执行对应的规划与实现流程。
 
-## Checklist
-
-你必须为以下每个项目创建任务并按顺序完成：
-1. **Explore Project Context** — 读取项目文档，若无则提示运行 /vibewire:intro
-2. **Assess Task Scope & Route** — 评估任务规模，选择并加载对应流程
-
 ## Process
 
 ### 1. Explore Project Context
@@ -30,29 +24,23 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 
 ### 2. Assess Task Scope & Route
 
-评估任务规模，判断是否需要收窄范围，然后路由到对应的流程。
+判断任务应走 express 还是 comprehensive 流程。
 
-**适用 express.md 的信号：**
-- 用一句话能描述完整交付物
-- 变更沿单一链路推进，无分支
-- 无独立的中间交付价值节点
-- 即使存在可拆分的中间节点，拆分后各部分工作量均较小，合并执行的开销低于拆分的开销
+**走 express — 小型任务：**
+- bug 修复、配置调整、单个函数或模块内部逻辑变更
+- 实现简单功能，变更范围可一眼估清
+- 不涉及多模块协调或跨层依赖
 
-**适用 comprehensive.md 的信号：**
-- 描述了多个独立子系统或能力维度
-- 存在可独立交付且工作量充足的中间节点
-- 有明确的"先做 X 才能做 Y"的分层依赖
+**走 comprehensive — 常规任务：**
+- 新增完整功能或重构涉及多个模块
+- 存在可独立交付的中间节点或分层依赖
+- 需要设计、拆分、分阶段交付
 
-**收窄策略（仅适用于 comprehensive）：**
-- 优先选择能跑通核心端到端路径的最小功能集
-- 每个交付单元应可独立合并和验证
-- 使用 AskUserQuestion 工具向用户展示收窄建议，先说明收窄原因和收窄后的范围，再提问确认
+**路由：** 基于信号匹配，读取并执行对应的流程文件（与本文件同目录）：
+- express 信号 → `express.md`
+- comprehensive 信号 → `comprehensive.md`
 
-**路由：** 基于评估结果，读取对应的流程文件并完整执行其中的流程：
-- 上述 express 信号 → 参见 `express.md`（与本文件同目录）
-- 上述 comprehensive 信号 → 参见 `comprehensive.md`（与本文件同目录）
-
-若信号不明确，使用 AskUserQuestion 向用户说明评估结果并确认路由方向。
+信号不明确时，使用 AskUserQuestion 向用户说明评估结果并确认路由方向。
 
 ## Key Principles
 
