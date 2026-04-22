@@ -24,9 +24,17 @@ model: sonnet
 
 ### 1. Build Context
 
-若 prompt 中指定了 `模式：express`，读取 prompt 中指定的任务文档了解实现意图。否则，阅读 `.vibewire/{N}-{name}/log.md` 中对应 Stage 的 Scope 了解实现意图。
+若 prompt 中指定了 `模式：express`，直接从 prompt 中的 `任务目标` 字段了解实现意图（一句话内嵌描述）。否则，阅读 `.vibewire/{N}-{name}/log.md` 中对应 Stage 的 Scope 了解实现意图。
 
 ### 2. Get Changes
+
+若 prompt 中指定了 `模式：express`，审查未提交的工作区变更：
+
+```bash
+git diff HEAD --stat --name-status
+```
+
+否则，审查最近一次提交的变更：
 
 ```bash
 git show --stat --name-status HEAD
@@ -38,7 +46,7 @@ git show --stat --name-status HEAD
 
 根据文件类型自适应选择审查方式：
 - **新增文件**（`diff-filter=A`）：整个文件都是新代码，直接 Read 完整文件。行数少（≤1000）一次读完；行数多则分段读取。
-- **修改文件**（`diff-filter=M`）：使用 `git diff HEAD~1 HEAD -- <file>` 获取逐文件 diff，以变更区域为中心进行审查。可结合上下文理解变更意图，但审查发现应聚焦于本次变更引入的问题，不追溯历史代码。搜索项目已有工具函数、helpers、共享模块（重点关注 `utils/`、`helpers/`、`shared/`、`common/` 及变更文件相邻目录），将变更行中的新代码与已有实现比对，标记重复。
+- **修改文件**（`diff-filter=M`）：获取逐文件 diff，以变更区域为中心进行审查。可结合上下文理解变更意图，但审查发现应聚焦于本次变更引入的问题，不追溯历史代码。搜索项目已有工具函数、helpers、共享模块（重点关注 `utils/`、`helpers/`、`shared/`、`common/` 及变更文件相邻目录），将变更行中的新代码与已有实现比对，标记重复。diff 命令：express 模式使用 `git diff HEAD -- <file>`（工作区 vs HEAD），否则使用 `git diff HEAD~1 HEAD -- <file>`（最近提交 diff）。
 
 ### 4. Record Issues
 

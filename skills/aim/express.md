@@ -61,7 +61,7 @@ description: "quality-reviewer express"
 prompt: |
   执行质量审查。
   模式：express
-  任务文档：.vibewire/express/{name}.md
+  任务目标：{一句话任务目标}
 ```
 
 ```
@@ -70,7 +70,7 @@ description: "efficiency-reviewer express"
 prompt: |
   执行效率审查。
   模式：express
-  任务文档：.vibewire/express/{name}.md
+  任务目标：{一句话任务目标}
 ```
 
 ```
@@ -79,14 +79,14 @@ description: "reuse-reviewer express"
 prompt: |
   执行复用审查。
   模式：express
-  任务文档：.vibewire/express/{name}.md
+  任务目标：{一句话任务目标}
 ```
 
 等待三个 agent 完成，汇总各自的 Status Report。
 
 ### 5. Fix
 
-根据三个审查报告中的发现进行修复：
+根据三个审查器 Status Report 中的发现进行修复：
 - **Critical / Major** — 必须修复，修复后重跑全量测试确认通过
 - **Minor / Info** — 自行判断是否修复
 

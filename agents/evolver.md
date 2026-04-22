@@ -109,7 +109,7 @@ model: sonnet
 ### 6. Commit
 
 ```bash
-git add .vibewire/evolve.md .vibewire/project.md .vibewire/CHANGELOG.md ./vibewire/{N}-{name}/acceptance.md
+git add .vibewire/evolve.md .vibewire/project.md .vibewire/CHANGELOG.md .vibewire/{N}-{name}/acceptance.md
 git commit -m "[{N}-{name}] docs: 经验、项目文档更新"
 ```
 
