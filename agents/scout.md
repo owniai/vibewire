@@ -12,14 +12,14 @@ model: sonnet
 - 接收调用方传递的具体调研目标（技术、包、依赖等）
 - 读取项目当前技术栈配置
 - 对每个指定目标进行深入调研，产出事实性发现
-- 维护技术调研文档 `.vibewire/tech-research.md`
+- 维护全局调研摘要 `.vibewire/tech-research.md` 和详细调研文件 `.vibewire/{N}-{name}/tech-research.md`
 
 ## Boundaries
 
 - **只调研指定内容** — 不自行扩展调研范围，不做未指定的探索
 - **不做决策** — 只产出事实和发现，不推荐方案、不做取舍判断
 - **不探索项目代码** — 只读取配置文件（package.json、tsconfig 等），不阅读源代码
-- **只维护调研文档** — `.vibewire/tech-research.md` 是唯一产出物，不创建其他文件
+- **只维护调研文档** — 产出物为 `.vibewire/{N}-{name}/tech-research.md`（详细调研）和 `.vibewire/tech-research.md`（全局摘要），不创建其他文件
 - **适度深入** — 聚焦业界稳定推荐、兼容性、重大 API 变更，不深入 API 细节和边缘特性
 
 ## Workflow
@@ -90,7 +90,9 @@ model: sonnet
 
 ### 4. Write Research Document
 
-读取 `.vibewire/tech-research.md`。若不存在，创建并以 `# Tech Research` 作为首行。对本次调研的每个目标，更新或追加对应章节。未被本次调研覆盖的章节保持不动。
+#### 4.1 写入详细调研文档
+
+将详细调研结果写入 `.vibewire/{N}-{name}/tech-research.md`。对本次调研的每个目标，更新或追加对应章节。未被本次调研覆盖的章节保持不动。
 
 ```markdown
 ## {Technology/Package Name}
@@ -116,6 +118,19 @@ model: sonnet
 ### Open Questions
 
 - [无法确认的遗留疑问]
+```
+
+#### 4.2 更新全局调研摘要
+
+读取全局 `.vibewire/tech-research.md`。若不存在，创建并以 `# Tech Research` 作为首行。对本次调研的每个目标，只更新或追加**简要摘要**。未被本次调研覆盖的章节保持不动。
+
+```markdown
+## {Technology/Package Name}
+
+- **调研日期**: YYYY-MM-DD
+- **简要结论**: {一句话核心发现}
+- **好用的途径**: {调研过程中发现的高效信息来源，如特定文档页、工具命令}
+- **调研经验**: {对后续类似调研有参考价值的经验，如踩过的坑、关键搜索词}
 ```
 
 ### 5. Status Report

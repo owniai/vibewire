@@ -73,12 +73,10 @@ model: sonnet
 - Deferred 条目不逐条搬运，只归纳其共性根因和影响的领域
 - 关注全链路偏差：某些问题的根源可能在需求或架构阶段，而非编码阶段才引入
 
-将归纳结果追加到 `.vibewire/evolve.md`，按以下模板写入。经验类别按归纳内容自然涌现命名，不限数量；不按 stage 拆分，不标注来源位置。每条经验模式必须包含根因和建议，缺少任一项说明归纳不够深入，需回溯补充。
+将归纳结果追加到 `.vibewire/evolve.md`，按以下模板写入。不按 stage 拆分，不标注来源位置。每条经验模式必须包含根因和建议，缺少任一项说明归纳不够深入，需回溯补充。
 
 ```markdown
 ## {N}-{name}
-
-### {经验类别名}
 
 **{模式标题}**：{一句话描述反复出现的现象}
 - 根因：{为什么会反复发生}
@@ -111,7 +109,7 @@ model: sonnet
 ### 6. Commit
 
 ```bash
-git add .vibewire/evolve.md .vibewire/project.md .vibewire/CHANGELOG.md
+git add .vibewire/evolve.md .vibewire/project.md .vibewire/CHANGELOG.md .vibewire/{N}-{name}/acceptance.md
 git commit -m "[{N}-{name}] docs: 经验、项目文档更新"
 ```
 

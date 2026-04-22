@@ -10,9 +10,12 @@ VibeWire orchestrates a pipeline of specialized agents that plan, implement, rev
 
 It starts with your project. Run `/vibewire:intro` once to scan the codebase and establish a documentation baseline.
 
-When you have a task, run `/vibewire:aim`. Through a structured conversation, the aim skill clarifies requirements with you, narrows scope if needed, and produces a requirements document and architecture design. When the task involves new technologies or unverified assumptions, aim dispatches **scout** to investigate tech facts and **experimenter** to run real-world experiments — grounding architecture decisions in verified data. You review and approve both before any code is written.
+When you have a task, run `/vibewire:aim`. Aim assesses the task scope and routes to the appropriate flow:
 
-Then run `/vibewire:go`. The go skill dispatches agents through a stage-by-stage pipeline:
+- **Express** — For small tasks (bug fixes, config tweaks, single-function changes). Aim handles the entire cycle: clarification, TDD, parallel review, fix, and commit — all in one go.
+- **Comprehensive** — For feature work involving multiple modules. Through a structured conversation, aim clarifies requirements, narrows scope, and produces a requirements document and architecture design. When the task involves new technologies or unverified assumptions, aim dispatches **scout** to investigate tech facts and **experimenter** to run real-world experiments — grounding architecture decisions in verified data. You review and approve both before any code is written.
+
+For comprehensive tasks, run `/vibewire:go`. The go skill dispatches agents through a stage-by-stage pipeline:
 
 1. For each stage, **implementer** reads the architecture, breaks down tasks, and executes with strict TDD
 2. Three reviewers — **efficiency**, **quality**, **reuse** — inspect the result in parallel
@@ -46,10 +49,12 @@ Register the marketplace first, then install the plugin:
 # Step 1: Scan your project (run once)
 /vibewire:intro
 
-# Step 2: Define a task through collaborative dialogue
-/vibewire:aim
+# Step 2: Define and execute a task
+/vibewire:aim  # Routes to express or comprehensive based on task scope
+               # Express: full cycle in one go (TDD → review → fix → commit)
+               # Comprehensive: produces requirements + architecture for /vibewire:go
 
-# Step 3: Execute the plan autonomously
+# Step 3 (comprehensive only): Execute the plan autonomously
 /vibewire:go 001-task-name
 ```
 
@@ -60,17 +65,26 @@ Register the marketplace first, then install the plugin:
 | Skill | Purpose | When to Use |
 |-------|---------|-------------|
 | `/vibewire:intro` | Scan project, establish documentation baseline and shadow API files | Once per project, or when the codebase has changed significantly |
-| `/vibewire:aim` | Collaborative requirements clarification and architecture design | Before each new feature or change |
+| `/vibewire:aim` | Assesses task scope, routes to express (lightweight TDD cycle) or comprehensive (requirements + architecture design) | Before each new task or change |
 | `/vibewire:go` | Autonomous stage-by-stage implementation with review loops | After aim produces requirements and architecture |
 
 ```
 /vibewire:intro → .vibewire/project.md, .vibewire/CHANGELOG.md, .shadow/
 
-/vibewire:aim → .vibewire/{N}-{name}/requirements.md
-              → scout (if tech unknowns) → .vibewire/tech-research.md
-              → experimenter (if unverified assumptions) → .vibewire/experiments/{N}-{name}/
-              → .vibewire/{N}-{name}/architecture.md
-              → (user reviews and approves)
+/vibewire:aim
+  ├─ express (small tasks):
+  │   → TDD (red → green)
+  │   → 3 reviewers (parallel)
+  │   → fix (if Critical/Major)
+  │   → .vibewire/express/{name}.md
+  │   → commit
+  │
+  └─ comprehensive (multi-module tasks):
+      → .vibewire/{N}-{name}/requirements.md
+      → scout (if tech unknowns) → .vibewire/{N}-{name}/tech-research.md + .vibewire/tech-research.md
+      → experimenter (if unverified assumptions) → .vibewire/experiments/{N}-{name}/
+      → .vibewire/{N}-{name}/architecture.md
+      → (user reviews and approves)
 
 /vibewire:go {N}-{name}
   → for each stage:
@@ -92,8 +106,8 @@ Register the marketplace first, then install the plugin:
 | Skill | Description |
 |-------|-------------|
 | **intro** | Scans the project, establishes documentation baseline (`.vibewire/project.md`, `.vibewire/CHANGELOG.md`), generates shadow API files |
-| **aim** | Collaborative requirement clarification and architecture design. Dispatches scout for tech investigation and experimenter for real-world validation when needed. Produces `requirements.md` and `architecture.md` |
-| **go** | Execution orchestrator. Dispatches agents in sequence through planning, implementation, and review stages |
+| **aim** | Assesses task scope and routes to the appropriate flow: **express** (lightweight TDD cycle for small tasks — clarification, TDD, parallel review, fix, commit) or **comprehensive** (collaborative requirements clarification and architecture design for multi-module tasks) |
+| **go** | Execution orchestrator. Dispatches agents in sequence through implementation, review, and acceptance stages |
 
 ### Agents (11)
 
@@ -135,7 +149,10 @@ vibewire/
 │   └── shadow-writer.md
 ├── skills/                   # 3 workflow skills
 │   ├── intro/SKILL.md
-│   ├── aim/SKILL.md
+│   ├── aim/
+│   │   ├── SKILL.md          # Router: assesses scope, dispatches to express or comprehensive
+│   │   ├── express.md        # Lightweight flow: TDD → review → fix → commit
+│   │   └── comprehensive.md  # Full flow: requirements → architecture → /vibewire:go
 │   └── go/SKILL.md
 ```
 
@@ -147,13 +164,16 @@ All process artifacts are stored in `.vibewire/` within the target project. Shad
 .vibewire/
 ├── project.md                          # Project overview (created by intro)
 ├── CHANGELOG.md                        # Change log (created by intro)
-├── tech-research.md                    # Tech investigation results (created by scout)
+├── tech-research.md                    # Global tech research summary (created by scout)
 ├── experiments/{N}-{name}/             # Experiment reports (created by experimenter)
 │   └── experiment-report.md
 ├── evolve.md                           # Cross-milestone experience (created by evolver)
-└── {N}-{name}/                         # Planning directory per task
+├── express/                            # Express task records (created by aim express)
+│   └── {name}.md                       # Lightweight task summary
+└── {N}-{name}/                         # Planning directory per comprehensive task
     ├── requirements.md                 # Requirements document (created by aim)
     ├── architecture.md                 # Architecture design with Stage Plan (created by aim)
+    ├── tech-research.md                # Detailed tech research (created by scout)
     ├── log.md                          # Execution log (created by implementer)
     ├── lessons.md                      # Accumulated lessons (created by implementer, resolver, fixer)
     ├── review-efficiency.md            # Efficiency review report
@@ -173,7 +193,11 @@ All process artifacts are stored in `.vibewire/` within the target project. Shad
 flowchart TD
     subgraph aim["/vibewire:aim"]
         direction TB
-        A1[Requirements Clarification] --> A2{Tech unknowns?}
+        A0[User describes task] --> A0R{Assess scope}
+        A0R -- Small task --> A0E["express
+        TDD → review → fix → commit"]
+        A0R -- Multi-module --> A1[Requirements Clarification]
+        A1 --> A2{Tech unknowns?}
         A2 -- Yes --> A3["scout
         Tech investigation"]
         A3 --> A4{Unverified assumptions?}
@@ -214,7 +238,7 @@ flowchart TD
         G10 --> G13[User chooses merge strategy]
     end
 
-    aim --> go
+    A6 --> go
 ```
 
 ---
