@@ -11,7 +11,6 @@
 ## Checklist
 
 你必须为以下每个项目创建任务并按顺序完成：
-
 1. **Requirements Clarification** — 理解目的/约束/成功标准，确认方案
 2. **TDD: Red** — 编写测试并确认失败
 3. **TDD: Green** — 编写实现并确认通过
@@ -27,8 +26,8 @@
 
 使用 AskUserQuestion 工具逐一提问以完善需求：
 - 每条消息只问一个问题
-- 重点关注理解：目的、约束、成功标准
-- 充分理解后，呈现方案摘要（目标、做法、验收标准）供用户确认
+- 重点关注理解：目的、约束
+- 充分理解后，呈现目标摘要供用户确认
 - 用户确认后方可继续，如需修改则重新讨论
 
 ### 2. TDD: Red — Write Test
@@ -105,7 +104,11 @@ prompt: |
 
 ### 7. Write Records
 
-确定文档名称：`{name}` 为任务对应的英文标识，kebab-case（如 `fix-login-bug`）。创建 `.vibewire/express/` 目录（若不存在），写入 `.vibewire/express/{name}.md`：
+确定文档名称：`{name}` 为任务对应的英文标识，kebab-case（如 `fix-login-bug`）。
+
+**Step A — 任务文档**
+
+创建 `.vibewire/express/` 目录（若不存在），写入 `.vibewire/express/{name}.md`：
 
 ```markdown
 # {name}
@@ -113,25 +116,34 @@ prompt: |
 ## 目标
 {要做什么、为什么}
 
-## 方案
-{如何做、变更哪些文件、关键设计决策}
+## 解决方案
+{最终如何解决、变更了哪些文件、关键设计决策}
 
-## 验收标准
-{完成后应达到的状态}
-
-## Log
-
-### Changes
+## Changes
 - `path/to/file` (A/M/D) — {变更内容}
-
-### Lessons
-- {经验教训，无则省略此节}
 ```
+
+**Step B — 经验归纳**
+
+若执行过程中（TDD 循环、审查发现、修复决策等）产生了值得记录的经验教训，归纳后追加到 `.vibewire/evolve.md`（如不存在则创建）。每条经验格式如下：
+
+```markdown
+## express/{name}
+
+**{模式标题}**：{一句话描述}
+- 根因：{为什么会发生}
+- 建议：{后续如何避免}
+```
+
+归纳规则：
+- 从执行过程中的发现提炼泛用模式，不逐条搬运原始观察
+- 每条必须包含根因和建议，缺少任一项说明归纳不够深入
+- 无值得归纳的经验时跳过此步骤
 
 ### 8. Commit
 
 ```
-git add {涉及的源代码文件} .shadow/ .vibewire/express/{name}.md
+git add {涉及的源代码文件} .shadow/ .vibewire/express/{name}.md .vibewire/evolve.md
 git commit -m "[express/{name}] feat: {一句话描述}"
 ```
 
