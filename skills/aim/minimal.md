@@ -77,7 +77,24 @@
 - `path/to/file` (A/M/D) — {变更内容}
 ```
 
-**Step B — 项目文档更新**
+**Step B — 经验归纳**
+
+若任务产生了值得沉淀的知识——bug 的根因与防御手段、隐含假设及需满足的前提、非显而易见的设计约束、正确的构建/测试/部署命令（尤其是试错后才发现的）、必需的环境变量或前置步骤、必须遵守的执行顺序、执行过程中的发现——归纳后追加到 `.vibewire/evolve.md`（如不存在则创建）。每条经验格式如下：
+
+```markdown
+## minimal/{name}
+
+**{模式标题}**：{一句话描述}
+- 根因：{为什么会发生}
+- 建议：{后续如何避免}
+```
+
+归纳指引：
+- 从具体发现提炼泛用模式，不逐条搬运原始观察
+- 每条必须包含根因和建议，缺少任一项说明归纳不够深入
+- 无值得归纳的经验时跳过此步骤
+
+**Step C — 项目文档更新**
 
 在 `.vibewire/CHANGELOG.md`（如不存在则创建）顶部追加变更条目：
 
@@ -91,7 +108,7 @@
 ### 6. Commit
 
 ```
-git add {涉及的源代码文件} .shadow/ .vibewire/tasks/{name}.md .vibewire/CHANGELOG.md .vibewire/project.md
+git add {涉及的源代码文件} .shadow/ .vibewire/tasks/{name}.md .vibewire/evolve.md .vibewire/CHANGELOG.md .vibewire/project.md
 git commit -m "[minimal/{name}] feat: {一句话描述}"
 ```
 

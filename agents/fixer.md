@@ -133,7 +133,7 @@ mv .vibewire/{N}-{name}/acceptance.md .vibewire/{N}-{name}/acceptance-{round}.md
 
 ```markdown
 ## Fix Round — {N}-{name}
-- {修复过程中发现的编码约定或非显而易见的项目事实}
+- {经验教训：修复过程中发现的编码约定或非显而易见的项目事实、bug 的成因与防御手段、隐含假设及需满足的前提、设计约束、正确的构建/测试/部署命令、必需的环境变量或前置步骤、必须遵守的执行顺序}
 ```
 
 ### 7. Commit

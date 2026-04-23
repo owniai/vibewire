@@ -12,8 +12,9 @@ It starts with your project. Run `/vibewire:intro` once to scan the codebase and
 
 When you have a task, run `/vibewire:aim`. Aim assesses the task scope and routes to the appropriate flow:
 
-- **Express** — For small tasks (bug fixes, config tweaks, single-function changes). Aim handles the entire cycle: clarification, TDD, parallel review, fix, and commit — all in one go.
-- **Comprehensive** — For feature work involving multiple modules. Through a structured conversation, aim clarifies requirements, narrows scope, and produces a requirements document and architecture design. When the task involves new technologies or unverified assumptions, aim dispatches **scout** to investigate tech facts and **experimenter** to run real-world experiments — grounding architecture decisions in verified data. You review and approve both before any code is written.
+- **Minimal** — For tiny, well-defined tasks (single-function fixes, config adjustments, mechanical refactors). Aim handles the entire cycle: quick confirm, TDD, shadow update, and commit — no parallel review.
+- **Express** — For regular tasks involving cross-module coordination or structural additions. Aim handles the entire cycle: clarification, TDD, parallel review, fix, and commit — all in one go.
+- **Comprehensive** — For complex feature work involving multiple modules, unclear requirements, or architectural decisions. Through a structured conversation, aim clarifies requirements, narrows scope, and produces a requirements document and architecture design. When the task involves new technologies or unverified assumptions, aim dispatches **scout** to investigate tech facts and **experimenter** to run real-world experiments — grounding architecture decisions in verified data. You review and approve both before any code is written.
 
 For comprehensive tasks, run `/vibewire:go`. The go skill dispatches agents through a stage-by-stage pipeline:
 
@@ -50,8 +51,9 @@ Register the marketplace first, then install the plugin:
 /vibewire:intro
 
 # Step 2: Define and execute a task
-/vibewire:aim  # Routes to express or comprehensive based on task scope
-               # Express: full cycle in one go (TDD → review → fix → commit)
+/vibewire:aim  # Routes to minimal, express, or comprehensive based on task scope
+               # Minimal: quick TDD cycle (confirm → TDD → shadow → commit)
+               # Express: full cycle in one go (clarification → TDD → review → fix → commit)
                # Comprehensive: produces requirements + architecture for /vibewire:go
 
 # Step 3 (comprehensive only): Execute the plan autonomously
@@ -65,21 +67,28 @@ Register the marketplace first, then install the plugin:
 | Skill | Purpose | When to Use |
 |-------|---------|-------------|
 | `/vibewire:intro` | Scan project, establish documentation baseline and shadow API files | Once per project, or when the codebase has changed significantly |
-| `/vibewire:aim` | Assesses task scope, routes to express (lightweight TDD cycle) or comprehensive (requirements + architecture design) | Before each new task or change |
+| `/vibewire:aim` | Assesses task scope, routes to minimal (quick TDD), express (TDD + parallel review), or comprehensive (requirements + architecture design) | Before each new task or change |
 | `/vibewire:go` | Autonomous stage-by-stage implementation with review loops | After aim produces requirements and architecture |
 
 ```
 /vibewire:intro → .vibewire/project.md, .vibewire/CHANGELOG.md, .shadow/
 
 /vibewire:aim
-  ├─ express (small tasks):
+  ├─ minimal (tiny tasks):
+  │   → TDD (red → green)
+  │   → shadow update
+  │   → .vibewire/tasks/{name}.md + .vibewire/evolve.md
+  │   → commit
+  │
+  ├─ express (regular tasks):
   │   → TDD (red → green)
   │   → 3 reviewers (parallel)
   │   → fix (if Critical/Major)
-  │   → .vibewire/express/{name}.md
+  │   → shadow update
+  │   → .vibewire/tasks/{name}.md + .vibewire/evolve.md
   │   → commit
   │
-  └─ comprehensive (multi-module tasks):
+  └─ comprehensive (complex tasks):
       → .vibewire/{N}-{name}/requirements.md
       → scout (if tech unknowns) → .vibewire/{N}-{name}/tech-research.md + .vibewire/tech-research.md
       → experimenter (if unverified assumptions) → .vibewire/experiments/{N}-{name}/
@@ -106,7 +115,7 @@ Register the marketplace first, then install the plugin:
 | Skill | Description |
 |-------|-------------|
 | **intro** | Scans the project, establishes documentation baseline (`.vibewire/project.md`, `.vibewire/CHANGELOG.md`), generates shadow API files |
-| **aim** | Assesses task scope and routes to the appropriate flow: **express** (lightweight TDD cycle for small tasks — clarification, TDD, parallel review, fix, commit) or **comprehensive** (collaborative requirements clarification and architecture design for multi-module tasks) |
+| **aim** | Assesses task scope and routes to the appropriate flow: **minimal** (quick TDD cycle for tiny tasks), **express** (TDD + parallel review for regular tasks), or **comprehensive** (collaborative requirements clarification and architecture design for complex tasks) |
 | **go** | Execution orchestrator. Dispatches agents in sequence through implementation, review, and acceptance stages |
 
 ### Agents (11)
@@ -150,8 +159,9 @@ vibewire/
 ├── skills/                   # 3 workflow skills
 │   ├── intro/SKILL.md
 │   ├── aim/
-│   │   ├── SKILL.md          # Router: assesses scope, dispatches to express or comprehensive
-│   │   ├── express.md        # Lightweight flow: TDD → review → fix → commit
+│   │   ├── SKILL.md          # Router: assesses scope, dispatches to minimal, express, or comprehensive
+│   │   ├── minimal.md        # Micro flow: TDD → shadow → commit
+│   │   ├── express.md        # Regular flow: TDD → review → fix → commit
 │   │   └── comprehensive.md  # Full flow: requirements → architecture → /vibewire:go
 │   └── go/SKILL.md
 ```
@@ -170,8 +180,8 @@ All process artifacts are stored in `.vibewire/` within the target project. Shad
 │   └── {N}-{name}/                     # Experiment results (created by experimenter)
 │       └── result.md
 ├── evolve.md                           # Cross-milestone experience (created by evolver)
-├── express/                            # Express task records (created by aim express)
-│   └── {name}.md                       # Lightweight task summary
+├── tasks/                              # Task records (created by aim minimal/express)
+│   └── {name}.md                       # Task summary
 └── {N}-{name}/                         # Planning directory per comprehensive task
     ├── requirements.md                 # Requirements document (created by aim)
     ├── architecture.md                 # Architecture design with Stage Plan (created by aim)
@@ -196,9 +206,11 @@ flowchart TD
     subgraph aim["/vibewire:aim"]
         direction TB
         A0[User describes task] --> A0R{Assess scope}
-        A0R -- Small task --> A0E["express
+        A0R -- Tiny task --> A0M["minimal
+        TDD → shadow → commit"]
+        A0R -- Regular task --> A0E["express
         TDD → review → fix → commit"]
-        A0R -- Multi-module --> A1[Requirements Clarification]
+        A0R -- Complex task --> A1[Requirements Clarification]
         A1 --> A2{Tech unknowns?}
         A2 -- Yes --> A3["scout
         Tech investigation"]
