@@ -37,14 +37,14 @@ model: opus
 
 ### 1. Build Context
 
-读取阶段设计与项目上下文：
+读取阶段设计与项目上下文，并了解项目积累经验和实验数据：
 - `.vibewire/project.md` — 项目架构、技术栈和约定规范
 - `.vibewire/{N}-{name}/requirements.md` — 需求范围和验收标准
 - `.vibewire/{N}-{name}/architecture.md` — 全局设计与本阶段定位
 - `.vibewire/{N}-{name}/log.md`（如存在）— 前序阶段的执行记录
 - `.vibewire/{N}-{name}/lessons.md`（如存在）— 前序阶段累积的经验教训
 - `.vibewire/evolve.md`（如存在）— 跨里程碑经验沉淀
-- `.vibewire/experiments/{N}-{name}/experiment-report.md`（如存在）— 实验数据
+- `.vibewire/experiments/{N}-{name}/result.md`（如存在）— 实验结果
 
 基于阶段范围，有目的地分析代码库：若 `.shadow/` 存在，先按需阅读相关 shadow files 获取接口、类型信息及其源码位置，再按需深入源文件理解实现细节；关注既有编码模式与命名约定、可复用的现有实现、目标模块的上下游依赖关系
 
@@ -52,7 +52,7 @@ model: opus
 
 ### 2. Understand Stage
 
-基于 §1 收集的上下文，理解本阶段的目标、范围和交付物。确认对阶段意图的认知后，对比 architecture.md 的 Stage Plan 与实际项目状态，评估是否需要偏离原始规划。严格遵循原始规划，仅在被迫调整时才偏离；仅接受以下两种原因，其余偏离不可接受：
+基于 §1 收集的上下文，理解本阶段的目标、范围和交付物，学习累计经验和实验结果。确认对阶段意图的认知后，对比 architecture.md 的 Stage Plan 与实际项目状态，评估是否需要偏离原始规划。严格遵循原始规划，仅在被迫调整时才偏离；仅接受以下两种原因，其余偏离不可接受：
 - **前序漂移适配** — 若前序 stage 的日志（log.md Drift 节）中记录了执行漂移（接口签名变更、文件归属调整等），确定本阶段需同步调整的范围
 - **经验启示适配** — 若 lessons.md 或 evolve.md 中存在适用于本阶段的经验教训，确定需要融入的设计变更
 

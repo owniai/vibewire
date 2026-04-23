@@ -165,8 +165,10 @@ All process artifacts are stored in `.vibewire/` within the target project. Shad
 ├── project.md                          # Project overview (created by intro)
 ├── CHANGELOG.md                        # Change log (created by intro)
 ├── tech-research.md                    # Global tech research summary (created by scout)
-├── experiments/{N}-{name}/             # Experiment reports (created by experimenter)
-│   └── experiment-report.md
+├── experiments/
+│   ├── framework.md                    # Global experiment framework (created by experimenter)
+│   └── {N}-{name}/                     # Experiment results (created by experimenter)
+│       └── result.md
 ├── evolve.md                           # Cross-milestone experience (created by evolver)
 ├── express/                            # Express task records (created by aim express)
 │   └── {name}.md                       # Lightweight task summary
