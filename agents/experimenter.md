@@ -30,56 +30,26 @@ model: sonnet
 
 ### 2. Build Context
 
-#### 2.1 Read Previous Experiments
-
-扫描 `.vibewire/experiments/` 下已有的实验报告（`experiment-report.md`），获取前序实验的：
-- **实验框架** — 使用过的语言、运行时、关键依赖
-- **实验规范** — 代码组织方式、命名约定、数据采集方法
-- **可复用成果** — 工具函数、配置模板、已安装的实验依赖
-
-若存在与本次任务相关的前序实验，复用其框架和工具，避免重复搭建。
-
-#### 2.2 Read Project Config
-
-读取项目技术栈配置，确认实验环境与项目环境一致：
-- 包管理配置（package.json、pom.xml、build.gradle、requirements.txt、go.mod 等）
-- 编译/构建配置（tsconfig.json、Cargo.toml 等）
-- 版本锁定文件（package-lock.json、yarn.lock、pnpm-lock.yaml 等）
-
-#### 2.3 Read Research Results
-
-若存在技术调研文档，读取 `.vibewire/tech-research.md` 全局摘要，获取与本次实验相关的技术事实基线。
+读取项目配置、技术调研和前序实验，建立实验上下文：
+**技术调研** — 读取 `.vibewire/{N}-{name}/tech-research.md`（若存在） 获取详细技术调研报告。
+**项目配置** — 读取项目的包管理、构建配置和版本锁定文件，确保实验环境与项目环境一致。
+**前序实验** — 扫描 `.vibewire/experiments/` 下已有的实验报告（`experiment-report.md`），获取实验框架、规范和可复用成果；若存在与本次任务相关的前序实验，复用其框架和工具，避免重复搭建。
 
 ### 3. Execute Experiments
 
 对每个实验目标逐一执行。每个实验遵循以下流程：
 
-#### 3.1 Design Experiment
+#### 3.1 Execute & Record
 
-基于 §2 获取的上下文，为当前目标设计实验方案：
-- **方法** — 如何获取目标信息（运行代码、调用 API、解析数据等）
-- **代码** — 实验代码的组织方式，优先复用前序实验框架
-- **验证** — 如何判断实验结果有效
+对每个实验目标，基于 §2 获取的上下文设计并执行实验：
+- 在 `.vibewire/experiments/{N}-{name}/` 目录下编写可直接运行的实验代码，优先复用前序实验框架
+- 运行实验代码，收集原始数据（真实结构、完整响应、精确数值），不做主观概括
+- 若运行失败，分析原因并修复后重试；同一实验连续 3 次失败 → 标记为 BLOCKED，记录失败原因，继续下一个实验
+- 若需临时安装依赖，安装到实验目录或使用临时环境，不修改项目 lock 文件；实验结束后清理临时依赖
 
-#### 3.2 Write Experiment Code
+#### 3.2 Record Results
 
-在 `.vibewire/experiments/{N}-{name}/` 目录下编写实验代码：
-- 代码须可直接运行，包含完整的依赖引入和错误处理
-- 文件命名清晰表达实验意图（如 `parse-ast.py`、`test-api-response.ts`）
-- 若需临时安装依赖，安装到实验目录或使用临时环境，不修改项目 lock 文件
-
-#### 3.3 Run Experiment
-
-运行实验代码，收集结果：
-- 若运行失败，分析原因并修复实验代码后重试
-- 同一实验连续 3 次失败 → 标记为 BLOCKED，记录失败原因，继续下一个实验
-- 实验结果须是原始数据（真实结构、完整响应、精确数值），不做主观概括
-
-#### 3.4 Record Results
-
-读取 `.vibewire/experiments/{N}-{name}/experiment-report.md`。若不存在，创建并以 `# Experiment Report — {N}-{name}` 作为首行。对本次实验目标，更新或追加对应章节。未被本次实验覆盖的章节保持不动。
-
-首次创建报告文件时写入文件头和 Framework 章节，后续实验若引入新依赖或变更运行时环境，同步更新 Framework：
+读取 `.vibewire/experiments/{N}-{name}/experiment-report.md`。若不存在，创建并以 `# Experiment Report — {N}-{name}` 作为首行。对本次实验目标，更新或追加对应章节。未被本次实验覆盖的章节保持不动。首次创建报告文件时写入文件头和 Framework 章节，后续实验若引入新依赖或变更运行时环境，同步更新 Framework：
 
 ```markdown
 # Experiment Report — {N}-{name}
@@ -88,7 +58,6 @@ model: sonnet
 
 - **Language/Runtime**: {e.g., Node.js 20, Python 3.11}
 - **Key Dependencies**: {e.g., tree-sitter@0.20.x}
-- **Base Directory**: `.vibewire/experiments/{N}-{name}/`
 - **Conventions**: {代码组织、命名规范等，供后续实验复用}
 ```
 
@@ -97,17 +66,9 @@ model: sonnet
 ```markdown
 ## Experiment {序号}: {title}
 
-### Goal
-
-{要获取什么信息，为什么架构设计需要这个信息}
-
-### Method
-
-{实验如何设计，代码如何组织}
-
-### Code
-
-- `.vibewire/experiments/{N}-{name}/{filename}`
+- **Goal**: {要获取什么信息，为什么架构设计需要这个信息}
+- **Method**: {实验如何设计，代码如何组织}
+- **Code**: `path/to/code`
 
 ### Result
 
