@@ -22,25 +22,36 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 
 > **Shadow Files**：`.shadow/` 是源文件的声明镜像（类似 .h 头文件），目录结构与源文件严格同构（如 `src/utils/helper.ts` 对应 `.shadow/src/utils/helper.ts`），保留 import、类型、接口、类签名、函数签名，省略函数体；行尾 `// L{start}-{end}` 标注指向源文件位置。
 
+<HARD-GATE>
+本阶段禁止编写任何代码（测试代码、实现代码、配置代码均不允许）。aim 只负责探索项目上下文、理解需求、评估任务规模并路由到对应流程。所有实现工作由路由后的流程文件指导执行。
+</HARD-GATE>
+
 ### 2. Assess Task Scope & Route
 
-判断任务应走 express 还是 comprehensive 流程。
+判断任务应走 minimal、express 还是 comprehensive 流程。
 
-**走 express — 小型任务：**
-- bug 修复、配置调整、单个函数或模块内部逻辑变更
-- 实现简单功能，变更范围可一眼估清
-- 不涉及多模块协调或跨层依赖
+**走 minimal — 小型任务：**
+- 实现步骤明确，代码逻辑直截了当，无需复杂 review
+- 即使需要前期调研或思考，只要最终实现步骤聚焦即可
+- 典型场景：bug 修复、新增/重写函数、配置调整、性能优化、补充测试、安全修复、机械性重构、引入新依赖但用法明确
+- 不涉及新增结构性单元（模块/子系统）或跨模块协调
 
-**走 comprehensive — 常规任务：**
-- 新增完整功能或重构涉及多个模块
-- 存在可独立交付的中间节点或分层依赖
-- 需要设计、拆分、分阶段交付
+**走 express — 常规任务：**
+- 涉及跨模块协调：变更分布在多个模块中，存在依赖关系需要协调
+- 新增结构性单元：新增模块/子系统，或进行结构性变更（拆分/重组）
+- 较大规模的集成工作：如第三方服务集成，即使有既有模式可复用
 
-**路由：** 基于信号匹配，读取并执行对应的流程文件（与本文件同目录）：
+**走 comprehensive — 复杂任务：**
+- 需求模糊，范围不确定，需要澄清和发现
+- 存在可独立交付的中间节点，需要分阶段规划
+- 涉及架构层面的设计决策
+
+**路由：** 基于信号匹配，读取对应的流程文件（与本文件同目录）并按其指引执行。路由完成后，aim 阶段的职责结束——后续所有操作（包括需求澄清、TDD、实现）均由流程文件驱动，不在此阶段执行任何代码变更。
+- minimal 信号 → `minimal.md`
 - express 信号 → `express.md`
 - comprehensive 信号 → `comprehensive.md`
 
-信号不明确时，使用 AskUserQuestion 向用户说明评估结果并确认路由方向。
+使用 AskUserQuestion 向用户说明评估结果，给出推荐的路由方向及理由，由用户确认。
 
 ## Key Principles
 
@@ -51,3 +62,5 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 ## Anti-Pattern
 
 - **"不读代码直接规划"** — 跳过上下文探索就评估任务，导致规划与现有实现脱节
+- **"顺手写点代码"** — aim 阶段严禁编写任何代码，即使看起来很简单的修复也必须路由后再执行
+- **"路由后直接实现"** — 路由后必须先读取流程文件，按流程文件的步骤和约束执行，不得跳过流程直接动手

@@ -108,7 +108,7 @@ prompt: |
 
 **Step A — 任务文档**
 
-创建 `.vibewire/express/` 目录（若不存在），写入 `.vibewire/express/{name}.md`：
+创建 `.vibewire/tasks/` 目录（若不存在），写入 `.vibewire/tasks/{name}.md`：
 
 ```markdown
 # {name}
@@ -154,7 +154,7 @@ prompt: |
 ### 8. Commit
 
 ```
-git add {涉及的源代码文件} .shadow/ .vibewire/express/{name}.md .vibewire/evolve.md .vibewire/CHANGELOG.md .vibewire/project.md
+git add {涉及的源代码文件} .shadow/ .vibewire/tasks/{name}.md .vibewire/evolve.md .vibewire/CHANGELOG.md .vibewire/project.md
 git commit -m "[express/{name}] feat: {一句话描述}"
 ```
 
