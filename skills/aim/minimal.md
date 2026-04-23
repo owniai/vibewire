@@ -11,7 +11,7 @@
 ## Checklist
 
 你必须为以下每个项目创建任务并按顺序完成：
-1. **Quick Confirm** — 简要确认理解
+1. **Requirements Clarification** — 理解目的/约束/成功标准，确认方案
 2. **TDD: Red** — 编写测试并确认失败
 3. **TDD: Green** — 编写实现并确认通过
 4. **Update Shadow** — 更新 .shadow/ 声明文件
@@ -23,6 +23,7 @@
 ### 1. Requirements Clarification
 
 使用 AskUserQuestion 工具确认对任务的理解：
+- 每条消息只问一个问题
 - 重点关注：目的、约束、成功标准
 - 宁可多问一句，也不要带着模糊理解直接实现
 - 充分理解后，呈现目标摘要供用户确认
