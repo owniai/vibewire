@@ -78,7 +78,7 @@ prompt: |
   ...
 ```
 
-- **整合结论** — 等待实验完成后，读取实验报告，将关键发现纳入架构设计的参考依据
+- **整合结论** — 等待实验完成后，读取实验结果 `.vibewire/experiments/{N}-{name}/result.md`，将关键发现纳入架构设计的参考依据
 
 ### 5. Explore Architecture
 

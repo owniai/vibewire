@@ -108,7 +108,7 @@ prompt: |
 
 **Step A — 任务文档**
 
-创建 `.vibewire/express/` 目录（若不存在），写入 `.vibewire/express/{name}.md`：
+创建 `.vibewire/tasks/` 目录（若不存在），写入 `.vibewire/tasks/{name}.md`：
 
 ```markdown
 # {name}
@@ -125,7 +125,7 @@ prompt: |
 
 **Step B — 经验归纳**
 
-若执行过程中（TDD 循环、审查发现、修复决策等）产生了值得记录的经验教训，归纳后追加到 `.vibewire/evolve.md`（如不存在则创建）。每条经验格式如下：
+若任务产生了值得沉淀的知识——bug 的根因与防御手段、隐含假设及需满足的前提、非显而易见的设计约束、正确的构建/测试/部署命令（尤其是试错后才发现的）、必需的环境变量或前置步骤、必须遵守的执行顺序、执行过程中的发现——归纳后追加到 `.vibewire/evolve.md`（如不存在则创建）。每条经验格式如下：
 
 ```markdown
 ## express/{name}
@@ -135,8 +135,8 @@ prompt: |
 - 建议：{后续如何避免}
 ```
 
-归纳规则：
-- 从执行过程中的发现提炼泛用模式，不逐条搬运原始观察
+归纳指引：
+- 从具体发现提炼泛用模式，不逐条搬运原始观察
 - 每条必须包含根因和建议，缺少任一项说明归纳不够深入
 - 无值得归纳的经验时跳过此步骤
 
@@ -154,7 +154,7 @@ prompt: |
 ### 8. Commit
 
 ```
-git add {涉及的源代码文件} .shadow/ .vibewire/express/{name}.md .vibewire/evolve.md .vibewire/CHANGELOG.md .vibewire/project.md
+git add {涉及的源代码文件} .shadow/ .vibewire/tasks/{name}.md .vibewire/evolve.md .vibewire/CHANGELOG.md .vibewire/project.md
 git commit -m "[express/{name}] feat: {一句话描述}"
 ```
 
