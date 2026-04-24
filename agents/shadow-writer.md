@@ -23,7 +23,7 @@ model: sonnet
 
 ### 1. Process Files
 
-对传入的每个源文件路径：
+对传入的每个条目逐一处理。带 `DEL:` 前缀的路径（如 `DEL:src/foo.ts`）表示源文件已删除，直接删除对应 shadow 文件（`.shadow/{path}/{name}.{ext}`），不存在则跳过，然后继续下一个条目。其余路径按 §1.1–§1.3 处理。
 
 #### 1.1 Filter
 

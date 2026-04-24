@@ -21,9 +21,11 @@ For comprehensive tasks, run `/vibewire:go`. The go skill dispatches agents thro
 1. For each stage, **implementer** reads the architecture, breaks down tasks, and executes with strict TDD
 2. Three reviewers — **efficiency**, **quality**, **reuse** — inspect the result in parallel
 3. If Critical/Major issues are found, **resolver** consolidates findings and applies minimal fixes
-4. After all stages, **acceptor** performs full acceptance verification against requirements
-5. If issues are found, **fixer** enters a repair loop (up to 2 rounds)
-6. **Evolver** distills lessons learned and records design drift
+4. **shadow-writer** updates shadow API files for all changed files in the stage
+5. After all stages, **acceptor** performs full acceptance verification against requirements
+6. If issues are found, **fixer** enters a repair loop (up to 2 rounds)
+7. **shadow-writer** updates shadow files again if fixer made changes
+8. **evolver** distills lessons learned and records design drift
 
 Each stage is a self-contained loop: implement → review → fix. If an implementer gets blocked, it retries automatically (up to twice before escalating to you). After all stages, acceptance verification ensures requirements are met before merge.
 
@@ -100,8 +102,10 @@ Register the marketplace first, then install the plugin:
       implementer → code + tests (TDD)
       3 reviewers → findings
       resolver → fixes (if Critical/Major)
+      shadow-writer → update .shadow/
   → acceptor → acceptance verification
   → fixer → fix loop (if CONDITIONAL, max 2 rounds)
+  → shadow-writer → update .shadow/ (if fixer ran)
   → evolver → experience log
   → (user chooses how to merge)
 ```
@@ -122,7 +126,7 @@ Register the marketplace first, then install the plugin:
 
 | Agent | Role | Used By |
 |-------|------|---------|
-| **shadow-writer** | Extracts declarations from source files — all definitions without function bodies | intro |
+| **shadow-writer** | Extracts declarations from source files — all definitions without function bodies | intro, go, aim |
 | **scout** | Investigates specified technologies and dependencies with factual findings — versions, compatibility, constraints | aim |
 | **experimenter** | Runs specified experiments to obtain real structures, API behaviors, or performance data | aim |
 | **implementer** | Reads architecture context, breaks down tasks, executes per-task TDD — writes tests first, then minimal implementation | go |
@@ -195,7 +199,7 @@ All process artifacts are stored in `.vibewire/` within the target project. Shad
     ├── acceptance.md                   # Acceptance report (created by acceptor)
     └── acceptance-{round}.md           # Archived acceptance reports (created by fixer)
 
-.shadow/                                # API declaration mirrors (created by intro, at project root)
+.shadow/                                # API declaration mirrors (created by intro, updated by shadow-writer, at project root)
     └── {path/to/source}.{ext}
 ```
 
@@ -238,12 +242,16 @@ flowchart TD
         G5 --> G6
         G6 -- Yes --> G7["resolver
         Consolidate and fix"]
-        G6 -- No --> G8{More stages?}
-        G7 --> G8
+        G6 -- No --> G7b["shadow-writer
+        Update shadow files"]
+        G7 --> G7b
+        G7b --> G8{More stages?}
         G8 -- Yes --> G1
         G8 -- No --> G9["acceptor
         Acceptance verification"]
-        G9 -- PASS --> G10["evolver
+        G9 -- PASS --> G9b["shadow-writer
+        Update shadow files"]
+        G9b --> G10["evolver
         Experience synthesis"]
         G9 -- CONDITIONAL --> G11["fixer
         Fix loop"]

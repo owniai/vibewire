@@ -109,8 +109,10 @@ model: sonnet
 
 ### 6. Commit
 
+`.shadow/` 是源代码的便捷索引，shadow 文件的更新，必须在此处一并提交。
+
 ```bash
-git add .vibewire/evolve.md .vibewire/project.md .vibewire/CHANGELOG.md .vibewire/{N}-{name}/acceptance.md
+git add .shadow/ .vibewire/evolve.md .vibewire/project.md .vibewire/CHANGELOG.md .vibewire/{N}-{name}/acceptance.md
 git commit -m "[{N}-{name}] docs: 经验、项目文档更新"
 ```
 

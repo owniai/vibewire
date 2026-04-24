@@ -85,9 +85,10 @@ prompt: |
 ```
 
 等待三个 agent 完成，根据各自输出的摘要判断结果：
+- **存在至少一个 Critical 或 Major 问题** → 进入 §2.3
+- **无 Critical 或 Major 问题** → 进入 §2.4
 
-- **无 Critical 或 Major 问题** → 继续下一 stage
-- **存在至少一个 Critical 或 Major 问题** → 启动 resolver：
+#### 2.3 Resolver
 
 ```
 subagent_type: "vibewire:resolver"
@@ -98,12 +99,20 @@ prompt: |
   阶段：{M}-{name}
 ```
 
-resolver 完成后根据状态码处理：
+resolver 完成后进入 §2.4。
 
-| 状态 | 处理方式 |
-|------|----------|
-| DONE | 继续下一 stage |
-| DONE_WITH_DEFERRED | 继续下一 stage（延后项已由 resolver 记录） |
+#### 2.4 Update Shadow
+
+从 implementer Status Report 中提取变更文件列表。若 resolver 曾执行，合并其 Status Report 中的变更文件列表。将合并后的列表传递给 shadow-writer：新增和修改文件原样传递，删除文件加 `DEL:` 前缀。
+
+```
+subagent_type: "vibewire:shadow-writer"
+description: "shadow-writer Stage {M}-{name}"
+prompt: |
+  {变更文件列表，每行一个路径，删除文件前缀 DEL:}
+```
+
+完成后继续下一 stage。
 
 ### 3. Acceptance
 
@@ -148,20 +157,22 @@ prompt: |
   修复轮次：{round}
 ```
 
-fixer 完成后根据状态码处理：
-
-| 状态 | 处理方式 |
-|------|----------|
-| DONE | `round++`，回到 §3.1 重新验收 |
-| DONE_WITH_DEFERRED | `round++`，回到 §3.1 重新验收 |
-
-若 `round > 2`（即已执行 2 轮修复后验收仍未 PASS）→ 暂停，列出遗留问题，等待用户介入：
+fixer 完成后 `round++`，回到 §3.1 重新验收。若 `round > 2`（即已执行 2 轮修复后验收仍未 PASS）→ 暂停，列出遗留问题，等待用户介入：
 
 ```
 {N}-{name}: 验收修复循环结束，仍有遗留问题，详见 .vibewire/{N}-{name}/acceptance.md
 ```
 
 ### 4. Wrap-Up
+
+若验收阶段启用过 fixer（即 acceptor 曾返回 CONDITIONAL），合并所有 fixer Status Report 中的变更文件列表，调用 shadow-writer 更新 shadow 文件：
+
+```
+subagent_type: "vibewire:shadow-writer"
+description: "shadow-writer {N}-{name} acceptance fix"
+prompt: |
+  {变更文件列表，每行一个路径，删除文件前缀 DEL:}
+```
 
 调用 evolver：
 

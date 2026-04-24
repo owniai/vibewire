@@ -48,20 +48,11 @@
 
 **验证通过：** 运行全量测试，循环修复直到全部通过。
 
-### 4. Update Shadow
-
-为涉及的源代码文件更新 `.shadow/` 下的对应声明文件：
-- 提取依赖引入语句、函数签名、类、接口、类型、枚举、常量声明
-- 省略所有函数体和初始化逻辑，保留原始注释
-- 增量更新：已存在的 shadow 文件仅更新变更声明，不存在则创建
-- 排除非源码文件（`*.json`、`*.md`、`*.yaml`、`*.lock`、`*.test.*`、`*.spec.*`、`*.config.*`、`*.css`、`*.html` 等）
-- 测试代码仅标记存在与行范围，不展开声明；若文件仅含测试代码，跳过该文件
-
-### 5. Write Records
+### 4. Write Records
 
 确定文档名称：`{name}` 为任务对应的英文标识，kebab-case（如 `fix-login-bug`）。
 
-**Step A — 任务文档**
+#### 4.1 Task Document
 
 创建 `.vibewire/tasks/` 目录（若不存在），写入 `.vibewire/tasks/{name}.md`：
 
@@ -78,7 +69,7 @@
 - `path/to/file` (A/M/D) — {变更内容}
 ```
 
-**Step B — 经验归纳**
+#### 4.2 Lessons Synthesis
 
 若任务产生了值得沉淀的知识——bug 的根因与防御手段、隐含假设及需满足的前提、非显而易见的设计约束、正确的构建/测试/部署命令（尤其是试错后才发现的）、必需的环境变量或前置步骤、必须遵守的执行顺序、执行过程中的发现——归纳后追加到 `.vibewire/evolve.md`（如不存在则创建）。每条经验格式如下：
 
@@ -95,7 +86,7 @@
 - 每条必须包含根因和建议，缺少任一项说明归纳不够深入
 - 无值得归纳的经验时跳过此步骤
 
-**Step C — 项目文档更新**
+#### 4.3 Changelog
 
 在 `.vibewire/CHANGELOG.md`（如不存在则创建）顶部追加变更条目：
 
@@ -104,7 +95,20 @@
 - 变更：{变更的模块/文件及原因}
 ```
 
-对照当前 `.vibewire/project.md`，若本次任务影响了架构描述，更新受影响的章节。首行元信息固定更新：`> Last updated: yyyy-mm-dd | minimal/{name}`。无影响则跳过。
+#### 4.4 Project Update
+
+对照当前 `.vibewire/project.md`，若本次任务影响了目录结构、技术栈、架构描述或产生了新的约定与规范，更新受影响的章节。首行元信息固定更新：`> Last updated: yyyy-mm-dd | minimal/{name}`。无影响则跳过。
+
+### 5. Update Shadow
+
+调用 shadow-writer 更新变更文件的 shadow：
+
+```
+subagent_type: "vibewire:shadow-writer"
+description: "shadow-writer minimal/{name}"
+prompt: |
+  {变更文件列表，每行一个路径，删除文件前缀 DEL:}
+```
 
 ### 6. Commit
 

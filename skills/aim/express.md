@@ -16,8 +16,8 @@
 3. **TDD: Green** — 编写实现并确认通过
 4. **Review** — 调用三个审查 subagent
 5. **Fix** — 根据审查结果修复
-6. **Update Shadow** — 更新 .shadow/ 声明文件
-7. **Write Records** — 写入任务文档并追加执行记录
+6. **Write Records** — 写入任务文档并追加执行记录
+7. **Update Shadow** — 更新 .shadow/ 声明文件
 8. **Commit** — 提交全部变更
 
 ## Process
@@ -93,21 +93,11 @@ prompt: |
 
 若审查无 Critical 或 Major 问题，跳过此步骤。
 
-### 6. Update Shadow
-
-为涉及的源代码文件更新 `.shadow/` 下的对应声明文件：
-- 提取依赖引入语句（`import`、`require` 等）、函数签名、类（含全部属性和方法签名）、接口、类型、枚举、常量声明
-- 省略所有函数体和初始化逻辑，保留原始注释
-- 格式：仅顶层声明和类内部方法行尾追加 `// L{start}-{end}`，属性和字段不标注行号
-- 增量更新：已存在的 shadow 文件仅更新变更声明，不存在则创建
-- 排除非源码文件（`*.json`、`*.md`、`*.yaml`、`*.lock`、`*.test.*`、`*.spec.*`、`*.config.*`、`*.css`、`*.html` 等）
-- 测试代码仅标记存在与行范围，不展开声明；若文件仅含测试代码，跳过该文件
-
-### 7. Write Records
+### 6. Write Records
 
 确定文档名称：`{name}` 为任务对应的英文标识，kebab-case（如 `fix-login-bug`）。
 
-**Step A — 任务文档**
+#### 6.1 Task Document
 
 创建 `.vibewire/tasks/` 目录（若不存在），写入 `.vibewire/tasks/{name}.md`：
 
@@ -124,7 +114,7 @@ prompt: |
 - `path/to/file` (A/M/D) — {变更内容}
 ```
 
-**Step B — 经验归纳**
+#### 6.2 Lessons Synthesis
 
 若任务产生了值得沉淀的知识——bug 的根因与防御手段、隐含假设及需满足的前提、非显而易见的设计约束、正确的构建/测试/部署命令（尤其是试错后才发现的）、必需的环境变量或前置步骤、必须遵守的执行顺序、执行过程中的发现——归纳后追加到 `.vibewire/evolve.md`（如不存在则创建）。每条经验格式如下：
 
@@ -141,7 +131,7 @@ prompt: |
 - 每条必须包含根因和建议，缺少任一项说明归纳不够深入
 - 无值得归纳的经验时跳过此步骤
 
-**Step C — 项目文档更新**
+#### 6.3 Changelog
 
 在 `.vibewire/CHANGELOG.md`（如不存在则创建）顶部追加变更条目：
 
@@ -150,7 +140,20 @@ prompt: |
 - 变更：{变更的模块/文件及原因}
 ```
 
-对照当前 `.vibewire/project.md`，若本次任务影响了架构描述（新增/变更模块、技术栈变更、目录结构变化等），更新受影响的章节。首行元信息固定更新：`> Last updated: yyyy-mm-dd | express/{name}`。无影响则跳过。
+#### 6.4 Project Update
+
+对照当前 `.vibewire/project.md`，若本次任务影响了目录结构、技术栈、架构描述或产生了新的约定与规范，更新受影响的章节。首行元信息固定更新：`> Last updated: yyyy-mm-dd | express/{name}`。无影响则跳过。
+
+### 7. Update Shadow
+
+调用 shadow-writer 更新变更文件的 shadow：
+
+```
+subagent_type: "vibewire:shadow-writer"
+description: "shadow-writer express/{name}"
+prompt: |
+  {变更文件列表，每行一个路径，删除文件前缀 DEL:}
+```
 
 ### 8. Commit
 

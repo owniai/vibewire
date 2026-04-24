@@ -85,22 +85,9 @@ model: opus
 
 发现问题立即修正，修正后重新运行测试。
 
-### 5. Update Shadow
+### 5. Write Records
 
-基于已修复的文件上下文，为涉及的源代码文件更新 `.shadow/` 目录下的对应声明文件：
-- 提取依赖引入语句（`import`、`require`、`#include`、`use` 等）、所有函数签名、类（含全部属性和方法签名）、接口、类型、枚举、常量声明
-- 省略所有函数体和初始化逻辑，保留原始注释
-- 格式：仅顶层声明和类内部方法行尾追加 `// L{start}-{end}`（根据语言使用 `//`、`#`、`--` 等注释符），属性和字段不标注行号
-- 增量更新：已存在的 shadow 文件仅更新变更声明，不存在则创建
-- 排除非源码文件（`*.json`、`*.md`、`*.yaml`、`*.lock`、`*.test.*`、`*.spec.*`、`*.config.*`、`*.css`、`*.html` 等）
-- 测试代码仅标记存在与行范围，不展开内部任何声明
-- 若文件仅含测试代码，跳过该文件，不创建 shadow 文件
-
-若无源代码变更，跳过本步骤。
-
-### 6. Write Records
-
-#### 6.1 Archive Acceptance Report
+#### 5.1 Archive Acceptance Report
 
 将当前验收报告归档，保留完整修复历史：
 
@@ -110,7 +97,7 @@ mv .vibewire/{N}-{name}/acceptance.md .vibewire/{N}-{name}/acceptance-{round}.md
 
 `{round}` 为修复轮次，由调度者传入。
 
-#### 6.2 Fix Record
+#### 5.2 Fix Record
 
 追加到 `.vibewire/{N}-{name}/log.md`：
 
@@ -127,7 +114,7 @@ mv .vibewire/{N}-{name}/acceptance.md .vibewire/{N}-{name}/acceptance-{round}.md
 - {问题描述} — 原因：{为什么跳过}
 ```
 
-#### 6.3 Lessons
+#### 5.3 Lessons
 
 若有实质性经验，追加到 `.vibewire/{N}-{name}/lessons.md`，无则省略。
 
@@ -136,22 +123,20 @@ mv .vibewire/{N}-{name}/acceptance.md .vibewire/{N}-{name}/acceptance-{round}.md
 - {经验教训：修复过程中发现的编码约定或非显而易见的项目事实、bug 的成因与防御手段、隐含假设及需满足的前提、设计约束、正确的构建/测试/部署命令、必需的环境变量或前置步骤、必须遵守的执行顺序}
 ```
 
-### 7. Commit
+### 6. Commit
 
 ```bash
-git add {修复涉及的文件} .shadow/ .vibewire/{N}-{name}/
+git add {修复涉及的文件} .vibewire/{N}-{name}/
 git commit -m "[{N}-{name}] fix: 验收问题修复"
 ```
 
-### 8. Status Report
+### 7. Status Report
 
 ```
-Status: DONE | DONE_WITH_DEFERRED
+Status: DONE
 - Fix {n} | Skip {n} | Deferred {n}
+{列举变更文件：A {新增} M {修改} D {删除}}
 ```
-
-**DONE** — 所有报告的问题已修复或确认跳过（误报）。
-**DONE_WITH_DEFERRED** — 存在无法修复的问题，已标记为 Deferred。
 
 ## Best Practices
 
