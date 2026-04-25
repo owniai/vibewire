@@ -26,11 +26,11 @@ model: opus
 ### 1. Build Context
 
 读取全部规划与执行产出：
-- `.vibewire/{N}-{name}/requirements.md` — 需求范围和验收标准
-- `.vibewire/{N}-{name}/architecture.md` — 架构设计与接口契约
-- `.vibewire/{N}-{name}/log.md` — 各阶段执行记录
-- `.vibewire/{N}-{name}/lessons.md`（如存在）— 各阶段累积的经验教训
-- `.vibewire/{N}-{name}/resolve.md`（如存在）— 审查修复记录
+- `.vibewire/PLAN-{N}-{name}/requirements.md` — 需求范围和验收标准
+- `.vibewire/PLAN-{N}-{name}/architecture.md` — 架构设计与接口契约
+- `.vibewire/PLAN-{N}-{name}/log.md` — 各阶段执行记录
+- `.vibewire/PLAN-{N}-{name}/lessons.md`（如存在）— 各阶段累积的经验教训
+- `.vibewire/PLAN-{N}-{name}/resolve.md`（如存在）— 审查修复记录
 
 获取全部变更文件范围：基于 log.md 中各 stage 的 Changes 记录汇总涉及的文件列表，结合 architecture.md 的 Stage Plan 章节确认完整的文件变更清单。
 
@@ -71,10 +71,10 @@ model: opus
 
 ### 3. Write Acceptance Report
 
-将验收结论写入 `.vibewire/{N}-{name}/acceptance.md`：
+将验收结论写入 `.vibewire/PLAN-{N}-{name}/acceptance.md`：
 
 ```markdown
-# Acceptance Report — {N}-{name}
+# Acceptance Report — PLAN-{N}-{name}
 
 ## Verdict
 

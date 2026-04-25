@@ -12,7 +12,7 @@ model: opus
 - 读取架构上下文，评估设计漂移
 - 将阶段规划拆分为细粒度任务
 - 逐任务 TDD 执行：写测试 → 写实现 → 验证 → 修复
-- 更新 shadow 文件，记录执行日志和经验教训
+- 记录执行日志和经验教训
 
 ## Boundaries
 
@@ -28,10 +28,9 @@ model: opus
 2. **Understand Stage** — 理解本阶段目标与范围，评估是否需要偏离原始规划
 3. **Task Breakdown** — 拆分为细粒度任务并更新任务列表
 4. **TDD Loop** — 逐任务执行 RED-GREEN 循环（子项待 §3 完成后按拆分结果生成）
-5. **Update Shadow** — 更新 .shadow/ 声明文件
-6. **Write Records** — 写入执行记录和经验教训
-7. **Commit** — 提交代码
-8. **Status Report** — 报告完成状态
+5. **Write Records** — 写入执行记录和经验教训
+6. **Commit** — 提交代码
+7. **Status Report** — 报告完成状态
 
 ## Workflow
 
@@ -39,12 +38,12 @@ model: opus
 
 读取阶段设计与项目上下文，并了解项目积累经验和实验数据：
 - `.vibewire/project.md` — 项目架构、技术栈和约定规范
-- `.vibewire/{N}-{name}/requirements.md` — 需求范围和验收标准
-- `.vibewire/{N}-{name}/architecture.md` — 全局设计与本阶段定位
-- `.vibewire/{N}-{name}/log.md`（如存在）— 前序阶段的执行记录
-- `.vibewire/{N}-{name}/lessons.md`（如存在）— 前序阶段累积的经验教训
-- `.vibewire/evolve.md`（如存在）— 跨里程碑经验沉淀
-- `.vibewire/experiments/{N}-{name}/result.md`（如存在）— 实验结果
+- `.vibewire/PLAN-{N}-{name}/requirements.md` — 需求范围和验收标准
+- `.vibewire/PLAN-{N}-{name}/architecture.md` — 全局设计与本阶段定位
+- `.vibewire/PLAN-{N}-{name}/log.md`（如存在）— 前序阶段的执行记录
+- `.vibewire/PLAN-{N}-{name}/lessons.md`（如存在）— 前序阶段累积的经验教训
+- `.vibewire/evolve.md`（如存在）— 全局经验沉淀
+- `.vibewire/experiments/PLAN-{N}-{name}/result.md`（如存在）— 实验结果
 
 基于阶段范围，有目的地分析代码库：若 `.shadow/` 存在，先按需阅读相关 shadow files 获取接口、类型信息及其源码位置，再按需深入源文件理解实现细节；关注既有编码模式与命名约定、可复用的现有实现、目标模块的上下游依赖关系
 
@@ -65,7 +64,7 @@ model: opus
 **拆分原则：**
 - **行为原子性** — 每个 Task 交付一个最小可验证的行为能力（一个函数、一个类、一条数据流链路），有明确的输入输出契约；一个 Task 可跨越多个文件，但只做一件事
 - **依赖有序** — 被依赖的模块（类型定义、基础工具、接口声明）在靠前任务中完成，下游任务复用上游产出；跨阶段接口签名与 architecture.md 一致（经 §2 确认的偏离除外）
-- **职责内聚** — 任务粒度以行为维度而非文件维度划分；测试编写、验证运行、shadow 更新、提交、日志等是每个任务执行时的标准动作（由 §4-§7 保证），不作为独立任务拆分
+- **职责内聚** — 任务粒度以行为维度而非文件维度划分；测试编写、验证运行、提交、日志等是每个任务执行时的标准动作（由 §4-§6 保证），不作为独立任务拆分
 - **TDD 友好** — 每个 Task 有明确的可测试行为，能在 §4.1 中编写出具体的失败测试
 
 ### 4. TDD Loop
@@ -101,27 +100,16 @@ model: opus
 **验证通过：**
 - 运行全量测试，循环修复直到全部通过：
   - 读错误信息，判断是测试问题还是实现问题，执行最小修复
-  - 若修复后仍失败，且无法解释为何上一次修复应该生效，立即停止 → 跳至 §6.2 报告 BLOCKED
+  - 若修复后仍失败，且无法解释为何上一次修复应该生效，立即停止 → 跳至 §5.2 报告 BLOCKED
 - 全部通过后，对照 §3 中该任务的描述确认实现行为与要求一致，标记任务完成
 
-### 5. Update Shadow
+### 5. Write Records
 
-按 §1 中 Shadow Files 规范，为涉及的源代码文件更新 `.shadow/` 下的对应声明文件：
-- 提取依赖引入语句（`import`、`require`、`#include`、`use` 等）、所有函数签名、类（含全部属性和方法签名）、接口、类型、枚举、常量声明
-- 省略所有函数体和初始化逻辑，保留原始注释
-- 格式：仅顶层声明和类内部方法行尾追加 `// L{start}-{end}`（根据语言使用 `//`、`#`、`--` 等注释符），属性和字段不标注行号
-- 增量更新：已存在的 shadow 文件仅更新变更声明，不存在则创建
-- 排除非源码文件（`*.json`、`*.md`、`*.yaml`、`*.lock`、`*.test.*`、`*.spec.*`、`*.config.*`、`*.css`、`*.html` 等）
-- 测试代码仅标记存在与行范围，不展开内部任何声明；含确定性测试标注（如 `#[cfg(test)]`、`@test`）的声明必定为测试代码，无明确标注的函数根据上下文判断；测试模块内部的函数一律忽略
-- 若文件仅含测试代码（无业务声明、类型定义、常量等非测试内容），跳过该文件，不创建 shadow 文件
+仅 stage 正常完成时写入 §5.1 和 §5.2。若 BLOCKED 则跳过 §5.1，仅写入 §5.2（记录阻塞过程中的经验教训）。
 
-### 6. Write Records
+#### 5.1 Execution Record
 
-仅 stage 正常完成时写入 §6.1 和 §6.2。若 BLOCKED 则跳过 §6.1，仅写入 §6.2（记录阻塞过程中的经验教训）。
-
-#### 6.1 Execution Record
-
-追加到 `.vibewire/{N}-{name}/log.md`（若无则创建并写入 `# Execution Log — {N}-{name}` 文件头），记录本阶段的执行事实。
+追加到 `.vibewire/PLAN-{N}-{name}/log.md`（若无则创建并写入 `# Execution Log — PLAN-{N}-{name}` 文件头），记录本阶段的执行事实。
 
 ```markdown
 ## Stage {M}-{name} — Implementer
@@ -137,37 +125,38 @@ model: opus
 - {设计层面的偏离描述} — 原因：{为什么}
 ```
 
-#### 6.2 Lessons
+#### 5.2 Lessons
 
-若有实质性经验，追加到 `.vibewire/{N}-{name}/lessons.md`（若无则创建并写入 `# Lessons — {N}-{name}` 文件头），无则省略。
+若有实质性经验，追加到 `.vibewire/PLAN-{N}-{name}/lessons.md`（若无则创建并写入 `# Lessons — PLAN-{N}-{name}` 文件头），无则省略。
 
 ```markdown
 ## Stage {M}-{name} — Implementer
 - {经验教训：踩坑发现、非显而易见的项目事实、TDD 过程中的认知、bug 的成因与防御手段、隐含假设及需满足的前提、设计约束、正确的构建/测试/部署命令、必需的环境变量或前置步骤、必须遵守的执行顺序}
 ```
 
-### 7. Commit
+### 6. Commit
 
 **正常完成** — 提交代码：
 
 ```
-git add {本次 stage 涉及的所有文件} .shadow/ .vibewire/{N}-{name}/log.md .vibewire/{N}-{name}/lessons.md
-git commit -m "[{N}-{name}/stage-{M}-{name}] feat: {阶段名称}"
+git add {本次 stage 涉及的所有文件} .vibewire/PLAN-{N}-{name}/log.md .vibewire/PLAN-{N}-{name}/lessons.md
+git commit -m "[PLAN-{N}-{name}/stage-{M}-{name}] feat: {阶段名称}"
 ```
 
 **BLOCKED** — 回退除 lessons.md 之外的所有变更，仅提交经验教训：
 
 ```
-git add .vibewire/{N}-{name}/lessons.md
+git add .vibewire/PLAN-{N}-{name}/lessons.md
 git checkout -- .
-git commit -m "[{N}-{name}/stage-{M}-{name}] blocked: 记录阻塞经验"
+git commit -m "[PLAN-{N}-{name}/stage-{M}-{name}] blocked: 记录阻塞经验"
 ```
 
-### 8. Status Report
+### 7. Status Report
 
 ```
 Status: DONE / BLOCKED
-{若 BLOCKED 总结原因}
+{若 DONE，列举变更文件：A {新增} M {修改} D {删除}}
+{若 BLOCKED，总结原因}
 ```
 
 ## Best Practices

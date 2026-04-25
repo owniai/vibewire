@@ -17,12 +17,12 @@ description: Use ONLY when the user explicitly invokes /vibewire:go. Do not auto
 
 ### 1. Initialize
 
-从用户输入中解析 `{N}-{name}`。完成以下检查：
-1. 确认 `.vibewire/{N}-{name}/` 目录存在，且包含 `requirements.md` 和 `architecture.md`；若缺失 → 提示用户先运行 `/vibewire:aim`
+从用户输入中解析 `PLAN-{N}-{name}`。完成以下检查：
+1. 确认 `.vibewire/PLAN-{N}-{name}/` 目录存在，且包含 `requirements.md` 和 `architecture.md`；若缺失 → 提示用户先运行 `/vibewire:aim`
 2. 记录当前分支名（后续合并需要），创建 feature 分支：
    ```
    {original-branch} = git rev-parse --abbrev-ref HEAD
-   git checkout -b feature/{N}-{name}
+   git checkout -b feature/PLAN-{N}-{name}
    ```
 
 ### 2. Stage Loop
@@ -36,7 +36,7 @@ subagent_type: "vibewire:implementer"
 description: "implementer Stage {M}-{name}"
 prompt: |
   执行全部实现步骤。
-  规划目录：.vibewire/{N}-{name}/
+  规划目录：.vibewire/PLAN-{N}-{name}/
   阶段：Stage {M}-{name}
 ```
 
@@ -50,7 +50,7 @@ prompt: |
 若重试两次后仍 BLOCKED → 暂停，等待用户介入：
 
 ```
-Stage {M}-{name}: 执行失败（重试后仍有问题），详见 .vibewire/{N}-{name}/log.md
+Stage {M}-{name}: 执行失败（重试后仍有问题），详见 .vibewire/PLAN-{N}-{name}/log.md
 ```
 
 #### 2.2 Reviewers
@@ -62,7 +62,7 @@ subagent_type: "vibewire:efficiency-reviewer"
 description: "efficiency-reviewer Stage {M}-{name}"
 prompt: |
   执行效率审查。
-  规划目录：.vibewire/{N}-{name}/
+  规划目录：.vibewire/PLAN-{N}-{name}/
   阶段：{M}-{name}
 ```
 
@@ -71,7 +71,7 @@ subagent_type: "vibewire:quality-reviewer"
 description: "quality-reviewer Stage {M}-{name}"
 prompt: |
   执行质量审查。
-  规划目录：.vibewire/{N}-{name}/
+  规划目录：.vibewire/PLAN-{N}-{name}/
   阶段：{M}-{name}
 ```
 
@@ -80,30 +80,39 @@ subagent_type: "vibewire:reuse-reviewer"
 description: "reuse-reviewer Stage {M}-{name}"
 prompt: |
   执行复用审查。
-  规划目录：.vibewire/{N}-{name}/
+  规划目录：.vibewire/PLAN-{N}-{name}/
   阶段：{M}-{name}
 ```
 
 等待三个 agent 完成，根据各自输出的摘要判断结果：
+- **存在至少一个 Critical 或 Major 问题** → 进入 §2.3
+- **无 Critical 或 Major 问题** → 进入 §2.4
 
-- **无 Critical 或 Major 问题** → 继续下一 stage
-- **存在至少一个 Critical 或 Major 问题** → 启动 resolver：
+#### 2.3 Resolver
 
 ```
 subagent_type: "vibewire:resolver"
 description: "resolver Stage {M}-{name}"
 prompt: |
   执行审查修复。
-  规划目录：.vibewire/{N}-{name}/
+  规划目录：.vibewire/PLAN-{N}-{name}/
   阶段：{M}-{name}
 ```
 
-resolver 完成后根据状态码处理：
+resolver 完成后进入 §2.4。
 
-| 状态 | 处理方式 |
-|------|----------|
-| DONE | 继续下一 stage |
-| DONE_WITH_DEFERRED | 继续下一 stage（延后项已由 resolver 记录） |
+#### 2.4 Update Shadow
+
+从 implementer Status Report 中提取变更文件列表。若 resolver 曾执行，合并其 Status Report 中的变更文件列表。将合并后的列表传递给 shadow-writer：新增和修改文件原样传递，删除文件加 `DEL:` 前缀。
+
+```
+subagent_type: "vibewire:shadow-writer"
+description: "shadow-writer Stage {M}-{name}"
+prompt: |
+  {变更文件列表，每行一个路径，删除文件前缀 DEL:}
+```
+
+完成后继续下一 stage。
 
 ### 3. Acceptance
 
@@ -115,10 +124,10 @@ resolver 完成后根据状态码处理：
 
 ```
 subagent_type: "vibewire:acceptor"
-description: "acceptor {N}-{name}"
+description: "acceptor PLAN-{N}-{name}"
 prompt: |
   执行验收。
-  规划目录：.vibewire/{N}-{name}/
+  规划目录：.vibewire/PLAN-{N}-{name}/
 ```
 
 根据 acceptor 的 Verdict 处理：
@@ -132,7 +141,7 @@ prompt: |
 暂停时输出：
 
 ```
-{N}-{name}: 验收未通过，详见 .vibewire/{N}-{name}/acceptance.md
+PLAN-{N}-{name}: 验收未通过，详见 .vibewire/PLAN-{N}-{name}/acceptance.md
 ```
 
 #### 3.2 Fix
@@ -141,41 +150,43 @@ prompt: |
 
 ```
 subagent_type: "vibewire:fixer"
-description: "fixer {N}-{name} round {round}"
+description: "fixer PLAN-{N}-{name} round {round}"
 prompt: |
   执行验收问题修复。
-  规划目录：.vibewire/{N}-{name}/
+  规划目录：.vibewire/PLAN-{N}-{name}/
   修复轮次：{round}
 ```
 
-fixer 完成后根据状态码处理：
-
-| 状态 | 处理方式 |
-|------|----------|
-| DONE | `round++`，回到 §3.1 重新验收 |
-| DONE_WITH_DEFERRED | `round++`，回到 §3.1 重新验收 |
-
-若 `round > 2`（即已执行 2 轮修复后验收仍未 PASS）→ 暂停，列出遗留问题，等待用户介入：
+fixer 完成后 `round++`，回到 §3.1 重新验收。若 `round > 2`（即已执行 2 轮修复后验收仍未 PASS）→ 暂停，列出遗留问题，等待用户介入：
 
 ```
-{N}-{name}: 验收修复循环结束，仍有遗留问题，详见 .vibewire/{N}-{name}/acceptance.md
+PLAN-{N}-{name}: 验收修复循环结束，仍有遗留问题，详见 .vibewire/PLAN-{N}-{name}/acceptance.md
 ```
 
 ### 4. Wrap-Up
+
+若验收阶段启用过 fixer（即 acceptor 曾返回 CONDITIONAL），合并所有 fixer Status Report 中的变更文件列表，调用 shadow-writer 更新 shadow 文件：
+
+```
+subagent_type: "vibewire:shadow-writer"
+description: "shadow-writer PLAN-{N}-{name} acceptance fix"
+prompt: |
+  {变更文件列表，每行一个路径，删除文件前缀 DEL:}
+```
 
 调用 evolver：
 
 ```
 subagent_type: "vibewire:evolver"
-description: "evolver {N}-{name}"
+description: "evolver PLAN-{N}-{name}"
 prompt: |
-  执行经验提炼与漂移记录。
-  规划目录：.vibewire/{N}-{name}/
+  执行经验提炼与健康度分析。
+  规划目录：.vibewire/PLAN-{N}-{name}/
 ```
 
 evolver 完成后，报告整体完成状态，然后询问用户如何合并，使用 AskUserQuestion 提供以下选项：
-1. **Merge 到原始分支** — `git checkout {original-branch} && git merge feature/{N}-{name}`
-2. **Squash merge 到原始分支** — `git checkout {original-branch} && git merge --squash feature/{N}-{name} && git commit`
+1. **Merge 到原始分支** — `git checkout {original-branch} && git merge feature/PLAN-{N}-{name}`
+2. **Squash merge 到原始分支** — `git checkout {original-branch} && git merge --squash feature/PLAN-{N}-{name} && git commit`
 3. **创建 Pull Request** — 使用 `gh pr create` 向 `{original-branch}` 发起 PR
 4. **暂不合并** — 保留 feature 分支，稍后手动处理
 

@@ -21,8 +21,8 @@ model: sonnet
 - **只修复审阅报告中的问题** — 不自行发现和修复计划外问题
 - **最小修复原则** — 只做解决问题所需的最小改动，不顺便重构或优化
 - **不修改测试逻辑** — 修复仅针对实现代码，除非测试本身有误才修改测试
-- **不修改架构** — 不因审阅意见调整文件结构、模块划分或接口设计
-- **不删除功能** — 不因审阅意见删除或禁用已有功能代码
+- **架构变更需审阅驱动** — 不自行发起架构重构；审阅明确指出的结构性问题（循环依赖、职责错位、模块归属不当等）可修复
+- **功能删除需审阅确认** — 不自行删除或禁用功能代码；审阅确认的冗余实现或死代码可移除
 - **忽略格式检查** — markdown lint 等文档格式告警一律忽略，内部规划文档不适用项目文档格式规范
 
 ## Workflow
@@ -30,17 +30,17 @@ model: sonnet
 ### 1. Build Context
 
 读取以下文档建立完整上下文：
-- `.vibewire/{N}-{name}/log.md` — 当前阶段的执行记录，理解实现意图、任务范围和设计决策
-- `.vibewire/{N}-{name}/lessons.md`（如存在）— 前序阶段累积的经验教训
+- `.vibewire/PLAN-{N}-{name}/log.md` — 当前阶段的执行记录，理解实现意图、任务范围和设计决策
+- `.vibewire/PLAN-{N}-{name}/lessons.md`（如存在）— 前序阶段累积的经验教训
 - 上一条提交涉及的变更文件，通过 `git diff --name-only HEAD~1 HEAD` 获取
 - 变更文件的完整代码（不只是 diff），理解修复的周边上下文
 
 ### 2. Collect Reviews
 
 逐一阅读三份审阅报告中对应 `## Stage {M}-{name}` 的节：
-1. `.vibewire/{N}-{name}/review-efficiency.md`
-2. `.vibewire/{N}-{name}/review-quality.md`
-3. `.vibewire/{N}-{name}/review-reuse.md`
+1. `.vibewire/PLAN-{N}-{name}/review-efficiency.md`
+2. `.vibewire/PLAN-{N}-{name}/review-quality.md`
+3. `.vibewire/PLAN-{N}-{name}/review-reuse.md`
 
 为每个发现提取关键信息：文件路径、行号、问题描述、建议方案。
 
@@ -130,24 +130,11 @@ npm test | cargo test | go test ./... | pytest
 
 同一问题连续 3 次修复仍导致测试失败 → 回退该修复，标记为 Deferred，继续修复其他问题。
 
-### 8. Update Shadow
+### 8. Write Records
 
-基于已修复的文件上下文，为涉及的源代码文件更新 `.shadow/` 目录下的对应声明文件（目录结构与源文件严格同构，文件名与源文件完全一致）：
-- 提取依赖引入语句（`import`、`require`、`#include`、`use` 等）、所有函数签名、类（含全部属性和方法签名）、接口、类型、枚举、常量声明
-- 省略所有函数体和初始化逻辑，保留原始注释
-- 格式：仅顶层声明和类内部方法行尾追加 `// L{start}-{end}`（根据语言使用 `//`、`#`、`--` 等注释符），属性和字段不标注行号
-- 增量更新：已存在的 shadow 文件仅更新变更声明，不存在则创建
-- 排除非源码文件（`*.json`、`*.md`、`*.yaml`、`*.lock`、`*.test.*`、`*.spec.*`、`*.config.*`、`*.css`、`*.html` 等）
-- 测试代码仅标记存在与行范围，不展开内部任何声明；含确定性测试标注（如 `#[cfg(test)]`、`@test`）的声明必定为测试代码，无明确标注的函数根据上下文判断；测试模块内部的函数一律忽略
-- 若文件仅含测试代码（无业务声明、类型定义、常量等非测试内容），跳过该文件，不创建 shadow 文件
+#### 8.1 Adjudication Record
 
-若无源代码变更，跳过本步骤。
-
-### 9. Write Records
-
-#### 9.1 Adjudication Record
-
-追加到 `.vibewire/{N}-{name}/resolve.md`（以 `## Stage {M}-{name}` 为节标题，文件不存在则创建并写入 `# Resolve Record — {N}-{name}` 文件头），记录每个发现的裁决结果和修复内容。仅按状态填写对应字段，其余省略：
+追加到 `.vibewire/PLAN-{N}-{name}/resolve.md`（以 `## Stage {M}-{name}` 为节标题，文件不存在则创建并写入 `# Resolve Record — PLAN-{N}-{name}` 文件头），记录每个发现的裁决结果和修复内容。仅按状态填写对应字段，其余省略：
 
 ```markdown
 ## Stage {M}-{name}
@@ -158,24 +145,26 @@ npm test | cargo test | go test ./... | pytest
 - **跳过理由**：{Skip→为什么不值得修复}
 - **延后原因**：{Deferred→连续失败的根因}
 - **子问题**：{合并组内含多个问题时列出，独立问题省略}
-
-### Stage 状态：DONE / DONE_WITH_DEFERRED
 ```
 
-#### 9.2 Structural Impact
+#### 8.2 Execution Record
 
-追加到 `.vibewire/{N}-{name}/log.md`，记录修复导致的架构/接口变更。无结构性变更则省略本节。
+追加到 `.vibewire/PLAN-{N}-{name}/log.md`，记录本阶段的修复变更和设计偏离。无 Fix 项则省略本节。
 
 ```markdown
 ## Stage {M}-{name} — Resolver
 
-### Structural Impact
-{修复导致的架构/接口变更}
+### Changes
+- `path/to/file` (A/M/D) — {变更内容}
+
+### Drift
+{无则省略}
+- {修复导致的架构/接口偏离描述} — 原因：{为什么}
 ```
 
-#### 9.3 Lessons
+#### 8.3 Lessons
 
-追加到 `.vibewire/{N}-{name}/lessons.md`，记录从 review 和修复过程中获得的经验教训。后续 stage 的 implementer 会读取全部累积经验以规避已知陷阱。无实质性经验时省略本节。
+追加到 `.vibewire/PLAN-{N}-{name}/lessons.md`，记录从 review 和修复过程中获得的经验教训。后续 stage 的 implementer 会读取全部累积经验以规避已知陷阱。无实质性经验时省略本节。
 
 ```markdown
 ## Stage {M}-{name} — Resolver
@@ -186,22 +175,23 @@ npm test | cargo test | go test ./... | pytest
 - **面向后续实现者** — 只记录能指导后续开发运维编码决策的经验，不重复 resolve.md 中的修复细节
 - **可执行** — 每条经验应能转化为具体的编码行为（如"避免 X 模式，改用 Y"）
 
-### 10. Commit
+### 9. Commit
 
 提交修复涉及的文件、review 文档及本阶段文档变更：
 
 ```bash
-git add {修复涉及的文件} .shadow/ .vibewire/{N}-{name}/
-git commit -m "[{N}-{name}/stage-{M}-{name}] resolve: 审查修复"
+git add {修复涉及的文件} .vibewire/PLAN-{N}-{name}/
+git commit -m "[PLAN-{N}-{name}/stage-{M}-{name}] resolve: 审查修复"
 ```
 
-### 11. Status Report
+### 10. Status Report
 
-完成工作后，报告与 §9.1 裁决记录中 Stage 级状态一致的结果。
+完成工作后，报告裁决结果。
 
 ```
-Status: DONE | DONE_WITH_DEFERRED
+Status: DONE
 - Fix {n} | Skip {n} | Deferred {n}
+{列举变更文件：A {新增} M {修改} D {删除}}
 ```
 
 绝不默默产出不确定的工作。

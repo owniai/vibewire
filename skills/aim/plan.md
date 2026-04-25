@@ -1,8 +1,8 @@
-# Comprehensive: From Requirements to Architecture
+# Plan: Complex Task — From Requirements to Architecture
 
 ## Overview
 
-通过协作对话澄清需求，探索多种方案并权衡取舍，将用户任务转化为结构化的需求文档和包含阶段划分的架构设计。
+将已澄清的需求转化为结构化的需求文档，探索多种方案并权衡取舍，产出包含阶段划分的架构设计。
 
 <HARD-GATE>
 在用户确认全部规划文档（需求、架构）之前，不编写任何测试或实现代码。
@@ -11,49 +11,39 @@
 ## Checklist
 
 你必须为以下每个项目创建任务并按顺序完成：
-1. **Requirements Clarification** — 一次一个，理解本次任务的目的/约束/成功标准，确认需求
-2. **Write Requirements** — 写入 requirements.md
-3. **Tech Investigation** — 评估是否需要技术栈/依赖调研
-4. **Tech Experiment** — 评估是否需要技术实验获取真实数据
-5. **Explore Architecture** — 提出方案、权衡、架构设计
-6. **Stage Plan** — 将架构拆分为渐进式阶段
-7. **Write Architecture** — 写入 architecture.md
-8. **Commit** — 提交全部规划文档
+1. **Write Requirements** — 将 aim 澄清结果写入 requirements.md
+2. **Tech Investigation** — 评估是否需要技术栈/依赖调研
+3. **Tech Experiment** — 评估是否需要技术实验获取真实数据
+4. **Explore Architecture** — 提出方案、权衡、架构设计
+5. **Stage Plan** — 将架构拆分为渐进式阶段
+6. **Write Architecture** — 写入 architecture.md
+7. **Commit** — 提交全部规划文档
 
 ## Process
 
-### 1. Requirements Clarification
+### 1. Write Requirements
 
-使用 AskUserQuestion 工具逐一提问以完善需求：
-- 每条消息只问一个问题 — 如果某个主题需要更多探索，将其拆分为多个按顺序逐个问题
-- 重点关注理解：目的、约束、成功标准
-- 宁可多问一句，也不要带着模糊理解直接实现
-- 充分理解后，呈现完整的需求详述供用户确认，涵盖：任务概述、功能需求、非功能需求、约束条件、成功标准
-- 用户确认后方可继续，如需修改则重新讨论
+aim 已完成需求澄清。本步骤将澄清结果结构化为正式需求文档。创建规划目录并写入需求文档。
 
-### 2. Write Requirements
-
-获得用户确认后，创建规划目录并写入需求文档。
-
-**创建规划目录：** `.vibewire/{N}-{name}/`
+**创建规划目录：** `.vibewire/PLAN-{N}-{name}/`
 - 扫描 `.vibewire/` 下已有的目录，确定当前最大序号
 - `N`：三位数字，在已有最大序号基础上递增（无已有目录则从 001 开始）
 - `name`：任务对应的英文标识，kebab-case（如 `user-auth`）
 
-写入 `.vibewire/{N}-{name}/requirements.md`
+写入 `.vibewire/PLAN-{N}-{name}/requirements.md`
 
-### 3. Tech Investigation
+### 2. Tech Investigation
 
 评估本次需求是否涉及技术栈变更或依赖更新（新增依赖、升级大版本、引入新框架等）。若不涉及，跳过此步骤。若涉及：
 - **筛选调研目标** — 基于已读取的技术调研报告和本次需求，列出需要调研的具体目标（包名、技术栈、兼容性问题等），跳过已有充分调研结论的目标
-- **调研边界：** 关注宏观层面的技术事实——兼容性、重大变更（breaking changes）、许可证、社区活跃度、与既有技术栈的冲突等。不深入 API 细节（函数签名、数据结构、使用方法），这些留待步骤 4 实验验证。
+- **调研边界：** 关注宏观层面的技术事实——兼容性、重大变更（breaking changes）、许可证、社区活跃度、与既有技术栈的冲突等。不调研 API 细节（函数签名、数据结构、使用方法），这些留待步骤 3 实验验证。
 - **执行调研** — 调用 scout agent 执行调研：
 
 ```
 subagent_type: "vibewire:scout"
 description: "scout {调研目标摘要}"
 prompt: |
-  执行技术调研。规划目录：{N}-{name}
+  task-id：PLAN-{N}-{name}
   调研目标：
   - {目标1}
   - {目标2}
@@ -62,7 +52,7 @@ prompt: |
 
 - **更新需求** — 等待调研完成后，读取报告中的调研结果，基于调研结果更新需求文档中与技术相关的约束和前提条件
 
-### 4. Tech Experiment
+### 3. Tech Experiment
 
 评估架构设计是否依赖未验证的技术假设——需要获取真实结构、API 行为、性能数据等才能做出正确设计决策的场景。若不涉及，跳过此步骤。若涉及：
 - **筛选实验目标** — 基于需求和调研结果列出具体实验清单，每个实验须明确：实验意图（要获取什么信息）和预期产出（期望的数据形式）
@@ -72,16 +62,16 @@ prompt: |
 subagent_type: "vibewire:experimenter"
 description: "experimenter {实验目标摘要}"
 prompt: |
-  执行技术实验。规划目录：{N}-{name}
+  task-id：PLAN-{N}-{name}
   实验目标：
   - {目标1}：{意图}，预期产出：{数据形式}
   - {目标2}：{意图}，预期产出：{数据形式}
   ...
 ```
 
-- **整合结论** — 等待实验完成后，读取实验结果 `.vibewire/experiments/{N}-{name}/result.md`，将关键发现纳入架构设计的参考依据
+- **整合结论** — 等待实验完成后，读取实验结果 `.vibewire/experiments/PLAN-{N}-{name}/result.md`，将关键发现纳入架构设计的参考依据
 
-### 5. Explore Architecture
+### 4. Explore Architecture
 
 在现有项目架构基础上，设计与本次需求相关的架构变更。技术调研和实验的结论作为架构决策的事实依据。
 
@@ -99,16 +89,16 @@ prompt: |
 - **按复杂度缩放** — 简单需求几句话，复杂需求可展开至 200-300 字
 - **抽象层级** — 不涉及实现细节和代码；但跨模块共享的关键类型定义须在此确认
 
-### 6. Stage Plan
+### 5. Stage Plan
 
-基于步骤 5 已确认的架构，执行以下两步：
+基于步骤 4 已确认的架构，执行以下两步：
 
 **第一步：列举功能单元**
 
 逐一识别需要实现、修改或调整的功能单元（功能单元是最小的可独立验证的功能增量），横切关注点（错误处理、日志、认证等）不单独列为功能单元，而是作为相关功能单元的附加要求。以编号列表呈现，每个功能单元用一句话描述其目标。
 
 **粒度判定：**
-- 每个功能单元归属于步骤 5 中定义的单一模块
+- 每个功能单元归属于步骤 4 中定义的单一模块
 - 具有独立、可验证的验收条件——若验收条件需要"且"连接多个不相关的验证点，应拆分
 - 若两个单元始终一起变更且共享验收条件，应合并
 
@@ -130,9 +120,9 @@ Stage {M}-{name} — [一句话描述]
 
 不可将实施步骤（安装依赖、编写代码、集成测试、更新文档）作为阶段——这些是执行流程的内置环节。
 
-### 7. Write Architecture
+### 6. Write Architecture
 
-将步骤 5 和步骤 6 中逐层确认的架构决策和 Stage Plan 整合写入 `.vibewire/{N}-{name}/architecture.md`（按实际确认的层级组装，无则省略）。技术决策注明依据来源（调研结论、实验编号或既有经验）。
+将步骤 4 和步骤 5 中逐层确认的架构决策和 Stage Plan 整合写入 `.vibewire/PLAN-{N}-{name}/architecture.md`（按实际确认的层级组装，无则省略）。技术决策注明依据来源（调研结论、实验编号或既有经验）。
 
 Stage Plan 首先列出功能单元编号列表，然后每个 Stage 按以下格式展开：
 
@@ -150,17 +140,17 @@ Stage Plan 首先列出功能单元编号列表，然后每个 Stage 按以下�
 - 文件变更仅包含功能实现相关的源代码文件，不包含文档文件（如 README、CHANGELOG、使用指南等）。文档更新由后续流程统一处理
 - 文件路径必须精确完整，不得使用模糊引用
 
-### 8. Commit
+### 7. Commit
 
 将全部规划文档提交到版本控制，作为规划的检查点：
 
 ```
-git add .vibewire/{N}-{name}/requirements.md .vibewire/{N}-{name}/architecture.md
-# 若步骤 3 执行了技术调研：
-git add .vibewire/tech-research.md .vibewire/{N}-{name}/tech-research.md
-# 若步骤 4 执行了技术实验：
-git add .vibewire/experiments/{N}-{name}/
-git commit -m "[vibewire/aim] docs: add requirements and architecture for {N}-{name}"
+git add .vibewire/PLAN-{N}-{name}/requirements.md .vibewire/PLAN-{N}-{name}/architecture.md
+# 若步骤 2 执行了技术调研：
+git add .vibewire/tech-research/
+# 若步骤 3 执行了技术实验：
+git add .vibewire/experiments/
+git commit -m "[PLAN-{N}-{name}/aim] docs: add requirements and architecture"
 ```
 
 ## Transition to Execution
@@ -168,11 +158,11 @@ git commit -m "[vibewire/aim] docs: add requirements and architecture for {N}-{n
 向用户展示下一步指引，首先输出过渡说明，然后以单个代码块输出命令和阶段列表：
 
 ```
-规划已完成！需求文档和架构设计已保存到 .vibewire/{N}-{name}/ 目录。
+规划已完成！需求文档和架构设计已保存到 .vibewire/PLAN-{N}-{name}/ 目录。
 
 下一步：复制下述命令在新会话中运行，进入执行阶段：
 （代码块开始）
-/vibewire:go {N}-{name}
+/vibewire:go PLAN-{N}-{name}
 Stage 执行顺序：
   Stage 1-{name}
   Stage 2-{name}
@@ -183,7 +173,6 @@ Stage 执行顺序：
 ## Key Principles
 
 - **聚焦已确认范围** — 需求和架构设计限定在已确认的范围内，不过度设计
-- **一次一个问题** — 不要用多个问题淹没用户
 - **探索替代方案** — 存在真实取舍时提出 2-3 个方案并附权衡分析；决策被既有约束唯一确定时直接给出方案并说明依据
 - **增量验证** — 呈现设计，在继续之前获得批准
 - **保持灵活** — 当某些内容不合理时返回去澄清
@@ -194,7 +183,7 @@ Stage 执行顺序：
 ## Anti-Pattern
 
 - **"太简单不需要规划"** — "简单"的项目是未审视假设导致最多浪费的地方。规划可以很短，但必须呈现并获得批准
-- **"需求很明确，直接设计"** — 跳过澄清直接进入架构，常导致做错方向。即使用户表述清晰，仍需确认目的、约束和成功标准
+- **"需求很明确，直接设计"** — aim 已澄清需求但未结构化为正式文档就直接进入架构，常导致需求遗漏或理解偏差
 - **"一次呈现完整架构"** — 将所有架构决策打包抛给用户，缺乏逐层确认。应按决策依赖顺序逐层推进
 - **"顺便重构一下"** — 在架构设计中夹带无关的重构提案，模糊了当前需求的焦点
 - **"引入新技术不做调研"** — 需求涉及新依赖或技术栈变更时跳过技术调研，导致实施阶段才发现兼容性问题或环境约束
