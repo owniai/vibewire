@@ -29,28 +29,6 @@ aim 已完成项目上下文探索和需求澄清。本阶段聚焦 how——理
 - 定位并阅读需要修改的源文件，理解现有逻辑和模式
 - 确认变更的影响范围和涉及的模块边界
 
-**技术验证（按需）：** 若实现方案依赖未确认的技术事实（依赖兼容性、API 行为、数据格式等），执行针对性的快速验证。
-
-- **技术调研** — 调用 scout agent：
-  ```
-  subagent_type: "vibewire:scout"
-  description: "scout {调研目标}"
-  prompt: |
-    task-id：BUILD-{name}
-    调研目标：{具体目标}
-  ```
-
-- **技术实验** — 调用 experimenter agent：
-  ```
-  subagent_type: "vibewire:experimenter"
-  description: "experimenter {实验目标}"
-  prompt: |
-    task-id：BUILD-{name}
-    实验目标：{具体目标}，意图：{要验证什么}
-  ```
-
-等待 agent 完成后，读取其 Status Report 中返回的文件路径，基于结论调整实现方案。
-
 **确认方案：** 向用户展示实现方案和关键决策（包含技术验证的结论），获得确认后进入 TDD。
 
 ### 2. TDD: Red — Write Test
@@ -172,6 +150,8 @@ prompt: |
 
 ```
 git add {涉及的源代码文件} .vibewire/actions/{name}.md .vibewire/evolve.md .vibewire/CHANGELOG.md .vibewire/project.md
+# 若本次会话产生了技术调研或实验：
+git add .vibewire/tech-research/ .vibewire/experiments/
 git commit -m "[BUILD-{name}] feat: {一句话描述}"
 ```
 

@@ -12,12 +12,10 @@
 
 你必须为以下每个项目创建任务并按顺序完成：
 1. **Write Requirements** — 将 aim 澄清结果写入 requirements.md
-2. **Tech Investigation** — 评估是否需要技术栈/依赖调研
-3. **Tech Experiment** — 评估是否需要技术实验获取真实数据
-4. **Explore Architecture** — 提出方案、权衡、架构设计
-5. **Stage Plan** — 将架构拆分为渐进式阶段
-6. **Write Architecture** — 写入 architecture.md
-7. **Commit** — 提交全部规划文档
+2. **Explore Architecture** — 提出方案、权衡、架构设计
+3. **Stage Plan** — 将架构拆分为渐进式阶段
+4. **Write Architecture** — 写入 architecture.md
+5. **Commit** — 提交全部规划文档
 
 ## Process
 
@@ -32,46 +30,7 @@ aim 已完成需求澄清。本步骤将澄清结果结构化为正式需求文�
 
 写入 `.vibewire/actions/PLAN-{N}-{name}/requirements.md`
 
-### 2. Tech Investigation
-
-评估本次需求是否涉及技术栈变更或依赖更新（新增依赖、升级大版本、引入新框架等）。若不涉及，跳过此步骤。若涉及：
-- **筛选调研目标** — 基于已读取的技术调研报告和本次需求，列出需要调研的具体目标（包名、技术栈、兼容性问题等），跳过已有充分调研结论的目标
-- **调研边界：** 关注宏观层面的技术事实——兼容性、重大变更（breaking changes）、许可证、社区活跃度、与既有技术栈的冲突等。不调研 API 细节（函数签名、数据结构、使用方法），这些留待步骤 3 实验验证。
-- **执行调研** — 调用 scout agent 执行调研：
-
-```
-subagent_type: "vibewire:scout"
-description: "scout {调研目标摘要}"
-prompt: |
-  task-id：PLAN-{N}-{name}
-  调研目标：
-  - {目标1}
-  - {目标2}
-  ...
-```
-
-- **更新需求** — 等待调研完成后，读取报告中的调研结果，基于调研结果更新需求文档中与技术相关的约束和前提条件
-
-### 3. Tech Experiment
-
-评估架构设计是否依赖未验证的技术假设——需要获取真实结构、API 行为、性能数据等才能做出正确设计决策的场景。若不涉及，跳过此步骤。若涉及：
-- **筛选实验目标** — 基于需求和调研结果列出具体实验清单，每个实验须明确：实验意图（要获取什么信息）和预期产出（期望的数据形式）
-- **执行实验** — 调用 experimenter agent 执行实验：
-
-```
-subagent_type: "vibewire:experimenter"
-description: "experimenter {实验目标摘要}"
-prompt: |
-  task-id：PLAN-{N}-{name}
-  实验目标：
-  - {目标1}：{意图}，预期产出：{数据形式}
-  - {目标2}：{意图}，预期产出：{数据形式}
-  ...
-```
-
-- **整合结论** — 等待实验完成后，读取实验结果 `.vibewire/experiments/PLAN-{N}-{name}/result.md`，将关键发现纳入架构设计的参考依据
-
-### 4. Explore Architecture
+### 2. Explore Architecture
 
 在现有项目架构基础上，设计与本次需求相关的架构变更。技术调研和实验的结论作为架构决策的事实依据。
 
@@ -91,14 +50,14 @@ prompt: |
 
 ### 5. Stage Plan
 
-基于步骤 4 已确认的架构，执行以下两步：
+基于步骤 2 已确认的架构，执行以下两步：
 
 **第一步：列举功能单元**
 
 逐一识别需要实现、修改或调整的功能单元（功能单元是最小的可独立验证的功能增量），横切关注点（错误处理、日志、认证等）不单独列为功能单元，而是作为相关功能单元的附加要求。以编号列表呈现，每个功能单元用一句话描述其目标。
 
 **粒度判定：**
-- 每个功能单元归属于步骤 4 中定义的单一模块
+- 每个功能单元归属于步骤 2 中定义的单一模块
 - 具有独立、可验证的验收条件——若验收条件需要"且"连接多个不相关的验证点，应拆分
 - 若两个单元始终一起变更且共享验收条件，应合并
 
@@ -120,9 +79,9 @@ Stage {M}-{name} — [一句话描述]
 
 不可将实施步骤（安装依赖、编写代码、集成测试、更新文档）作为阶段——这些是执行流程的内置环节。
 
-### 6. Write Architecture
+### 4. Write Architecture
 
-将步骤 4 和步骤 5 中逐层确认的架构决策和 Stage Plan 整合写入 `.vibewire/actions/PLAN-{N}-{name}/architecture.md`（按实际确认的层级组装，无则省略）。技术决策注明依据来源（调研结论、实验编号或既有经验）。
+将步骤 2 和步骤 3 中逐层确认的架构决策和 Stage Plan 整合写入 `.vibewire/actions/PLAN-{N}-{name}/architecture.md`（按实际确认的层级组装，无则省略）。技术决策注明依据来源（调研结论、实验编号或既有经验）。
 
 Stage Plan 首先列出功能单元编号列表，然后每个 Stage 按以下格式展开：
 
@@ -140,16 +99,14 @@ Stage Plan 首先列出功能单元编号列表，然后每个 Stage 按以下�
 - 文件变更仅包含功能实现相关的源代码文件，不包含文档文件（如 README、CHANGELOG、使用指南等）。文档更新由后续流程统一处理
 - 文件路径必须精确完整，不得使用模糊引用
 
-### 7. Commit
+### 5. Commit
 
 将全部规划文档提交到版本控制，作为规划的检查点：
 
 ```
 git add .vibewire/actions/PLAN-{N}-{name}/requirements.md .vibewire/actions/PLAN-{N}-{name}/architecture.md
-# 若步骤 2 执行了技术调研：
-git add .vibewire/tech-research/
-# 若步骤 3 执行了技术实验：
-git add .vibewire/experiments/
+# 若本次会话产生了技术调研或实验：
+git add .vibewire/tech-research/ .vibewire/experiments/
 git commit -m "[PLAN-{N}-{name}/aim] docs: add requirements and architecture"
 ```
 
@@ -185,6 +142,3 @@ Stage 执行顺序：
 - **"太简单不需要规划"** — "简单"的项目是未审视假设导致最多浪费的地方。规划可以很短，但必须呈现并获得批准
 - **"需求很明确，直接设计"** — aim 已澄清需求但未结构化为正式文档就直接进入架构，常导致需求遗漏或理解偏差
 - **"一次呈现完整架构"** — 将所有架构决策打包抛给用户，缺乏逐层确认。应按决策依赖顺序逐层推进
-- **"顺便重构一下"** — 在架构设计中夹带无关的重构提案，模糊了当前需求的焦点
-- **"引入新技术不做调研"** — 需求涉及新依赖或技术栈变更时跳过技术调研，导致实施阶段才发现兼容性问题或环境约束
-- **"凭假设做架构决策"** — 架构设计依赖未验证的技术假设（如外部 API 结构、库的实际行为、数据格式等）时跳过实验，导致设计方案与实际情况脱节

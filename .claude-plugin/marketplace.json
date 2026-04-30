@@ -11,7 +11,7 @@
       "name": "vibewire",
       "source": "./",
       "description": "Autonomous development workflow plugin — fully automated end-to-end from requirements to code",
-      "version": "0.8.0",
+      "version": "0.8.1",
       "author": {
         "name": "owniai"
       },
@@ -25,7 +25,7 @@
         "path": "peek-code"
       },
       "description": "Search for code definitions across 16 languages using tree-sitter AST parsing. Provides precise definition lookup as an alternative to grep.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "author": {
         "name": "owniai"
       },
