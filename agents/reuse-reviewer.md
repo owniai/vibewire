@@ -3,6 +3,8 @@ name: reuse-reviewer
 description: "For vibewire:go and vibewire:aim (build) flows. Reviews code changes for duplication — searches existing utilities and patterns to identify reusable code opportunities."
 tools: ["*"]
 model: sonnet
+skills:
+  - peek-code:peek-code
 ---
 
 你是一个代码复用审查专家。审查最近一次提交的变更，搜索项目中已有的工具函数和模式，识别可复用的代码和重复实现。
@@ -24,7 +26,7 @@ model: sonnet
 
 ### 1. Build Context
 
-若 prompt 中指定了 `模式：inline`，直接从 prompt 中的 `任务目标` 字段了解实现意图（一句话内嵌描述）。否则，阅读 `.vibewire/PLAN-{N}-{name}/log.md` 中对应 Stage 的 Scope 了解实现意图。
+若 prompt 中指定了 `模式：inline`，直接从 prompt 中的 `任务目标` 字段了解实现意图（一句话内嵌描述）。否则，阅读 `.vibewire/actions/PLAN-{N}-{name}/log.md` 中对应 Stage 的 Scope 了解实现意图。
 
 ### 2. Get Changes
 
@@ -52,7 +54,7 @@ git show --stat --name-status HEAD
 
 若 prompt 中指定了 `模式：inline`，跳过文件写入，将发现按 §5 格式附在 Status Report 中返回。
 
-否则，将审查意见追加到 `.vibewire/PLAN-{N}-{name}/review-reuse.md`（以 `## Stage {M}-{name}` 为节标题，文件不存在则创建）。每个发现按以下格式记录：
+否则，将审查意见追加到 `.vibewire/actions/PLAN-{N}-{name}/review-reuse.md`（以 `## Stage {M}-{name}` 为节标题，文件不存在则创建）。每个发现按以下格式记录：
 
 ```markdown
 ### {序号}. {问题标题} | Critical / Major / Minor / Info

@@ -32,14 +32,14 @@ model: sonnet
 - `.vibewire/evolve.md`（如存在）— 历史健康仪表盘和经验记录，识别持续性模式时需对比的基线
 
 **本次计划：**
-- `.vibewire/PLAN-{N}-{name}/requirements.md` — 原始需求范围和成功标准
-- `.vibewire/PLAN-{N}-{name}/architecture.md` — 原始架构设计
+- `.vibewire/actions/PLAN-{N}-{name}/requirements.md` — 原始需求范围和成功标准
+- `.vibewire/actions/PLAN-{N}-{name}/architecture.md` — 原始架构设计
 
 **执行与审阅：**
-- `.vibewire/PLAN-{N}-{name}/log.md` — 各阶段执行记录，含 Changes（文件变更）和 Drift（架构偏离）
-- `.vibewire/PLAN-{N}-{name}/resolve.md`（如存在）— 各 stage 的审查发现和裁决记录，包含效率/质量/复用三方审阅的完整发现及 Fix/Skip/Deferred 裁决理由
-- `.vibewire/PLAN-{N}-{name}/lessons.md`（如存在）— 各 stage 累积的经验记录
-- `.vibewire/PLAN-{N}-{name}/acceptance.md`（如存在，多轮验收取最新一份）— 最终验收报告，含需求追溯和 bug 发现
+- `.vibewire/actions/PLAN-{N}-{name}/log.md` — 各阶段执行记录，含 Changes（文件变更）和 Drift（架构偏离）
+- `.vibewire/actions/PLAN-{N}-{name}/resolve.md`（如存在）— 各 stage 的审查发现和裁决记录，包含效率/质量/复用三方审阅的完整发现及 Fix/Skip/Deferred 裁决理由
+- `.vibewire/actions/PLAN-{N}-{name}/lessons.md`（如存在）— 各 stage 累积的经验记录
+- `.vibewire/actions/PLAN-{N}-{name}/acceptance.md`（如存在，多轮验收取最新一份）— 最终验收报告，含需求追溯和 bug 发现
 
 > **acceptance.md 多轮处理**：验收修复循环可能产生多轮验收报告，fixer 的修复过程已记录在 log.md 和 lessons.md 中，因此只需读取最终验收报告获取整体结论和需求追溯状态。
 
@@ -123,7 +123,7 @@ model: sonnet
 `.shadow/` 是源代码的便捷索引，shadow 文件的更新，必须在此处一并提交。
 
 ```bash
-git add .shadow/ .vibewire/evolve.md .vibewire/project.md .vibewire/CHANGELOG.md .vibewire/PLAN-{N}-{name}/acceptance.md
+git add .shadow/ .vibewire/evolve.md .vibewire/project.md .vibewire/CHANGELOG.md .vibewire/actions/PLAN-{N}-{name}/acceptance.md
 git commit -m "[PLAN-{N}-{name}] docs: 经验、项目文档更新"
 ```
 

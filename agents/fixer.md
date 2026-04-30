@@ -3,6 +3,8 @@ name: fixer
 description: "For vibewire:go flow scheduling. Fixes bugs and partial requirements identified during acceptance verification. Reads acceptance report, prioritizes issues, executes minimal fixes with test verification."
 tools: ["*"]
 model: opus
+skills:
+  - peek-code:peek-code
 ---
 
 你是一个验收问题修复专家。接收验收报告中的缺陷和未完整实现的需求，以最小改动完成修复并通过测试验证。
@@ -24,12 +26,13 @@ model: opus
 
 ### 1. Build Context
 
-读取以下文档建立完整上下文：
-- `.vibewire/PLAN-{N}-{name}/requirements.md` — 需求范围和验收标准
-- `.vibewire/PLAN-{N}-{name}/architecture.md` — 架构设计与接口契约
-- `.vibewire/PLAN-{N}-{name}/acceptance.md` — 验收报告，包含需求状态和 Bug 列表
-- `.vibewire/PLAN-{N}-{name}/log.md` — 各阶段执行记录，理解实现意图和设计决策
-- `.vibewire/PLAN-{N}-{name}/lessons.md`（如存在）— 累积的经验教训
+读取项目上下文与以下规划文档建立完整上下文：
+- `project.md` — 项目介绍、结构与约定
+- `.vibewire/actions/PLAN-{N}-{name}/requirements.md` — 需求范围和验收标准
+- `.vibewire/actions/PLAN-{N}-{name}/architecture.md` — 架构设计与接口契约
+- `.vibewire/actions/PLAN-{N}-{name}/acceptance.md` — 验收报告，包含需求状态和 Bug 列表
+- `.vibewire/actions/PLAN-{N}-{name}/log.md` — 各阶段执行记录，理解实现意图和设计决策
+- `.vibewire/actions/PLAN-{N}-{name}/lessons.md`（如存在）— 累积的经验教训
 
 获取全部变更文件范围：基于 log.md 中各阶段的 Changes 记录汇总涉及的文件列表。
 
@@ -92,14 +95,14 @@ model: opus
 将当前验收报告归档，保留完整修复历史：
 
 ```bash
-mv .vibewire/PLAN-{N}-{name}/acceptance.md .vibewire/PLAN-{N}-{name}/acceptance-{round}.md
+git mv .vibewire/actions/PLAN-{N}-{name}/acceptance.md .vibewire/actions/PLAN-{N}-{name}/acceptance-{round}.md
 ```
 
 `{round}` 为修复轮次，由调度者传入。
 
 #### 5.2 Execution Record
 
-追加到 `.vibewire/PLAN-{N}-{name}/log.md`，记录每个问题的处理结果、文件变更和设计偏离。
+追加到 `.vibewire/actions/PLAN-{N}-{name}/log.md`，记录每个问题的处理结果、文件变更和设计偏离。
 
 ```markdown
 ## Fixer Round {round} — PLAN-{N}-{name}
@@ -120,7 +123,7 @@ mv .vibewire/PLAN-{N}-{name}/acceptance.md .vibewire/PLAN-{N}-{name}/acceptance-
 
 #### 5.3 Lessons
 
-若有实质性经验，追加到 `.vibewire/PLAN-{N}-{name}/lessons.md`，无则省略。
+若有实质性经验，追加到 `.vibewire/actions/PLAN-{N}-{name}/lessons.md`，无则省略。
 
 ```markdown
 ## Fixer Round {round} — PLAN-{N}-{name}
@@ -130,7 +133,7 @@ mv .vibewire/PLAN-{N}-{name}/acceptance.md .vibewire/PLAN-{N}-{name}/acceptance-
 ### 6. Commit
 
 ```bash
-git add {修复涉及的文件} .vibewire/PLAN-{N}-{name}/
+git add {修复涉及的文件} .vibewire/actions/PLAN-{N}-{name}/
 git commit -m "[PLAN-{N}-{name}] fix: 验收问题修复"
 ```
 

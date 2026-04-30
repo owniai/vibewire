@@ -2,7 +2,7 @@
 
 ## Overview
 
-方案探索与 TDD 实现，更新 shadow 与项目文档。
+方案探索与 TDD 实现，更新项目文档。
 
 <HARD-GATE>
 在用户确认方案之前，不编写任何测试或实现代码。
@@ -15,8 +15,7 @@
 2. **TDD: Red** — 编写测试并确认失败
 3. **TDD: Green** — 编写实现并确认通过
 4. **Write Records** — 写入任务文档并更新 CHANGELOG
-5. **Update Shadow** — 更新 .shadow/ 声明文件
-6. **Commit** — 提交变更
+5. **Commit** — 提交变更
 
 ## Process
 
@@ -124,21 +123,10 @@ aim 已完成项目上下文探索和需求澄清。本阶段聚焦 how——理
 
 对照当前 `.vibewire/project.md`，若本次任务影响了目录结构、技术栈、架构描述或产生了新的约定与规范，更新受影响的章节。首行元信息固定更新：`> Last updated: yyyy-mm-dd | SNAP-{name}`。无影响则跳过。
 
-### 5. Update Shadow
-
-调用 shadow-writer 更新变更文件的 shadow：
+### 5. Commit
 
 ```
-subagent_type: "vibewire:shadow-writer"
-description: "shadow-writer SNAP-{name}"
-prompt: |
-  {变更文件列表，每行一个路径，删除文件前缀 DEL:}
-```
-
-### 6. Commit
-
-```
-git add {涉及的源代码文件} .shadow/ .vibewire/actions/{name}.md .vibewire/evolve.md .vibewire/CHANGELOG.md .vibewire/project.md
+git add {涉及的源代码文件} .vibewire/actions/{name}.md .vibewire/evolve.md .vibewire/CHANGELOG.md .vibewire/project.md
 git commit -m "[SNAP-{name}] feat: {一句话描述}"
 ```
 

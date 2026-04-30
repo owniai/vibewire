@@ -9,7 +9,37 @@ description: Use ONLY when the user explicitly invokes /vibewire:intro. Do not a
 
 ## Process
 
-### 1. Confirm Scope
+### 1. Ensure Environment
+
+**vibewire 自身版本检查：**
+1. 执行 `claude plugins list --json | python -c "import sys,json;d=json.load(sys.stdin);p=next((x for x in d if x['id']=='vibewire@vibewire'),None);print(p['version'] if p else 'not installed')"` 获取当前版本
+2. 询问用户是否检查更新，确认后执行 `claude plugins update vibewire@vibewire`
+3. 若版本有变化：**停止后续流程**，提示用户新开会话重新执行 `/vibewire:intro`
+
+**插件管理（仅在 vibewire 为最新版时继续）：**
+3. 检查 peek-code 是否已安装
+4. 若未安装：执行 `claude plugins install peek-code@vibewire` 安装
+5. 若已安装：执行 `claude plugins update peek-code@vibewire` 更新到最新版
+
+**CLI 确保：**
+6. 执行 `peek --version`，若未找到则按以下顺序尝试安装（跳过当前平台不可用的工具）：
+   - Homebrew (macOS/Linux): `brew install owniai/tap/peek`
+   - cargo-binstall: `cargo binstall peek -y`
+   - cargo install: `cargo install peek --locked`
+   - cargo install from git: `cargo install --git https://github.com/owniai/peek --locked`
+7. 若已安装，检测所用包管理器并执行对应更新命令：
+   - Homebrew: `brew upgrade peek`
+   - cargo-binstall / cargo: `cargo install peek --locked`
+8. 再次执行 `peek --version` 确认最终版本
+
+**加载 skill：**
+9. 通过 Skill 工具加载 `peek-code:peek-code` skill，为后续步骤提供 `peek` 命令辅助探索代码库
+
+**故障排查：**
+- 安装后 `peek` 仍找不到：确认 `~/.cargo/bin`（Windows 为 `%USERPROFILE%\.cargo\bin`）在 `$PATH` 中
+- Rust 未安装：询问用户是否安装 Rust，确认后协助安装再重试
+
+### 2. Confirm Scope
 
 1. 检查 `.vibewire/project.md` 和 `.vibewire/CHANGELOG.md` 是否存在
    - 若均存在：提示用户确认是否覆盖重建（旧文件将被删除后全量重建）
@@ -17,7 +47,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:intro. Do not a
 2. 检查项目是否为 git 仓库，若不是则执行 `git init` 初始化
 3. 确认 `.vibewire/` 未被 `.gitignore` 排除
 
-### 2. Explore
+### 3. Explore
 
 从项目根目录结构扫描开始，识别目录划分和特征文件。
 
@@ -32,7 +62,7 @@ description: Use ONLY when the user explicitly invokes /vibewire:intro. Do not a
 - **模块架构** — 通过目录划分和 import/require 依赖关系识别模块职责
 - **编码约定** — 命名风格、错误处理模式、测试组织、lint 配置
 
-### 3. Write Docs
+### 4. Write Docs
 
 创建 `.vibewire/` 目录，按以下格式写入文件。
 
@@ -66,46 +96,20 @@ description: Use ONLY when the user explicitly invokes /vibewire:intro. Do not a
 - {项目基线摘要，列出主要模块和技术栈}
 ```
 
-### 4. Shadow Baseline
-
-为项目中的源代码文件生成 shadow 基线，供后续工作流引用。收集项目中的源代码文件（排除测试、配置、文档、样式等非源码文件），先创建 `.shadow/` 目录，再按代码量分批派发 shadow-writer agent。
-
-**测试文件筛选** — 在收集阶段即排除纯测试文件，避免 shadow-writer 读取无价值内容：
-- **按命名排除** — 文件名匹配 `*.test.*`、`*.spec.*`、`*_test.*`（含语言特定变体如 `_test.go`）的文件直接排除
-- **按目录排除** — 位于 `test/`、`tests/`、`__tests__/`、`spec/`、`specs/` 等测试专用目录下的文件直接排除
-- **不确定的不自行读取判断** — 无法仅凭命名和目录归属确认的文件（如 `utils.rs` 中既含业务代码又含 `#[cfg(test)]`），保留在列表中交由 shadow-writer 判定
-- 每批总行数不超过 8000 行
-- 单个文件超过 8000 行时单独一批
-- 超过 10000 行的文件按行范围拆分给多个 agent（同一文件的多个片段必须顺序调用，不可并行）；拆分时在文件条目后追加行范围：`- {path/to/file}（仅处理第 {start} 行到第 {end} 行，追加模式）`
-
-```
-subagent_type: "vibewire:shadow-writer"
-description: "shadow-writer {group-name}"
-prompt: |
-  生成 shadow 文件。
-  文件列表：
-  - {path/to/file1}
-  - {path/to/file2}
-  ...
-```
-
-若无源代码文件（纯文档/配置项目），跳过本步骤。
-
 ### 5. Self-Review
 
 检查本次执行是否符合规范：
 1. 文档结构是否符合 Write Docs 中定义的格式要求
 2. 内容是否遵守 Key Principles（可验证、精确路径、不遗漏、排除噪音）
-3. shadow 文件是否覆盖了所有源代码模块
-4. 若发现问题，修正对应部分
+3. 若发现问题，修正对应部分
 
 ### 6. Commit
 
 一次性提交所有变更：
 
 ```bash
-git add .vibewire/project.md .vibewire/CHANGELOG.md .shadow/
-git commit -m "[vibewire/intro] docs: init project documentation and shadow API baseline"
+git add .vibewire/project.md .vibewire/CHANGELOG.md
+git commit -m "[vibewire/intro] docs: init project documentation baseline"
 ```
 
 ## Key Principles

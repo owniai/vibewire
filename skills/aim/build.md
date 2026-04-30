@@ -2,7 +2,7 @@
 
 ## Overview
 
-方案探索与 TDD 实现，并行三方审查与修复，更新 shadow 与项目文档。
+方案探索与 TDD 实现，并行三方审查与修复，更新项目文档。
 
 <HARD-GATE>
 在用户确认方案之前，不编写任何测试或实现代码。
@@ -17,8 +17,7 @@
 4. **Review** — 调用三个审查 subagent
 5. **Fix** — 根据审查结果修复
 6. **Write Records** — 写入任务文档并追加执行记录
-7. **Update Shadow** — 更新 .shadow/ 声明文件
-8. **Commit** — 提交全部变更
+7. **Commit** — 提交全部变更
 
 ## Process
 
@@ -169,21 +168,10 @@ prompt: |
 
 对照当前 `.vibewire/project.md`，若本次任务影响了目录结构、技术栈、架构描述或产生了新的约定与规范，更新受影响的章节。首行元信息固定更新：`> Last updated: yyyy-mm-dd | BUILD-{name}`。无影响则跳过。
 
-### 7. Update Shadow
-
-调用 shadow-writer 更新变更文件的 shadow：
+### 7. Commit
 
 ```
-subagent_type: "vibewire:shadow-writer"
-description: "shadow-writer BUILD-{name}"
-prompt: |
-  {变更文件列表，每行一个路径，删除文件前缀 DEL:}
-```
-
-### 8. Commit
-
-```
-git add {涉及的源代码文件} .shadow/ .vibewire/actions/{name}.md .vibewire/evolve.md .vibewire/CHANGELOG.md .vibewire/project.md
+git add {涉及的源代码文件} .vibewire/actions/{name}.md .vibewire/evolve.md .vibewire/CHANGELOG.md .vibewire/project.md
 git commit -m "[BUILD-{name}] feat: {一句话描述}"
 ```
 

@@ -3,6 +3,8 @@ name: resolver
 description: "For vibewire:go flow scheduling. Consolidates review reports from all three reviewers, deduplicates findings, cross-validates issues, adjudicates fix scope, and executes minimal fixes."
 tools: ["*"]
 model: sonnet
+skills:
+  - peek-code:peek-code
 ---
 
 你是一个裁决修复员。汇总三方审阅意见，去重交叉验证问题真实性，裁决修复范围并执行最小修复。
@@ -30,17 +32,17 @@ model: sonnet
 ### 1. Build Context
 
 读取以下文档建立完整上下文：
-- `.vibewire/PLAN-{N}-{name}/log.md` — 当前阶段的执行记录，理解实现意图、任务范围和设计决策
-- `.vibewire/PLAN-{N}-{name}/lessons.md`（如存在）— 前序阶段累积的经验教训
+- `.vibewire/actions/PLAN-{N}-{name}/log.md` — 当前阶段的执行记录，理解实现意图、任务范围和设计决策
+- `.vibewire/actions/PLAN-{N}-{name}/lessons.md`（如存在）— 前序阶段累积的经验教训
 - 上一条提交涉及的变更文件，通过 `git diff --name-only HEAD~1 HEAD` 获取
 - 变更文件的完整代码（不只是 diff），理解修复的周边上下文
 
 ### 2. Collect Reviews
 
 逐一阅读三份审阅报告中对应 `## Stage {M}-{name}` 的节：
-1. `.vibewire/PLAN-{N}-{name}/review-efficiency.md`
-2. `.vibewire/PLAN-{N}-{name}/review-quality.md`
-3. `.vibewire/PLAN-{N}-{name}/review-reuse.md`
+1. `.vibewire/actions/PLAN-{N}-{name}/review-efficiency.md`
+2. `.vibewire/actions/PLAN-{N}-{name}/review-quality.md`
+3. `.vibewire/actions/PLAN-{N}-{name}/review-reuse.md`
 
 为每个发现提取关键信息：文件路径、行号、问题描述、建议方案。
 
@@ -134,7 +136,7 @@ npm test | cargo test | go test ./... | pytest
 
 #### 8.1 Adjudication Record
 
-追加到 `.vibewire/PLAN-{N}-{name}/resolve.md`（以 `## Stage {M}-{name}` 为节标题，文件不存在则创建并写入 `# Resolve Record — PLAN-{N}-{name}` 文件头），记录每个发现的裁决结果和修复内容。仅按状态填写对应字段，其余省略：
+追加到 `.vibewire/actions/PLAN-{N}-{name}/resolve.md`（以 `## Stage {M}-{name}` 为节标题，文件不存在则创建并写入 `# Resolve Record — PLAN-{N}-{name}` 文件头），记录每个发现的裁决结果和修复内容。仅按状态填写对应字段，其余省略：
 
 ```markdown
 ## Stage {M}-{name}
@@ -149,7 +151,7 @@ npm test | cargo test | go test ./... | pytest
 
 #### 8.2 Execution Record
 
-追加到 `.vibewire/PLAN-{N}-{name}/log.md`，记录本阶段的修复变更和设计偏离。无 Fix 项则省略本节。
+追加到 `.vibewire/actions/PLAN-{N}-{name}/log.md`，记录本阶段的修复变更和设计偏离。无 Fix 项则省略本节。
 
 ```markdown
 ## Stage {M}-{name} — Resolver
@@ -164,7 +166,7 @@ npm test | cargo test | go test ./... | pytest
 
 #### 8.3 Lessons
 
-追加到 `.vibewire/PLAN-{N}-{name}/lessons.md`，记录从 review 和修复过程中获得的经验教训。后续 stage 的 implementer 会读取全部累积经验以规避已知陷阱。无实质性经验时省略本节。
+追加到 `.vibewire/actions/PLAN-{N}-{name}/lessons.md`，记录从 review 和修复过程中获得的经验教训。后续 stage 的 implementer 会读取全部累积经验以规避已知陷阱。无实质性经验时省略本节。
 
 ```markdown
 ## Stage {M}-{name} — Resolver
@@ -180,7 +182,7 @@ npm test | cargo test | go test ./... | pytest
 提交修复涉及的文件、review 文档及本阶段文档变更：
 
 ```bash
-git add {修复涉及的文件} .vibewire/PLAN-{N}-{name}/
+git add {修复涉及的文件} .vibewire/actions/PLAN-{N}-{name}/
 git commit -m "[PLAN-{N}-{name}/stage-{M}-{name}] resolve: 审查修复"
 ```
 

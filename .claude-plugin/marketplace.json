@@ -11,11 +11,26 @@
       "name": "vibewire",
       "source": "./",
       "description": "Autonomous development workflow plugin — fully automated end-to-end from requirements to code",
-      "version": "0.7.1",
+      "version": "0.8.0",
       "author": {
         "name": "owniai"
       },
       "keywords": ["autonomous", "development", "agent", "workflow"]
+    },
+    {
+      "name": "peek-code",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/owniai/peek.git",
+        "path": "peek-code"
+      },
+      "description": "Search for code definitions across 16 languages using tree-sitter AST parsing. Provides precise definition lookup as an alternative to grep.",
+      "version": "0.1.0",
+      "author": {
+        "name": "owniai"
+      },
+      "keywords": ["search", "definition", "ast", "tree-sitter", "code-navigation"],
+      "category": "code-intelligence"
     }
   ]
 }

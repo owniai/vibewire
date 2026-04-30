@@ -25,12 +25,12 @@
 
 aim 已完成需求澄清。本步骤将澄清结果结构化为正式需求文档。创建规划目录并写入需求文档。
 
-**创建规划目录：** `.vibewire/PLAN-{N}-{name}/`
+**创建规划目录：** `.vibewire/actions/PLAN-{N}-{name}/`
 - 扫描 `.vibewire/` 下已有的目录，确定当前最大序号
 - `N`：三位数字，在已有最大序号基础上递增（无已有目录则从 001 开始）
 - `name`：任务对应的英文标识，kebab-case（如 `user-auth`）
 
-写入 `.vibewire/PLAN-{N}-{name}/requirements.md`
+写入 `.vibewire/actions/PLAN-{N}-{name}/requirements.md`
 
 ### 2. Tech Investigation
 
@@ -122,7 +122,7 @@ Stage {M}-{name} — [一句话描述]
 
 ### 6. Write Architecture
 
-将步骤 4 和步骤 5 中逐层确认的架构决策和 Stage Plan 整合写入 `.vibewire/PLAN-{N}-{name}/architecture.md`（按实际确认的层级组装，无则省略）。技术决策注明依据来源（调研结论、实验编号或既有经验）。
+将步骤 4 和步骤 5 中逐层确认的架构决策和 Stage Plan 整合写入 `.vibewire/actions/PLAN-{N}-{name}/architecture.md`（按实际确认的层级组装，无则省略）。技术决策注明依据来源（调研结论、实验编号或既有经验）。
 
 Stage Plan 首先列出功能单元编号列表，然后每个 Stage 按以下格式展开：
 
@@ -145,7 +145,7 @@ Stage Plan 首先列出功能单元编号列表，然后每个 Stage 按以下�
 将全部规划文档提交到版本控制，作为规划的检查点：
 
 ```
-git add .vibewire/PLAN-{N}-{name}/requirements.md .vibewire/PLAN-{N}-{name}/architecture.md
+git add .vibewire/actions/PLAN-{N}-{name}/requirements.md .vibewire/actions/PLAN-{N}-{name}/architecture.md
 # 若步骤 2 执行了技术调研：
 git add .vibewire/tech-research/
 # 若步骤 3 执行了技术实验：
@@ -158,7 +158,7 @@ git commit -m "[PLAN-{N}-{name}/aim] docs: add requirements and architecture"
 向用户展示下一步指引，首先输出过渡说明，然后以单个代码块输出命令和阶段列表：
 
 ```
-规划已完成！需求文档和架构设计已保存到 .vibewire/PLAN-{N}-{name}/ 目录。
+规划已完成！需求文档和架构设计已保存到 .vibewire/actions/PLAN-{N}-{name}/ 目录。
 
 下一步：复制下述命令在新会话中运行，进入执行阶段：
 （代码块开始）
