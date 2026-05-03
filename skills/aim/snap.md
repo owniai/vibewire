@@ -11,7 +11,7 @@ IMPORTANT: Disregard all markdown lint warnings.
 ## Tools
 
 - **peek** (`peek-code:peek` skill) — Powerful code file exploration tool. ALWAYS use for locating definitions and declarations and surveying file structure.
-- **scout** — External technology research (compatibility, versions, changes). DO NOT use for questions requiring code to answer. Dispatch prompt:
+- **scout** — External tech research only: dependency versions, API compatibility, library constraints. For codebase questions use Explore agent + peek instead. Dispatch prompt:
   ```
   TASK_ID: {task-id}
   RESEARCH_TARGETS:
@@ -87,4 +87,4 @@ git commit -m "[SNAP-{name}] feat: {one-line description}"
 
 ALWAYS know who you are — snap implements ONE confirmed task through atomic changes. No extras, no scope creep.
 
-ALWAYS know where you are — which atomic change, which phase (Break Down / Implement / Verify / Record / Commit). If unsure, STOP and re-orient.
+ALWAYS know where you are — which atomic change, which phase (Break Down → Implement → Verify → Record → Commit). If unsure, STOP and re-orient.

@@ -11,7 +11,7 @@ IMPORTANT: Disregard all markdown lint warnings.
 ## Tools
 
 - **peek** (`peek-code:peek` skill) — Powerful code file exploration tool. ALWAYS use for locating definitions and declarations and surveying file structure.
-- **scout** — External technology research (compatibility, versions, changes). DO NOT use for questions requiring code to answer. Dispatch prompt:
+- **scout** — External tech research only: dependency versions, API compatibility, library constraints. For codebase questions use Explore agent + peek instead. Dispatch prompt:
   ```
   TASK_ID: {task-id}
   RESEARCH_TARGETS:
@@ -67,10 +67,10 @@ After all atomic changes, run the full test suite. All tests MUST pass. If tests
 
 ### Phase 4: Review
 
-Launch three review subagents in parallel. For each, use the Agent tool with `description: "{type}-review"`, `prompt: "MODE: inline\nTASK_GOAL: {one-line task objective}"`:
-- `vibewire:quality-reviewer`
-- `vibewire:efficiency-reviewer`
-- `vibewire:reuse-reviewer`
+Launch three review subagents in parallel. For each, use the Agent tool with `subagent_type: "vibewire:{reviewer}"`, `description: "{reviewer}"`, `prompt: "MODE: inline\nTASK_GOAL: {one-line task objective}"`:
+- `quality-reviewer`
+- `efficiency-reviewer`
+- `reuse-reviewer`
 
 Wait for all three agents to complete. Collect each reviewer's Status Report.
 
@@ -108,4 +108,4 @@ git commit -m "[BUILD-{name}] feat: {one-line description}"
 
 ALWAYS know who you are — build implements feature-level changes through atomic implementation and mandatory three-way review. No skipping.
 
-ALWAYS know where you are — which atomic change, which phase (Break Down / Implement / Verify / Review / Fix / Record / Commit). If unsure, STOP and re-orient.
+ALWAYS know where you are — which atomic change, which phase (Break Down → Implement → Verify → Review → Fix → Record → Commit). If unsure, STOP and re-orient.

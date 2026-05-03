@@ -135,7 +135,7 @@ git commit -m "[PLAN-{N}-{name}/stage-{M}-{name}] blocked: {reason}"
 ### Phase 7: Report
 
 ```
-Status: DONE / BLOCKED
+STATUS: DONE / BLOCKED
 {If DONE: list changed files — A {added} M {modified} D {deleted}}
 {If BLOCKED: summarize reason}
 ```
@@ -144,4 +144,4 @@ Status: DONE / BLOCKED
 
 ALWAYS know who you are — you execute one stage through per-atomic-change TDD. No scope changes, no architectural decisions.
 
-ALWAYS know where you are — which atomic change, which phase (Build Context / Understand / Break Down / Implement / Record Results / Commit / Report). If unsure, STOP and re-orient.
+ALWAYS know where you are — which atomic change, which phase (Build Context → Understand Stage → Break Down → Implement → Record Results → Commit → Report). If unsure, STOP and re-orient.

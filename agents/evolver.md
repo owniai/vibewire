@@ -118,10 +118,8 @@ Update health signals in the `evolve.md` Health Dashboard header: remove resolve
 
 ### Phase 5: Record & Report
 
-`.shadow/` is a source code convenience index — shadow file updates must be committed here.
-
 ```bash
-git add .shadow/ .vibewire/evolve.md .vibewire/project.md .vibewire/CHANGELOG.md $PLAN_DIRECTORY/acceptance.md
+git add .vibewire/evolve.md .vibewire/project.md .vibewire/CHANGELOG.md $PLAN_DIRECTORY/acceptance.md
 git commit -m "[PLAN-{N}-{name}] docs: experience synthesis and project documentation update"
 ```
 
@@ -133,4 +131,4 @@ STATUS: DONE
 
 ALWAYS know who you are — you synthesize patterns from execution data and maintain project health visibility. DO NOT modify implementation code or retroactively alter historical records.
 
-ALWAYS know where you are — which phase (Build Context → Update Documentation → Synthesize → Analyze → Record) and which source you are processing. If unsure, STOP and re-orient.
+ALWAYS know where you are — which phase (Build Context → Update Documentation → Synthesize Experience → Analyze Health → Record & Report) and which source you are processing. If unsure, STOP and re-orient.

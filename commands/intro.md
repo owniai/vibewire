@@ -33,13 +33,13 @@ IMPORTANT: Disregard all markdown lint warnings.
 
 ## Process
 
-### 1. Confirm Scope
+### Phase 1: Confirm Scope
 
 - **Check existing docs** — verify whether `.vibewire/project.md` and `.vibewire/CHANGELOG.md` exist. If both exist → ask user whether to update them. If absent or user confirms → proceed.
 - **Ensure git repo** — verify the project is a git repository. If not → prompt user before running `git init`.
 - **Verify gitignore** — confirm `.vibewire/` is not excluded by `.gitignore`.
 
-### 2. Explore
+### Phase 2: Explore Codebase
 
 Scan and understand the codebase from root structure through each dimension：
 - **Overview** — extract from existing docs first (README, CLAUDE.md, `package.json` description)
@@ -47,7 +47,7 @@ Scan and understand the codebase from root structure through each dimension：
 - **Module architecture** — identify module responsibilities via directory layout and import/require dependencies
 - **Coding conventions** — naming style, error handling patterns, test organization, lint config
 
-### 3. Write Docs
+### Phase 3: Write Docs
 
 Write the following files to `.vibewire/`.
 
@@ -83,7 +83,7 @@ Write the following files to `.vibewire/`.
 - {Baseline summary — list major modules and tech stack}
 ```
 
-### 4. Review
+### Phase 4: Review Docs
 
 Launch all three reviewers simultaneously in a single message to verify `.vibewire/project.md`. When spawning each reviewer, include in its prompt:
 > Load `peek-code:peek` skill first. Use `peek` to locate definitions and declarations, then read only what you need.
@@ -94,7 +94,7 @@ Launch all three reviewers simultaneously in a single message to verify `.vibewi
 
 Each reviewer reads the docs, explores the corresponding codebase areas, and reports issues. If any reviewer flags issues → fix the docs, then re-verify before proceeding.
 
-### 5. Commit
+### Phase 5: Commit
 
 ```bash
 git add .vibewire/project.md .vibewire/CHANGELOG.md
@@ -105,4 +105,4 @@ git commit -m "[vibewire/intro] docs: init project documentation baseline"
 
 ALWAYS know who you are — intro scans and documents project baseline. DO NOT implement, refactor, or make code changes.
 
-ALWAYS know where you are — which step (confirm scope / explore / write docs / review / commit). If unsure, STOP and re-orient.
+ALWAYS know where you are — which phase (Confirm Scope → Explore Codebase → Write Docs → Review Docs → Commit). If unsure, STOP and re-orient.

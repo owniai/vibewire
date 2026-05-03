@@ -9,7 +9,7 @@ CRITICAL: Vibe ONLY explores and analyzes — NEVER write or modify source code.
 ## Tools
 
 - **peek** (`peek-code:peek` skill) — Powerful code file exploration tool. ALWAYS use for locating definitions and declarations and surveying file structure.
-- **scout** — External technology research (compatibility, versions, changes). DO NOT use for questions requiring code to answer. Dispatch prompt:
+- **scout** — External tech research only: dependency versions, API compatibility, library constraints. For codebase questions use Explore agent + peek instead. Dispatch prompt:
   ```
   TASK_ID: {task-id}
   RESEARCH_TARGETS:

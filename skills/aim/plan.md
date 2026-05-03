@@ -11,7 +11,7 @@ IMPORTANT: Disregard all markdown lint warnings.
 ## Tools
 
 - **peek** (`peek-code:peek` skill) — Powerful code file exploration tool. ALWAYS use for locating definitions and declarations and surveying file structure.
-- **scout** — External technology research (compatibility, versions, changes). DO NOT use for questions requiring code to answer. Dispatch prompt:
+- **scout** — External tech research only: dependency versions, API compatibility, library constraints. For codebase questions use Explore agent + peek instead. Dispatch prompt:
   ```
   TASK_ID: {task-id}
   RESEARCH_TARGETS:
@@ -35,7 +35,7 @@ IMPORTANT: Disregard all markdown lint warnings.
 
 ## Process
 
-### 1. Clarification
+### Phase 1: Clarify Requirements
 
 Deep clarification beyond aim's what/why scope. Focus on **how** — implementation approach, code structure, dependencies.
 
@@ -45,7 +45,7 @@ Deep clarification beyond aim's what/why scope. Focus on **how** — implementat
 - **Exhaustive effort** — Do everything possible to clarify through code exploration and questioning before asking the user to fill gaps.
 - **Output** — Present a summary when clear. Proceed to Write Requirements.
 
-### 2. Write Requirements
+### Phase 2: Write Requirements
 
 Create the planning directory and write the clarification results to `requirements.md`.
 
@@ -56,7 +56,7 @@ Create the planning directory and write the clarification results to `requiremen
 
 Write to `.vibewire/actions/PLAN-{N}-{name}/requirements.md`
 
-### 3. Explore Architecture
+### Phase 3: Explore Architecture
 
 Design architecture relative to the existing project. ALWAYS ground decisions in tech verification and experiment conclusions — DO NOT speculate.
 
@@ -74,7 +74,7 @@ Present one layer at a time. Obtain user confirmation before proceeding. DO NOT 
 - **Proportionate** — Simple: sentences. Complex: up to 300 words per component. DO NOT over-document.
 - **Architecture only** — No implementation details or code. Cross-module type definitions are the exception — MUST be confirmed here.
 
-### 4. Stage Plan
+### Phase 4: Define Stages
 
 Break the confirmed architecture into delivery Stages.
 
@@ -96,7 +96,7 @@ Stage {M}-{name} — [one-line description]
   Depends On: none / Stage {M-1}-{name}
 ```
 
-### 5. Write Architecture
+### Phase 5: Write Architecture
 
 Write `.vibewire/actions/PLAN-{N}-{name}/architecture.md` consolidating all confirmed architecture decisions. Tech decisions MUST cite evidence sources.
 
@@ -114,7 +114,7 @@ Write `.vibewire/actions/PLAN-{N}-{name}/architecture.md` consolidating all conf
 
 File changes MUST be source code only — documentation updates are handled by the execution flow. File paths MUST be precise and complete.
 
-### 6. Commit
+### Phase 6: Commit
 
 ```git
 git add .vibewire/actions/PLAN-{N}-{name}/requirements.md .vibewire/actions/PLAN-{N}-{name}/architecture.md
@@ -144,4 +144,4 @@ Stage execution order:
 
 ALWAYS know who you are — plan produces requirements and architecture documents. No source code.
 
-ALWAYS know where you are — which step (clarify / requirements / explore / stage / architecture / commit), which architecture layer. If unsure, STOP and re-orient.
+ALWAYS know where you are — which phase (Clarify Requirements → Write Requirements → Explore Architecture → Define Stages → Write Architecture → Commit), which architecture layer. If unsure, STOP and re-orient.

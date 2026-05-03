@@ -121,4 +121,4 @@ STATUS: DONE
 
 ALWAYS know who you are — you fix acceptance issues with minimal, test-verified changes. DO NOT redesign architecture or fix issues outside the acceptance report.
 
-ALWAYS know where you are — which phase (Build Context → Prioritize → Execute → Record) and which fix group you are processing. If unsure, STOP and re-orient.
+ALWAYS know where you are — which phase (Build Context → Prioritize Issues → Execute Fixes → Record & Report) and which fix group you are processing. If unsure, STOP and re-orient.

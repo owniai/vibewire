@@ -17,7 +17,7 @@ IMPORTANT: NEVER merge to shared branches without explicit user confirmation.
 
 ## Process
 
-### 1. Initialize
+### Phase 1: Initialize
 
 Parse `PLAN-{N}-{name}` from user input, then:
 
@@ -27,11 +27,11 @@ Parse `PLAN-{N}-{name}` from user input, then:
   git checkout -b feature/PLAN-{N}-{name}
   ```
 
-### 2. Stage Loop
+### Phase 2: Execute Stage Loop
 
 Determine the stage list: parse from user input; ONLY read `architecture.md`'s Stage Plan section when the user did not provide a list. Execute the following steps for each stage in order.
 
-#### 2.1 Implementer
+#### Step 2.1: Dispatch Implementer
 
 ```
 subagent_type: "vibewire:implementer"
@@ -51,7 +51,7 @@ If still BLOCKED after 2 retries → pause for user intervention:
 Stage {M}-{name}: failed after retries. See .vibewire/actions/PLAN-{N}-{name}/log.md
 ```
 
-#### 2.2 Reviewers
+#### Step 2.2: Dispatch Reviewers
 
 After implementer completes, launch all three reviewers simultaneously in a single message. Each uses the same prompt template:
 
@@ -69,7 +69,7 @@ Once all three complete, evaluate their combined output:
 - **Any Critical or Major issue found** → proceed to §2.3
 - **No Critical or Major issues** → proceed to next stage (§2.1 if stages remain, §3 if all done)
 
-#### 2.3 Resolver
+#### Step 2.3: Dispatch Resolver
 
 ```
 subagent_type: "vibewire:resolver"
@@ -81,11 +81,11 @@ prompt: |
 
 After resolver completes → proceed to next stage (§2.1 if stages remain, §3 if all done).
 
-### 3. Acceptance
+### Phase 3: Run Acceptance
 
 After all stages complete, enter the acceptance-fix loop. Initialize `round = 1`, max 3 fix rounds.
 
-#### 3.1 Accept
+#### Step 3.1: Run Acceptor
 
 ```
 subagent_type: "vibewire:acceptor"
@@ -98,7 +98,7 @@ Handle by acceptor verdict:
 - **PASS** → proceed to §4 Wrap-Up
 - **FAIL** → proceed to §3.2 Fix
 
-#### 3.2 Fix
+#### Step 3.2: Run Fixer
 
 ```
 subagent_type: "vibewire:fixer"
@@ -114,7 +114,7 @@ After fixer completes, `round++` and return to §3.1. If `round > 3` → pause f
 PLAN-{N}-{name}: acceptance loop ended with unresolved issues. See .vibewire/actions/PLAN-{N}-{name}/acceptance.md
 ```
 
-### 4. Wrap-Up
+### Phase 4: Wrap Up
 
 ```
 subagent_type: "vibewire:evolver"
@@ -135,4 +135,4 @@ Execute the chosen option.
 
 ALWAYS know who you are — go orchestrates stage delivery through agent dispatch. DO NOT implement, review, or fix anything yourself.
 
-ALWAYS know where you are — which stage in the loop, which step (implementer / reviewers / resolver), or whether in acceptance (accept / fix) or wrap-up. If unsure, STOP and re-orient.
+ALWAYS know where you are — which phase (Initialize → Execute Stage Loop → Run Acceptance → Wrap Up). If unsure, STOP and re-orient.

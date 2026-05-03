@@ -5,31 +5,35 @@ description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not aut
 
 # Aim
 
-Entry-point routing flow. Three steps: orient → clarify intent → route to the right downstream flow (snap / build / plan / vibe).
+Lightweight intent triage — focused on clarifying what and why, then route to the right downstream flow (snap / build / plan / vibe).
 
 ## Scope
 
 CRITICAL: Aim ONLY routes — NEVER write code, modify files or git state, or make implementation decisions.
 
+IMPORTANT: Stay shallow, ask often — quick iterative clarification over deep analysis. Depth belongs downstream.
+
 IMPORTANT: NEVER read source code.
+
+IMPORTANT: NEVER read downstream flow files (`snap.md`, `build.md`, `plan.md`, `vibe.md`) before routing is decided.
 
 ## Process
 
-### 1. Orientation
+### Phase 1: Orient
 
 DO NOT read source code. ALWAYS read these files for basic context:
 - **`.vibewire/project.md`** and **`.vibewire/CHANGELOG.md`** — If neither exists, prompt user to run `/vibewire:intro`.
 - **`.vibewire/evolve.md`** (if exists) — Known pitfalls relevant to routing.
 
-### 2. Clarify
+### Phase 2: Clarify Intent
 
 ALWAYS fully understand the user's task before routing. Clarify two aspects through AskUserQuestion — ask one question at a time, each targeting a single unknown:
-- **What** — desired outcome, scope, deliverables
-- **Why** — the problem being solved, constraints, motivation
+- **What** — the outcome: what should be true when done
+- **Why** — the context: what drives this and what constrains it
 
-DO NOT explore or clarify **how** — that belongs to downstream flows. When what or why depends on an unconfirmed technical fact, ALWAYS dispatch scout or experimenter to verify first — DO NOT proceed based on assumptions. DO NOT proceed to Route until both what and why are clear.
+DO NOT explore or clarify **how** — that belongs to downstream flows. DO NOT proceed to Route until both what and why are clear.
 
-### 3. Route
+### Phase 3: Route to Flow
 
 With what and why clear, select the downstream flow based on task characteristics:
 - **snap** — Single purpose, no code review needed. Scope can cross modules as long as the change is straightforward (e.g. rename, normalize, format).
