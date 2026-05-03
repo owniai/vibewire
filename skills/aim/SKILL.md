@@ -36,12 +36,12 @@ DO NOT explore or clarify **how** — that belongs to downstream flows. DO NOT p
 ### Phase 3: Route to Flow
 
 With what and why clear, select the downstream flow based on task characteristics:
-- **snap** — Single purpose, no code review needed. Scope can cross modules as long as the change is straightforward (e.g. rename, normalize, format).
-- **build** — Code review required. Even a single-module task needs build if the change warrants review.
-- **plan** — Large/multi-phase, cross-cutting impact, staged delivery.
-- **vibe** — Exploratory or non-code task: analysis, research, discussion, operations.
+- **snap** — HOW clear. Single purpose, no code review needed. Scope can cross modules as long as the change is straightforward (e.g. rename, normalize, format).
+- **build** — HOW clear. Code review required. Even a single-module task needs build if the change warrants review.
+- **plan** — Multi-phase, cross-cutting impact, staged delivery. HOW may or may not be clear — plan handles both.
+- **vibe** — Non-code tasks (analysis, research, discussion, operations), or code tasks where HOW is unclear. Needs discussion or interactive clarification before execution. Vibe clarifies HOW, then transitions to the appropriate execution flow.
 
-ALWAYS present all four options with a clear recommendation and rationale. ALWAYS read the corresponding flow file (in the same directory as this file) and follow its instructions — aim's responsibility ends there.
+ALWAYS present all four options via AskUserQuestion with a clear recommendation and rationale, then route based on the user's choice. ALWAYS read the corresponding flow file (in the same directory as this file) and follow its instructions — aim's responsibility ends there.
 - snap → `snap.md`
 - build → `build.md`
 - plan → `plan.md`

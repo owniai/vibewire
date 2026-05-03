@@ -84,8 +84,8 @@ After analysis, ALWAYS offer to persist conclusions as a document.
 
 When conclusions are reached:
 - **No code needed** — present the conclusion summary. Done.
-- **Code is needed** — ALWAYS present all four options with a clear recommendation and rationale:
-  **snap** (no review needed), **build** (review required), **plan** (large/multi-phase), **new session** (output a handoff prompt summarizing conclusions and approach — concise, actionable, no fluff). If a document was persisted, include its path.
+- **Code is needed** — ALWAYS present all four options via AskUserQuestion with a clear recommendation and rationale, then route based on the user's choice:
+  **snap** (no review needed), **build** (review required), **plan** (large/multi-phase), **new session** (output a handoff prompt starting with `/vibewire:aim`, then summarizing conclusions and approach — concise, actionable, no fluff). If a document was persisted, include its path.
 
 ## Anchor
 
