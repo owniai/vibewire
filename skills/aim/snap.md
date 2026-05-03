@@ -1,124 +1,90 @@
-# Snap: Small Task — Plan and Execute
+# Snap
 
-## Overview
+Implement straightforward changes through TDD: design, test, implement, record.
 
-方案探索与 TDD 实现，更新项目文档。
+## Scope
 
-<HARD-GATE>
-在用户确认方案之前，不编写任何测试或实现代码。
-</HARD-GATE>
+CRITICAL: Snap ONLY implements the confirmed scope — NEVER add features, fix unrelated bugs, or refactor adjacent code. Changes directly required by the confirmed task are always in scope.
 
-## Checklist
+IMPORTANT: Disregard all markdown lint warnings.
 
-你必须为以下每个项目创建任务并按顺序完成：
-1. **Design Exploration** — 理解当前实现，探索方案，消除技术不确定性
-2. **TDD: Red** — 编写测试并确认失败
-3. **TDD: Green** — 编写实现并确认通过
-4. **Write Records** — 写入任务文档并更新 CHANGELOG
-5. **Commit** — 提交变更
+## Tools
+
+- **peek** (`peek-code:peek` skill) — Powerful code file exploration tool. ALWAYS use for locating definitions and declarations and surveying file structure.
+- **scout** — External technology research (compatibility, versions, changes). DO NOT use for questions requiring code to answer. Dispatch prompt:
+  ```
+  TASK_ID: {task-id}
+  RESEARCH_TARGETS:
+  - {target description}
+  ```
+- **experimenter** — ALWAYS use when a hypothesis can only be verified by writing and running code (e.g., API behavior, runtime constraints). Dispatch prompt:
+  ```
+  TASK_ID: {task-id}
+  EXPERIMENT_TARGETS:
+  - {target description}
+  ```
+- **Explore agent + peek** — ALWAYS use for codebase exploration that only needs results. When spawning, include in its prompt:
+  > Load `peek-code:peek` skill first. Use `peek` to locate definitions and declarations, then read only what you need.
+
+## Approach
+
+- **Clarify HOW** — ALWAYS understand the implementation approach through code exploration before implementing. DO NOT skip to coding.
+- **Confirm before coding** — ALWAYS present the implementation plan to the user. Proceed only after confirmation.
+- **Delegate mechanical work** — ALWAYS delegate context-free tasks (rename, format, simple substitutions) to subagent.
+- **Validate before delegating** — For repetitive work requiring understanding, ALWAYS do one sample first to verify feasibility, then delegate the rest to subagent with the validated pattern.
+- **Parallelize orthogonal tasks** — ALWAYS dispatch independent agents in parallel for orthogonal work. DO NOT sequence tasks that have no dependencies.
 
 ## Process
 
-### 1. Design Exploration
+### Phase 1: Break Down
 
-本阶段聚焦 how——理解当前实现并确定解决方案。
+Break the task into atomic changes. Present the plan for user confirmation.
 
-**探索当前实现：**
-- 定位并阅读需要修改的源文件，理解现有逻辑和模式
-- 确认变更的影响范围和涉及的模块边界
+**Atomic change** — Delivers one verifiable behavior. If a change needs "and" for unrelated outcomes, split.
 
-**确认方案：** 向用户展示实现方案和关键决策（包含技术验证的结论），获得确认后进入 TDD。
+Categorize and create tasks:
+- **Behavioral** (logic, API, bug fix) → `TDD: {name}-Red` + `TDD: {name}-Green`
+- **Structural** (rename, format, reorganize, config) → `Structural: {name}`
 
-### 2. TDD: Red — Write Test
+Present the list to the user. Proceed only after confirmation.
 
-**铁律**：生产代码只在使失败测试通过时才编写。任何在失败测试之前写出的生产代码必须删除重写。
+### Phase 2: Implement
 
-为当前任务编写测试：
-- **行为而非实现** — 断言可观测的输入输出，不探测内部状态
-- **独立且确定** — 每个用例独立运行，不依赖执行顺序或共享可变状态
-- **断言即证明** — 每条断言必须证明一个具体的行为事实
+Process one atomic change at a time. DO NOT batch.
 
-**确认测试失败：** 运行测试，验证新增测试确实失败。
+**TDD cycle** (tasks ending in `-Red` / `-Green`):
+1. **Red** — Write a failing test. Assert behavior, not implementation. Cover edge cases. DO NOT write production code before a failing test exists.
+2. **Green** — Write minimal implementation to pass the test.
 
-### 3. TDD: Green — Write Implementation
+**Direct** (tasks with `Structural:` prefix):
+- Implement without TDD.
 
-编写最小实现代码使测试通过：
-- **遵循既有模式** — 不引入项目中不存在的新模式
-- **最小化影响范围** — 只修改任务要求的部分
+After each change: run relevant tests. DO NOT proceed until current tests pass.
 
-**验证通过：** 运行全量测试，循环修复直到全部通过。
+### Phase 3: Verify
 
-### 4. Write Records
+After all atomic changes, run the full test suite. All tests MUST pass. If tests fail 3 times without an explainable cause, stop and report — DO NOT guess.
 
-确定文档名称：`{name}` 为任务对应的英文标识，kebab-case（如 `fix-login-bug`）。
+### Phase 4: Record
 
-#### 4.1 Action Record
+`{name}` is the task's English identifier in kebab-case (e.g., `fix-login-bug`).
 
-创建 `.vibewire/actions/` 目录（若不存在），写入 `.vibewire/actions/{name}.md`：
+- Write `.vibewire/actions/{name}.md` with sections: Objective, Solution, Changes (file path + A/M/D + description).
+- If the task produced knowledge worth preserving, synthesize lessons and write to `.vibewire/evolve.md` (append new entries or update existing similar entries). Each lesson MUST include root cause and recommendation. Skip if no lessons.
+- Prepend a change entry to `.vibewire/CHANGELOG.md`: date, task name, what changed.
+- If this task affected project structure or conventions, update `.vibewire/project.md`. Skip if no impact.
 
-```markdown
-# {name}
+### Phase 5: Commit
 
-## 目标
-{要做什么、为什么}
-
-## 解决方案
-{最终如何解决、变更了哪些文件}
-
-## Changes
-- `path/to/file` (A/M/D) — {变更内容}
-```
-
-#### 4.2 Lessons Synthesis
-
-若任务产生了值得沉淀的知识——bug 的根因与防御手段、隐含假设及需满足的前提、非显而易见的设计约束、正确的构建/测试/部署命令（尤其是试错后才发现的）、必需的环境变量或前置步骤、必须遵守的执行顺序、执行过程中的发现——归纳后追加到 `.vibewire/evolve.md`（如不存在则创建）。每条经验格式如下：
-
-```markdown
-## SNAP-{name}
-
-**{模式标题}**：{一句话描述}
-- 根因：{为什么会发生}
-- 建议：{后续如何避免}
-```
-
-归纳指引：
-- 从具体发现提炼泛用模式，不逐条搬运原始观察
-- 每条必须包含根因和建议，缺少任一项说明归纳不够深入
-- 无值得归纳的经验时跳过此步骤
-
-**Health Dashboard 联动**：若 `.vibewire/evolve.md` 顶部的 Health Dashboard 节已存在，更新与本次经验同一类别的条目；不新增信号条目。
-
-#### 4.3 Changelog
-
-在 `.vibewire/CHANGELOG.md`（如不存在则创建）顶部追加变更条目：
-
-```markdown
-## yyyy-mm-dd | SNAP-{name}
-- 变更：{变更的模块/文件及原因}
-```
-
-#### 4.4 Project Update
-
-对照当前 `.vibewire/project.md`，若本次任务影响了目录结构、技术栈、架构描述或产生了新的约定与规范，更新受影响的章节。首行元信息固定更新：`> Last updated: yyyy-mm-dd | SNAP-{name}`。无影响则跳过。
-
-### 5. Commit
-
-```
-git add {涉及的源代码文件} .vibewire/actions/{name}.md .vibewire/evolve.md .vibewire/CHANGELOG.md .vibewire/project.md
-# 若本次会话产生了技术调研或实验：
+```git
+git add {source files} .vibewire/actions/{name}.md .vibewire/evolve.md .vibewire/CHANGELOG.md .vibewire/project.md
+# If produced:
 git add .vibewire/tech-research/ .vibewire/experiments/
-git commit -m "[SNAP-{name}] feat: {一句话描述}"
+git commit -m "[SNAP-{name}] feat: {one-line description}"
 ```
 
-## Key Principles
+## Anchor
 
-- **聚焦已确认范围** — 不添加计划外功能
-- **利用已有上下文** — aim 已完成项目上下文探索，直接利用
-- **忽略格式检查** — markdown lint 等文档格式告警一律忽略
+ALWAYS know who you are — snap implements ONE confirmed task through atomic changes. No extras, no scope creep.
 
-## Anti-Pattern
-
-- **"太简单不需要测试"** — 不存在例外
-- **"先写代码再补测试"** — 必须删除代码后重做
-- **"顺手多做一点"** — micro 任务严格限定在单一目标内，额外变更应重新路由
-- **"跳过设计探索直接写代码"** — 即使实现看起来直截了当，也需先确认当前代码的行为和变更影响范围。技术不确定性未消除就进入 TDD，常导致返工
+ALWAYS know where you are — which atomic change, which phase (Break Down / Implement / Verify / Record / Commit). If unsure, STOP and re-orient.

@@ -1,5 +1,7 @@
 # VibeWire
 
+[中文](README.zh-CN.md) | **English**
+
 An autonomous development workflow plugin for Claude Code. From a task description to tested, reviewed code — without human intervention.
 
 VibeWire orchestrates a pipeline of specialized agents that plan, implement, review, and iterate on your behalf. You describe what you want. The agents figure out how.
@@ -12,12 +14,12 @@ It starts with your project. Run `/vibewire:intro` once to scan the codebase and
 
 When you have a task, run `/vibewire:aim`. Aim assesses the task scope and routes to the appropriate flow:
 
-- **Snap** — For tiny, well-defined tasks (single-function fixes, config adjustments, mechanical refactors). Aim handles the entire cycle: quick confirm, TDD, and commit — no parallel review.
-- **Build** — For regular tasks involving cross-module coordination or structural additions. Aim handles the entire cycle: clarification, TDD, parallel review, fix, and commit — all in one go.
-- **Plan** — For complex feature work involving multiple modules, unclear requirements, or architectural decisions. Through a structured conversation, aim clarifies requirements, narrows scope, and produces a requirements document and architecture design. When the task involves new technologies or unverified assumptions, aim dispatches **scout** to investigate tech facts and **experimenter** to run real-world experiments — grounding architecture decisions in verified data. You review and approve both before any code is written.
-- **Vibe** — For non-implementation tasks: analysis, research, discussion, or operations (git, scripts, etc.). Also routes here when requirements are unclear and need further clarification. Produces insights or executes operations without code changes.
+- **Snap** — For tiny, well-defined tasks (single-function fixes, config adjustments, mechanical refactors). Snap handles the entire cycle: break down → TDD → verify → record → commit. No parallel review.
+- **Build** — For regular tasks involving cross-module coordination or structural additions. Build handles the entire cycle: break down → TDD → verify → three-way review → fix → record → commit.
+- **Plan** — For complex feature work involving multiple modules, unclear requirements, or architectural decisions. Through a structured conversation, plan clarifies requirements, narrows scope, and produces a requirements document and architecture design. When the task involves new technologies or unverified assumptions, plan dispatches **scout** to investigate tech facts and **experimenter** to run real-world experiments — grounding architecture decisions in verified data. You review and approve both before any code is written.
+- **Vibe** — For non-implementation tasks: clarification, research, discussion, or operations. Also routes here when requirements are unclear and need further clarification. Produces insights or executes operations without code changes.
 
-For plan tasks, run `/vibewire:go`. The go skill dispatches agents through a stage-by-stage pipeline:
+For plan tasks, run `/vibewire:go`. The go command dispatches agents through a stage-by-stage pipeline:
 
 1. For each stage, **implementer** reads the architecture, breaks down tasks, and executes with strict TDD
 2. Three reviewers — **efficiency**, **quality**, **reuse** — inspect the result in parallel
@@ -52,23 +54,23 @@ claude plugins install vibewire@vibewire
 
 # Step 2: Define and execute a task
 /vibewire:aim  # Routes to snap, build, plan, or vibe based on task scope
-               # Snap: quick TDD cycle (confirm → TDD → commit)
-               # Build: full cycle in one go (clarification → TDD → review → fix → commit)
-               # Plan: produces requirements + architecture for /vibewire:go
-               # Vibe: analysis, research, discussion, or operations (no code changes)
+               # Snap: break down → TDD → verify → record → commit
+               # Build: break down → TDD → verify → review → fix → record → commit
+               # Plan: clarification → requirements → architecture → /vibewire:go
+               # Vibe: clarification, research, discussion, or operations
 
 # Step 3 (plan only): Execute the plan autonomously
-/vibewire:go 001-task-name
+/vibewire:go PLAN-{N}-{name}
 ```
 
 ---
 
 ## The Workflow
 
-| Skill | Purpose | When to Use |
-|-------|---------|-------------|
+| Command / Skill | Purpose | When to Use |
+|-----------------|---------|-------------|
 | `/vibewire:intro` | Scan project, establish documentation baseline | Once per project, or when the codebase has changed significantly |
-| `/vibewire:aim` | Assesses task scope, routes to snap (quick TDD), build (TDD + parallel review), plan (requirements + architecture design), or vibe (analysis, research, operations) | Before each new task or change |
+| `/vibewire:aim` | Assesses task scope, routes to snap, build, plan, or vibe | Before each new task or change |
 | `/vibewire:go` | Autonomous stage-by-stage implementation with review loops | After aim produces requirements and architecture |
 
 ```
@@ -76,66 +78,78 @@ claude plugins install vibewire@vibewire
 
 /vibewire:aim
   ├─ snap (tiny tasks):
-  │   → TDD (red → green)
+  │   → break down → confirm
+  │   → TDD (red → green) per atomic change
+  │   → verify (full test suite)
   │   → .vibewire/actions/{name}.md + .vibewire/evolve.md
   │   → commit
   │
   ├─ build (regular tasks):
-  │   → TDD (red → green)
-  │   → 3 reviewers (parallel)
-  │   → fix (if Critical/Major)
+  │   → break down → confirm
+  │   → TDD (red → green) per atomic change
+  │   → verify (full test suite)
+  │   → 3 reviewers (parallel, inline mode)
+  │   → fix (deduplicate, fix or skip)
   │   → .vibewire/actions/{name}.md + .vibewire/evolve.md
   │   → commit
   │
   ├─ plan (complex tasks):
-  │   → .vibewire/PLAN-{N}-{name}/requirements.md
-  │   → scout (if tech unknowns) → .vibewire/tech-research/PLAN-{N}-{name}.md + .vibewire/tech-research/knowledge.md
-  │   → experimenter (if unverified assumptions) → .vibewire/experiments/PLAN-{N}-{name}/
-  │   → .vibewire/PLAN-{N}-{name}/architecture.md
+  │   → clarification (one question per turn)
+  │   → .vibewire/actions/PLAN-{N}-{name}/requirements.md
+  │   → explore architecture (layer by layer)
+  │   → scout (if tech unknowns) → .vibewire/tech-research/{task-id}.md + .vibewire/tech-research/knowledge.md
+  │   → experimenter (if unverified assumptions) → .vibewire/experiments/{task-id}/
+  │   → .vibewire/actions/PLAN-{N}-{name}/architecture.md
   │   → (user reviews and approves)
   │
   └─ vibe (non-implementation tasks):
-      → analysis, research, discussion, or operations
+      → clarification → research / discussion / operations
       → (optional) .vibewire/vibes/VIBE-{N}-{name}.md
       → may transition to snap/build/plan if code change is needed
 
 /vibewire:go PLAN-{N}-{name}
+  → feature branch
   → for each stage:
       implementer → code + tests (TDD)
       3 reviewers → findings
       resolver → fixes (if Critical/Major)
   → acceptor → acceptance verification
   → fixer → fix loop (if FAIL, max 3 rounds)
-  → evolver → experience log
-  → (user chooses how to merge)
+  → evolver → experience log + project docs update
+  → (user chooses merge strategy)
 ```
 
 ---
 
 ## What's Inside
 
-### Skills (3)
+### Commands (2)
+
+| Command | Description |
+|---------|-------------|
+| **intro** | Scans the codebase, establishes documentation baseline (`.vibewire/project.md`, `.vibewire/CHANGELOG.md`). Five steps: confirm scope → explore → write docs → review → commit |
+| **go** | Iterative stage-based delivery. Dispatches agents in sequence through implementation, review, acceptance, and wrap-up stages |
+
+### Skills (1)
 
 | Skill | Description |
 |-------|-------------|
-| **intro** | Scans the project, establishes documentation baseline (`.vibewire/project.md`, `.vibewire/CHANGELOG.md`) |
-| **aim** | Assesses task scope and routes to the appropriate flow: **snap** (quick TDD cycle for tiny tasks), **build** (TDD + parallel review for regular tasks), **plan** (collaborative requirements clarification and architecture design for complex tasks), or **vibe** (analysis, research, discussion, and operations for non-implementation tasks) |
-| **go** | Execution orchestrator. Dispatches agents in sequence through implementation, review, and acceptance stages |
+| **aim** | Entry-point routing flow. Three steps: orient → clarify intent → route to snap, build, plan, or vibe |
 
 ### Agents (10)
 
 | Agent | Role | Used By |
 |-------|------|---------|
-| **scout** | Investigates specified technologies and dependencies with factual findings — versions, compatibility, constraints | aim |
-| **experimenter** | Runs specified experiments to obtain real structures, API behaviors, or performance data | aim |
-| **implementer** | Reads architecture context, breaks down tasks, executes per-task TDD — writes tests first, then minimal implementation | go |
-| **efficiency-reviewer** | Reviews for performance issues — unnecessary work, missed concurrency, memory leaks, algorithmic inefficiency | go |
-| **quality-reviewer** | Reviews for anti-patterns — redundant state, parameter creep, copy-paste variants, over-abstraction, code smells | go |
-| **reuse-reviewer** | Reviews for duplication — searches existing utilities and patterns to identify reusable code opportunities | go |
+| **scout** | Investigates specified technologies and dependencies with factual findings — versions, compatibility, constraints. Receives research targets, no decision-making | aim |
+| **experimenter** | Runs specified experiments to obtain real structures, API behaviors, or performance data. Receives experiment targets, no decision-making | aim |
+| **implementer** | Reads architecture context, assesses drift, breaks down tasks, executes per-task TDD — write test, write code, verify, fix | go |
+| **efficiency-reviewer** | Reviews for performance issues — unnecessary work, missed concurrency, memory leaks, algorithmic inefficiency | aim, go |
+| **quality-reviewer** | Reviews for anti-patterns — redundant state, parameter creep, copy-paste variants, over-abstraction, code smells | aim, go |
+| **reuse-reviewer** | Reviews for duplication — searches existing utilities and patterns to identify reusable code opportunities | aim, go |
 | **resolver** | Consolidates review reports from all three reviewers, deduplicates findings, cross-validates issues, executes minimal fixes | go |
-| **acceptor** | Post-implementation acceptance agent — verifies requirements traceability and hunts for hidden bugs through adversarial analysis | go |
-| **fixer** | Fixes bugs and partial requirements identified during acceptance verification, with TDD approach | go |
-| **evolver** | Analyzes project health patterns from review/adjudication data, maintains evolve.md with health dashboard and experience records, updates project-level documentation | go |
+| **acceptor** | Post-implementation acceptance — verifies requirements traceability and hunts for hidden bugs through adversarial analysis | go |
+| **fixer** | Fixes bugs and partial requirements identified during acceptance verification. Test-first discipline with minimal changes | go |
+| **evolver** | Analyzes project health patterns from review/adjudication data, maintains evolve.md with health dashboard and experience records, updates project documentation | go |
 
 ---
 
@@ -158,15 +172,16 @@ vibewire/
 │   ├── resolver.md
 │   ├── reuse-reviewer.md
 │   └── scout.md
-├── skills/                   # 3 workflow skills
-│   ├── intro/SKILL.md
-│   ├── aim/
-│   │   ├── SKILL.md          # Router: assesses scope, dispatches to snap, build, plan, or vibe
-│   │   ├── snap.md           # Micro flow: TDD → commit
-│   │   ├── build.md          # Regular flow: TDD → review → fix → commit
-│   │   ├── plan.md           # Full flow: requirements → architecture → /vibewire:go
-│   │   └── vibe.md           # Non-implementation flow: analysis, research, discussion, operations
-│   └── go/SKILL.md
+├── commands/                 # 2 slash commands
+│   ├── go.md                 # Stage-based delivery: implement → review → accept → merge
+│   └── intro.md              # Project scan and documentation baseline
+├── skills/                   # 1 workflow skill
+│   └── aim/
+│       ├── SKILL.md          # Router: orient → clarify → route to snap, build, plan, or vibe
+│       ├── snap.md           # Tiny flow: break down → TDD → verify → commit
+│       ├── build.md          # Regular flow: break down → TDD → review → fix → commit
+│       ├── plan.md           # Complex flow: clarify → requirements → architecture → /vibewire:go
+│       └── vibe.md           # Non-implementation flow: clarification, research, discussion, operations
 ```
 
 ### Process Artifacts
@@ -177,29 +192,29 @@ All process artifacts are stored in `.vibewire/` within the target project:
 .vibewire/
 ├── project.md                          # Project overview (created by intro)
 ├── CHANGELOG.md                        # Change log (created by intro)
+├── evolve.md                           # Cross-milestone experience and health dashboard (created by evolver)
 ├── tech-research/                      # Tech research artifacts (created by scout)
 │   ├── knowledge.md                    # Global research knowledge base
 │   └── {task-id}.md                    # Detailed research per task
 ├── experiments/
 │   ├── framework.md                    # Global experiment framework (created by experimenter)
-│   └── PLAN-{N}-{name}/                 # Experiment results (created by experimenter)
+│   └── {task-id}/                      # Experiment results (created by experimenter)
 │       └── result.md
-├── evolve.md                           # Cross-milestone experience (created by evolver)
-├── actions/                            # Action records (created by aim snap/build)
-│   └── {name}.md                       # Action summary
-├── vibes/                              # Vibe records (created by aim vibe)
-│   └── VIBE-{N}-{name}.md             # Analysis/research conclusions
-└── PLAN-{N}-{name}/                    # Planning directory per plan task
-    ├── requirements.md                 # Requirements document (created by aim)
-    ├── architecture.md                 # Architecture design with Stage Plan (created by aim)
-    ├── log.md                          # Execution log (created by implementer)
-    ├── lessons.md                      # Accumulated lessons (created by implementer, resolver, fixer)
-    ├── review-efficiency.md            # Efficiency review report
-    ├── review-quality.md               # Quality review report
-    ├── review-reuse.md                 # Reuse review report
-    ├── resolve.md                      # Review adjudication record (created by resolver)
-    ├── acceptance.md                   # Acceptance report (created by acceptor)
-    └── acceptance-{round}.md           # Archived acceptance reports (created by fixer)
+├── actions/                            # Action and plan records
+│   ├── {name}.md                       # Action summary (created by aim snap/build)
+│   └── PLAN-{N}-{name}/               # Planning directory per plan task
+│       ├── requirements.md             # Requirements document (created by aim plan)
+│       ├── architecture.md             # Architecture design with Stage Plan (created by aim plan)
+│       ├── log.md                      # Execution log (created by implementer)
+│       ├── lessons.md                  # Accumulated lessons (created by implementer, resolver, fixer)
+│       ├── review-efficiency.md        # Efficiency review report
+│       ├── review-quality.md           # Quality review report
+│       ├── review-reuse.md             # Reuse review report
+│       ├── resolve.md                  # Review adjudication record (created by resolver)
+│       ├── acceptance.md               # Acceptance report (created by acceptor)
+│       └── acceptance-{round}.md       # Archived acceptance reports (created by fixer)
+└── vibes/                              # Vibe records (created by aim vibe)
+    └── VIBE-{N}-{name}.md             # Analysis/research conclusions
 ```
 
 ### Agent Pipeline
@@ -210,12 +225,12 @@ flowchart TD
         direction TB
         A0[User describes task] --> A0R{Assess scope}
         A0R -- Tiny task --> A0M["snap
-        TDD → commit"]
+        break down → TDD → verify → commit"]
         A0R -- Regular task --> A0E["build
-        TDD → review → fix → commit"]
-        A0R -- Complex task --> A1[Requirements Clarification]
+        break down → TDD → review → fix → commit"]
+        A0R -- Complex task --> A1[Clarification]
         A0R -- Non-code or unclear --> A0V["vibe
-        Analysis, research, discussion, operations"]
+        Clarification, research, discussion, operations"]
         A1 --> A2{Tech unknowns?}
         A2 -- Yes --> A3["scout
         Tech investigation"]

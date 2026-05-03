@@ -1,75 +1,94 @@
-# Vibe: Non-Implementation Task — Analysis, Research & Operations
+# Vibe
 
-## Overview
+Exploratory and non-code flow: clarification, research, discussion, and operations.
 
-探索、分析、调研、讨论和执行非代码变更操作。产出认知或执行操作，不产生代码变更。
+## Scope
 
-<HARD-GATE>
-vibe 阶段不编写代码。若讨论结论需要代码实现，先完成 vibe 再路由到对应流程。
-</HARD-GATE>
+CRITICAL: Vibe ONLY explores and analyzes — NEVER write or modify source code.
 
-## Guidance
+## Tools
 
-**分层推进** — 跨类型通用原则：
-- **先框架后细节**：先建立整体认知，识别关键点，再逐个深入
-- **聚焦单点**：每次只推进一个要点，与用户确认后再进入下一个
-- **按需补充**：发现信息缺口时随时回溯补充，无需严格线性推进
-- **禁止全量输出**：不允许一次性倾倒所有结论，确保用户能逐点质疑和修正
+- **peek** (`peek-code:peek` skill) — Powerful code file exploration tool. ALWAYS use for locating definitions and declarations and surveying file structure.
+- **scout** — External technology research (compatibility, versions, changes). DO NOT use for questions requiring code to answer. Dispatch prompt:
+  ```
+  TASK_ID: {task-id}
+  RESEARCH_TARGETS:
+  - {target description}
+  ```
+- **experimenter** — ALWAYS use when a hypothesis can only be verified by writing and running code (e.g., API behavior, runtime constraints). Dispatch prompt:
+  ```
+  TASK_ID: {task-id}
+  EXPERIMENT_TARGETS:
+  - {target description}
+  ```
+- **Explore agent + peek** — ALWAYS use for codebase exploration that only needs results. When spawning, include in its prompt:
+  > Load `peek-code:peek` skill first. Use `peek` to locate definitions and declarations, then read only what you need.
 
-以下为不同类型任务的专属指导，根据实际任务类型选用，非线性流程：
+## Approach
 
-### Clarification
+Applies to all modes — clarification, research, and discussion.
 
-需求澄清，引导用户从模糊到清晰：
-- 从用户已知的部分出发，逐步收敛边界
-- 用具体问题替代开放式提问（"你希望支持多少用户？"优于"你有什么需求？"）
-- 每次确认一个要点，避免一次性抛出多个维度
-- 需求清晰后呈现摘要，按 Transition 路由到对应执行流程
+- **Global-first** — ALWAYS start with the big picture. Outline the problem structure, key points, and dependencies before diving deep. Present this global view to the user.
+- **Point-by-point** — Tackle one point at a time. ALWAYS get user acknowledgment before moving on.
+- **Return to global** — After all points are resolved, ALWAYS present a comprehensive synthesis.
+- **Parallelize orthogonal tasks** — ALWAYS dispatch independent agents in parallel for orthogonal work. DO NOT sequence tasks that have no dependencies.
+
+## Clarification
+
+ALWAYS clarify first. Can be revisited at any point if new unknowns emerge during other modes.
+
+Deep clarification beyond aim's what/why scope. Focus on **how** — implementation approach, code structure, dependencies.
+
+- **Question scope** — what, why, and **how**. Implementation approach is in scope.
+- **One question per turn** — ALWAYS ask exactly one question at a time. NEVER batch multiple questions into a single turn. Each question MUST focus on a single point.
+- **Ask immediately** — NEVER accumulate unknowns. ALWAYS raise a question as soon as it is discovered.
+- **Exhaustive effort** — Do everything possible to clarify through code exploration and questioning before asking the user to fill gaps.
+- **Output** — Present a summary when clear. Proceed to a mode or return to aim.
+
+## Modes
+
+Three output modes — use one or more in any order after clarification.
 
 ### Research
 
-技术调研和事实收集：
-- 明确调研目标和验收标准后再开始，避免发散
-- 优先使用 scout/experimenter 获取一手事实，而非网络搜索
-- 结论必须基于事实，标注来源和置信度
+Gather technical facts and evidence.
+- Define the research objective before starting. ALWAYS use scout for external research, experimenter when code verification is needed.
+- ALWAYS base conclusions on facts — cite sources, state confidence. DO NOT speculate.
+- If the question is unanswerable with available tools, say so explicitly.
 
 ### Discussion
 
-方案讨论和决策支持：
-- 呈现选项时附利弊分析，给出推荐而非罗列
-- 涉及权衡取舍时明确 trade-off，由用户做最终决策
-- 讨论收敛后呈现结论摘要供确认
+Support decision-making through structured analysis.
+
+- ALWAYS present options with trade-off analysis and a recommendation.
+- State trade-offs clearly — the user decides.
+- When discussion converges, present a conclusion summary for confirmation.
 
 ### Operations
 
-命令执行和系统操作：
-- 操作前向用户确认具体命令和预期结果
-- 涉及不可逆操作时必须获得用户明确授权
-- 执行后汇报结果
+Execute commands and system operations.
+
+- Report the result after execution — success, failure, or partial.
+- For significant results, offer to persist via the Persistence section below.
 
 ## Persistence
 
-分析或操作完成后，用户可选择是否将结论持久化为文档。写入路径：`.vibewire/vibes/VIBE-{N}-{name}.md`。`N` 为三位数字序号，扫描 `.vibewire/vibes/` 下已有目录确定当前最大序号后递增（无已有文件则从 001 开始）。`{name}` 为 kebab-case 英文标识。
+After analysis, ALWAYS offer to persist conclusions as a document.
 
-Commit:
-
-```
-git add .vibewire/vibes/VIBE-{N}-{name}.md
-# 若本次会话产生了技术调研或实验：
-git add .vibewire/tech-research/ .vibewire/experiments/
-git commit -m "[VIBE-{N}-{name}] docs: {一句话描述}"
-```
+1. Determine the sequence number `N` — scan `.vibewire/vibes/` for the highest existing number, then increment. Start from `001` if the directory is empty.
+2. Choose a kebab-case English identifier for `{name}` (e.g., `auth-strategy`).
+3. Write to `.vibewire/vibes/VIBE-{N}-{name}.md` with sections: Objective, Conclusions, Open Questions.
+4. Commit.
 
 ## Transition
 
-讨论或操作自然结束时，若结论不涉及代码实现，展示结论摘要即可。若结论指向代码实现，向用户呈现选项并给出推荐：
-- **snap** — 直接加载 `snap.md` 执行
-- **build** — 直接加载 `build.md` 执行
-- **plan** — 直接加载 `plan.md` 执行
-- **新会话 aim** — 生成可直接复制的包含关键发现和约束的简短清晰提示词，若生成了文档，输出文档地址指引。用户复制到新会话运行
+When conclusions are reached:
+- **No code needed** — present the conclusion summary. Done.
+- **Code is needed** — ALWAYS present all four options with a clear recommendation and rationale:
+  **snap** (no review needed), **build** (review required), **plan** (large/multi-phase), **new session** (output a handoff prompt summarizing conclusions and approach — concise, actionable, no fluff). If a document was persisted, include its path.
 
-## Anti-Pattern
+## Anchor
 
-- **"囫囵吞枣"** — 一次性输出所有分析结论，缺乏层次和逐步确认，用户无法逐点质疑和修正
-- **"顺手改代码"** — vibe 不修改任何代码。若分析中发现需要修改的代码，记录在报告中，路由到对应流程
-- **"操作不确认"** — 执行不可逆操作前必须确认
+ALWAYS know who you are — vibe explores, clarifies, and analyzes. DO NOT write or modify source code.
+
+ALWAYS know where you are — which mode (clarification / research / discussion / operations), which point in the global→point-by-point→synthesis flow. If unsure, STOP and re-orient.

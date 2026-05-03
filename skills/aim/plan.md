@@ -1,144 +1,147 @@
-# Plan: Complex Task — From Requirements to Architecture
+# Plan
 
-## Overview
+Transform clarified requirements into structured requirements and architecture design with staged delivery.
 
-将已澄清的需求转化为结构化的需求文档，探索多种方案并权衡取舍，产出包含阶段划分的架构设计。
+## Scope
 
-<HARD-GATE>
-在用户确认全部规划文档（需求、架构）之前，不编写任何测试或实现代码。
-</HARD-GATE>
+CRITICAL: Plan ONLY produces documents — NEVER write or modify source code.
 
-## Checklist
+IMPORTANT: Disregard all markdown lint warnings.
 
-你必须为以下每个项目创建任务并按顺序完成：
-1. **Write Requirements** — 将 aim 澄清结果写入 requirements.md
-2. **Explore Architecture** — 提出方案、权衡、架构设计
-3. **Stage Plan** — 将架构拆分为渐进式阶段
-4. **Write Architecture** — 写入 architecture.md
-5. **Commit** — 提交全部规划文档
+## Tools
+
+- **peek** (`peek-code:peek` skill) — Powerful code file exploration tool. ALWAYS use for locating definitions and declarations and surveying file structure.
+- **scout** — External technology research (compatibility, versions, changes). DO NOT use for questions requiring code to answer. Dispatch prompt:
+  ```
+  TASK_ID: {task-id}
+  RESEARCH_TARGETS:
+  - {target description}
+  ```
+- **experimenter** — ALWAYS use when a hypothesis can only be verified by writing and running code (e.g., API behavior, runtime constraints). Dispatch prompt:
+  ```
+  TASK_ID: {task-id}
+  EXPERIMENT_TARGETS:
+  - {target description}
+  ```
+- **Explore agent + peek** — ALWAYS use for codebase exploration that only needs results. When spawning, include in its prompt:
+  > Load `peek-code:peek` skill first. Use `peek` to locate definitions and declarations, then read only what you need.
+
+## Approach
+
+- **Global-first** — ALWAYS start with the big picture. Understand the current architecture, module boundaries, and where the change fits before diving into details.
+- **Explore alternatives** — When real trade-offs exist, present 2–3 options with analysis and recommend the best with rationale. When constraints uniquely determine the decision, present the single option.
+- **Return to global** — After all layers are confirmed, ALWAYS consolidate into a complete architecture document.
+- **Parallelize orthogonal tasks** — ALWAYS dispatch independent agents in parallel for orthogonal work. DO NOT sequence tasks that have no dependencies.
 
 ## Process
 
-### 1. Write Requirements
+### 1. Clarification
 
-aim 已完成需求澄清。本步骤将澄清结果结构化为正式需求文档。创建规划目录并写入需求文档。
+Deep clarification beyond aim's what/why scope. Focus on **how** — implementation approach, code structure, dependencies.
 
-**创建规划目录：** `.vibewire/actions/PLAN-{N}-{name}/`
-- 扫描 `.vibewire/` 下已有的目录，确定当前最大序号
-- `N`：三位数字，在已有最大序号基础上递增（无已有目录则从 001 开始）
-- `name`：任务对应的英文标识，kebab-case（如 `user-auth`）
+- **Question scope** — what, why, and **how**. Implementation approach is in scope.
+- **One question per turn** — ALWAYS ask exactly one question at a time. NEVER batch multiple questions into a single turn.
+- **Ask immediately** — NEVER accumulate unknowns. ALWAYS raise a question as soon as it is discovered.
+- **Exhaustive effort** — Do everything possible to clarify through code exploration and questioning before asking the user to fill gaps.
+- **Output** — Present a summary when clear. Proceed to Write Requirements.
 
-写入 `.vibewire/actions/PLAN-{N}-{name}/requirements.md`
+### 2. Write Requirements
 
-### 2. Explore Architecture
+Create the planning directory and write the clarification results to `requirements.md`.
 
-在现有项目架构基础上，设计与本次需求相关的架构变更。技术调研和实验的结论作为架构决策的事实依据。
+**Planning directory:** `.vibewire/actions/PLAN-{N}-{name}/`
+- Scan `.vibewire/actions/` for existing PLAN directories to determine the highest sequence number
+- `N`: three-digit number, incremented from the highest existing (start from 001 if none exist)
+- `name`: task's English identifier in kebab-case (e.g., `user-auth`)
 
-**严格逐层推进：** 每次只展示当前层的设计，获得用户确认后再进入下一层。不得提前设计或暗示未确认的层级。
-**每层的设计：** 若存在多种可行方案，提出 2-3 个选项并附权衡分析，推荐最优方案及理由；若决策被既有约束唯一确定，直接给出方案并说明依据。
+Write to `.vibewire/actions/PLAN-{N}-{name}/requirements.md`
 
-1. **项目级决策变更** — 如需变更 project.md 中的决策（新增依赖、变更技术栈等），首先提出并说明理由，获得用户确认。无需变更则跳过此层
-2. **架构概览与模块划分** — 变更在当前架构中的位置、新增/变更模块及单一职责、路径、依赖和被依赖关系
-3. **数据流与接口契约** — 确认模块边界后，定义模块间的数据流转方向、通信模式、跨模块共享的关键类型定义（标注产出自和消费于）以及需修改的既有接口（标注位置和影响范围）
-4. **模块内部架构** — 逐模块展开内部设计
+### 3. Explore Architecture
 
-**设计约束：**
-- **模块化** — 每个单元有单一明确的用途，边界清晰，可独立理解和测试
-- **遵循既有模式** — 不提出无关重构，保持聚焦于当前目标
-- **按复杂度缩放** — 简单需求几句话，复杂需求可展开至 200-300 字
-- **抽象层级** — 不涉及实现细节和代码；但跨模块共享的关键类型定义须在此确认
+Design architecture relative to the existing project. ALWAYS ground decisions in tech verification and experiment conclusions — DO NOT speculate.
 
-### 5. Stage Plan
+Present one layer at a time. Obtain user confirmation before proceeding. DO NOT design or hint at unconfirmed layers.
 
-基于步骤 2 已确认的架构，执行以下两步：
+**Architecture layers:**
 
-**第一步：列举功能单元**
+1. **Project-level decisions** — New dependencies or tech stack changes. Propose, justify, confirm. Skip if no changes.
+2. **Module decomposition** — Where the change fits. New or modified modules, single responsibilities, paths, dependencies, dependents.
+3. **Data flow and interfaces** — Direction, communication patterns, shared cross-module types (annotated with producer/consumer), interfaces to modify (annotated with location/impact).
+4. **Module internals** — Per-module internal design, one module at a time.
 
-逐一识别需要实现、修改或调整的功能单元（功能单元是最小的可独立验证的功能增量），横切关注点（错误处理、日志、认证等）不单独列为功能单元，而是作为相关功能单元的附加要求。以编号列表呈现，每个功能单元用一句话描述其目标。
+**Constraints:**
+- **Modular** — Single purpose, clear boundaries, independently testable.
+- **Proportionate** — Simple: sentences. Complex: up to 300 words per component. DO NOT over-document.
+- **Architecture only** — No implementation details or code. Cross-module type definitions are the exception — MUST be confirmed here.
 
-**粒度判定：**
-- 每个功能单元归属于步骤 2 中定义的单一模块
-- 具有独立、可验证的验收条件——若验收条件需要"且"连接多个不相关的验证点，应拆分
-- 若两个单元始终一起变更且共享验收条件，应合并
+### 4. Stage Plan
 
-**第二步：组合为 Stage 方案**
+Break the confirmed architecture into delivery Stages.
 
-将功能单元按模块归属和数据流依赖组合为 Stage，每个 Stage 是实施的最小完整单元——每次执行将完整实现一个 Stage。按 Stage 间依赖关系排序，每种方案以列表呈现。每个功能单元恰好归属于一个 Stage，无遗漏无重复。依赖关系呈单一线性路径时直接给出唯一方案；存在可并行的独立模块组或不同的功能组合策略时，提出 2-3 种方案并说明侧重差异。每个 Stage 须列出包含的功能单元编号：
+**Units** — Each unit delivers ONE independently verifiable behavior change. Present as a numbered list, one sentence each.
 
-```
-Stage {M}-{name} — [一句话描述]
-  包含：#{编号}、#{编号}、...
-  Depends On: 无 / Stage {M-1}-{name}
-```
+- If a description needs "and" for unrelated outcomes, split
+- Cross-cutting concerns are attributes of their relevant units, not standalone units
 
-**分组原则：**
-1. **模块归属** — 同一模块的功能单元优先归入同一 Stage
-2. **数据流依赖** — 存在接口依赖的功能单元归入同一 Stage
-3. **独立可验证** — 每个 Stage 完成后系统应处于可运行、可验证的状态
-4. **Stage 粒度** — 每个 Stage 聚焦一个明确的功能目标。若一个 Stage 包含过多功能单元导致无法在单次实施周期内完成验证，应按模块边界或数据流断点进一步拆分
+**Stages** — Group units by dependency. Each Stage MUST leave the system runnable.
 
-不可将实施步骤（安装依赖、编写代码、集成测试、更新文档）作为阶段——这些是执行流程的内置环节。
-
-### 4. Write Architecture
-
-将步骤 2 和步骤 3 中逐层确认的架构决策和 Stage Plan 整合写入 `.vibewire/actions/PLAN-{N}-{name}/architecture.md`（按实际确认的层级组装，无则省略）。技术决策注明依据来源（调研结论、实验编号或既有经验）。
-
-Stage Plan 首先列出功能单元编号列表，然后每个 Stage 按以下格式展开：
+- If B depends on A, A MUST be in an earlier Stage
+- Independent units MAY share a Stage — DO NOT create unnecessary Stages
+- Too many units for one cycle → split at natural boundaries
+- Implementation steps (install, code, test, docs) are NOT Stages — they are execution flow mechanics
 
 ```
-- Stage {M}-{name} — [一句话描述]
-  - 包含：#{编号}、#{编号}、...
-  - Depends On: [无 / Stage {M-1}-{name}]
-  - 验收标准：[完成后应达到的状态]
-  - 文件变更：
-    - 新增 `path/to/file` — [职责]
-    - 修改 `path/to/file` — [修改原因]
+Stage {M}-{name} — [one-line description]
+  Includes: #{number}, #{number}, ...
+  Depends On: none / Stage {M-1}-{name}
 ```
 
-**Stage 格式规范：**
-- 文件变更仅包含功能实现相关的源代码文件，不包含文档文件（如 README、CHANGELOG、使用指南等）。文档更新由后续流程统一处理
-- 文件路径必须精确完整，不得使用模糊引用
+### 5. Write Architecture
 
-### 5. Commit
+Write `.vibewire/actions/PLAN-{N}-{name}/architecture.md` consolidating all confirmed architecture decisions. Tech decisions MUST cite evidence sources.
 
-将全部规划文档提交到版本控制，作为规划的检查点：
+**Stage Plan section** — List the unit summary, then expand each Stage:
 
 ```
+- Stage {M}-{name} — [one-line description]
+  - Includes: #{number}, #{number}, ...
+  - Depends On: [none / Stage {M-1}-{name}]
+  - Acceptance criteria: [state the system should reach after completion]
+  - File changes:
+    - Add `path/to/file` — [responsibility]
+    - Modify `path/to/file` — [reason for modification]
+```
+
+File changes MUST be source code only — documentation updates are handled by the execution flow. File paths MUST be precise and complete.
+
+### 6. Commit
+
+```git
 git add .vibewire/actions/PLAN-{N}-{name}/requirements.md .vibewire/actions/PLAN-{N}-{name}/architecture.md
-# 若本次会话产生了技术调研或实验：
+# If produced:
 git add .vibewire/tech-research/ .vibewire/experiments/
-git commit -m "[PLAN-{N}-{name}/aim] docs: add requirements and architecture"
+git commit -m "[PLAN-{N}-{name}] docs: add requirements and architecture"
 ```
 
-## Transition to Execution
+## Transition
 
-向用户展示下一步指引，首先输出过渡说明，然后以单个代码块输出命令和阶段列表：
+Output the following to the user:
 
 ```
-规划已完成！需求文档和架构设计已保存到 .vibewire/actions/PLAN-{N}-{name}/ 目录。
+Planning complete. Documents saved to .vibewire/actions/PLAN-{N}-{name}/.
 
-下一步：复制下述命令在新会话中运行，进入执行阶段：
-（代码块开始）
+To begin execution, run in a new session:
+{code block begin}
 /vibewire:go PLAN-{N}-{name}
-Stage 执行顺序：
+Stage execution order:
   Stage 1-{name}
   Stage 2-{name}
   ...
-（代码块结束）
+{code block end}
 ```
 
-## Key Principles
+## Anchor
 
-- **聚焦已确认范围** — 需求和架构设计限定在已确认的范围内，不过度设计
-- **探索替代方案** — 存在真实取舍时提出 2-3 个方案并附权衡分析；决策被既有约束唯一确定时直接给出方案并说明依据
-- **增量验证** — 呈现设计，在继续之前获得批准
-- **保持灵活** — 当某些内容不合理时返回去澄清
-- **模块化设计** — 系统应拆分为边界清晰、可独立理解的单元
-- **严格执行 YAGNI** — 从所有设计中删除不必要的功能
-- **忽略格式检查** — markdown lint 等文档格式告警一律忽略，内部规划文档不适用项目文档格式规范
+ALWAYS know who you are — plan produces requirements and architecture documents. No source code.
 
-## Anti-Pattern
-
-- **"太简单不需要规划"** — "简单"的项目是未审视假设导致最多浪费的地方。规划可以很短，但必须呈现并获得批准
-- **"需求很明确，直接设计"** — aim 已澄清需求但未结构化为正式文档就直接进入架构，常导致需求遗漏或理解偏差
-- **"一次呈现完整架构"** — 将所有架构决策打包抛给用户，缺乏逐层确认。应按决策依赖顺序逐层推进
+ALWAYS know where you are — which step (clarify / requirements / explore / stage / architecture / commit), which architecture layer. If unsure, STOP and re-orient.
