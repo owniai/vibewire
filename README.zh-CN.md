@@ -41,6 +41,7 @@ VibeWire 编排一组专业化的 Agent 流水线，代表你完成规划、实�
 先注册市场，然后安装插件：
 
 ```bash
+claude plugins marketplace add https://github.com/owniai/vibewire
 claude plugins install vibewire@vibewire
 ```
 

@@ -41,6 +41,7 @@ All process artifacts live in `.vibewire/` inside your project — requirements,
 Register the marketplace first, then install the plugin:
 
 ```bash
+claude plugins marketplace add https://github.com/owniai/vibewire
 claude plugins install vibewire@vibewire
 ```
 
