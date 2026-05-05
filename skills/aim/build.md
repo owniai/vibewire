@@ -91,7 +91,7 @@ When fixing: make minimal changes — address the reported issue only, do not re
 `{name}` is the task's English identifier in kebab-case (e.g., `add-user-auth`).
 
 - Write `.vibewire/actions/{name}.md` with sections: Objective, Solution, Changes (file path + A/M/D + description).
-- If the task produced knowledge worth preserving, synthesize lessons and write to `.vibewire/evolve.md` (append new entries or update existing similar entries). Each lesson MUST include root cause and recommendation. Skip if no lessons.
+- If the task yields lessons beneficial to future development, write to `.vibewire/evolve.md` (append or update existing). Each lesson MUST be a generalizable pattern — abstract root cause and recommendation, NOT task-specific details. Skip otherwise.
 - Prepend a change entry to `.vibewire/CHANGELOG.md`: date, task name, what changed.
 - If this task affected project structure or conventions, update `.vibewire/project.md`. Skip if no impact.
 

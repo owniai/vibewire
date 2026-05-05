@@ -22,7 +22,7 @@ IMPORTANT: NEVER read downstream flow files (`snap.md`, `build.md`, `plan.md`, `
 ### Phase 1: Orient
 
 DO NOT read source code. ALWAYS read these files for basic context:
-- **`.vibewire/project.md`** and **`.vibewire/CHANGELOG.md`** — If neither exists, prompt user to run `/vibewire:intro`.
+- **`.vibewire/project.md`** and **`.vibewire/CHANGELOG.md`** — If neither exists, prompt user to run `/vibewire:intro`. For CHANGELOG, grep `^##` for title lines only; read full entries on-demand when relevant to the task.
 - **`.vibewire/evolve.md`** (if exists) — Known pitfalls relevant to routing.
 
 ### Phase 2: Clarify Intent
@@ -35,13 +35,14 @@ DO NOT explore or clarify **how** — that belongs to downstream flows. DO NOT p
 
 ### Phase 3: Route to Flow
 
-With what and why clear, select the downstream flow based on task characteristics:
-- **snap** — HOW clear. Single purpose, no code review needed. Scope can cross modules as long as the change is straightforward (e.g. rename, normalize, format).
-- **build** — HOW clear. Code review required. Even a single-module task needs build if the change warrants review.
-- **plan** — Multi-phase, cross-cutting impact, staged delivery. HOW may or may not be clear — plan handles both.
-- **vibe** — Non-code tasks (analysis, research, discussion, operations), or code tasks where HOW is unclear. Needs discussion or interactive clarification before execution. Vibe clarifies HOW, then transitions to the appropriate execution flow.
+With what and why clear, quickly identify the recommended flow — DO NOT overthink, the user decides:
+- **snap** — HOW clear. Single purpose, no code review needed. Straightforward change (e.g. rename, normalize, format, fix bug).
+- **build** — HOW clear. Code review required — even single-module tasks if the change warrants review.
+- **plan** — Multi-phase, complex implementation. HOW may or may not be clear — plan handles both.
+- **vibe** — Non-code tasks (analysis, research, discussion, operations, documentation), or code tasks where HOW is unclear. Needs discussion or interactive clarification before execution. Vibe clarifies HOW, then transitions to the appropriate execution flow.
 
-ALWAYS present all four options via AskUserQuestion with a clear recommendation and rationale, then route based on the user's choice. ALWAYS read the corresponding flow file (in the same directory as this file) and follow its instructions — aim's responsibility ends there.
+ALWAYS present the recommendation via AskUserQuestion with a brief rationale and all four options. Route based on the user's choice.
+ALWAYS read the corresponding flow file (in the same directory as this file) and follow its instructions. Aim stops here — the downstream flow owns everything.
 - snap → `snap.md`
 - build → `build.md`
 - plan → `plan.md`

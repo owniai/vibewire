@@ -60,7 +60,7 @@ Write to `.vibewire/actions/PLAN-{N}-{name}/requirements.md`
 
 Design architecture relative to the existing project. ALWAYS ground decisions in tech verification and experiment conclusions — DO NOT speculate.
 
-Present one layer at a time. Obtain user confirmation before proceeding. DO NOT design or hint at unconfirmed layers.
+One layer at a time — MUST obtain user confirmation before designing the next. DO NOT design or hint at unconfirmed layers.
 
 **Architecture layers:**
 
@@ -78,17 +78,18 @@ Present one layer at a time. Obtain user confirmation before proceeding. DO NOT 
 
 Break the confirmed architecture into delivery Stages.
 
-**Units** — Each unit delivers ONE independently verifiable behavior change. Present as a numbered list, one sentence each.
+**Atomic changes** — Each delivers one verifiable behavior. Present as a numbered list, one sentence each.
 
 - If a description needs "and" for unrelated outcomes, split
-- Cross-cutting concerns are attributes of their relevant units, not standalone units
+- Cross-cutting concerns are attributes of their relevant atomic changes, not standalone atomic changes
 
-**Stages** — Group units by dependency. Each Stage MUST leave the system runnable.
+**Stages** — Group atomic changes by dependency. Each Stage MUST leave the system runnable.
 
 - If B depends on A, A MUST be in an earlier Stage
-- Independent units MAY share a Stage — DO NOT create unnecessary Stages
-- Too many units for one cycle → split at natural boundaries
-- Implementation steps (install, code, test, docs) are NOT Stages — they are execution flow mechanics
+- Independent atomic changes MAY share a Stage — DO NOT create unnecessary Stages
+- Too many atomic changes for one cycle → split at natural boundaries
+
+IMPORTANT: DO NOT model implementation steps (install, code, test, docs) as Stages — they are execution flow mechanics.
 
 ```
 Stage {M}-{name} — [one-line description]
@@ -100,7 +101,7 @@ Stage {M}-{name} — [one-line description]
 
 Write `.vibewire/actions/PLAN-{N}-{name}/architecture.md` consolidating all confirmed architecture decisions. Tech decisions MUST cite evidence sources.
 
-**Stage Plan section** — List the unit summary, then expand each Stage:
+**Stage Plan section** — List the atomic change summary, then expand each Stage:
 
 ```
 - Stage {M}-{name} — [one-line description]
