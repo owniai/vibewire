@@ -13,8 +13,6 @@ CRITICAL: You ONLY synthesize and update documentation — NEVER modify implemen
 
 CRITICAL: You ONLY process the current `PLAN-{N}-{name}` — NEVER retroactively modify historical PLAN records in `evolve.md`.
 
-IMPORTANT: Disregard all markdown lint warnings.
-
 ## Approach
 
 - **Signal over noise** — Recurrence is the filter for pattern capture, not severity. A frequent minor issue reveals more than a rare critical one.
@@ -33,11 +31,10 @@ Extract `PLAN_DIRECTORY` from the prompt. Read documents in layered order — gl
 - `.vibewire/evolve.md` (if exists) — historical health dashboard and experience records, baseline for persistence detection
 
 **Plan-level:**
-- `$PLAN_DIRECTORY/requirements.md` — original requirements scope and success criteria
-- `$PLAN_DIRECTORY/architecture.md` — original architecture design
+- `$PLAN_DIRECTORY/architecture.md` — original architecture design and scope
 
 **Execution & Review:**
-- `$PLAN_DIRECTORY/log.md` — stage execution records, including Changes and Drift
+- `$PLAN_DIRECTORY/log.md` — stage execution records, including Scope and Drift
 - `$PLAN_DIRECTORY/resolve.md` (if exists) — review findings and adjudication records with Fix/Skip/Deferred reasoning
 - `$PLAN_DIRECTORY/lessons.md` (if exists) — accumulated stage lessons
 - `$PLAN_DIRECTORY/acceptance.md` (if exists, use latest for multi-round) — final acceptance report with requirements traceability and bug findings
@@ -47,8 +44,7 @@ Extract `PLAN_DIRECTORY` from the prompt. Read documents in layered order — gl
 ### Phase 2: Update Documentation
 
 **project.md** — Merge plan outcomes into project documentation. Compare current `project.md` against:
-- **requirements.md** — new modules, responsibilities, or tech stack
-- **architecture.md** — added/changed modules, directory structure, technology choices
+- **architecture.md** — added/changed modules, responsibilities, directory structure, technology choices
 - **acceptance.md** — actual delivery status vs architecture design
 - **log.md Drift** — execution deviations revealing gaps between design and implementation
 
@@ -58,8 +54,7 @@ Update all affected sections. Always update the first-line metadata: `> Last upd
 
 ```markdown
 ## yyyy-mm-dd | PLAN-{N}-{name}
-- Added: [module name and responsibility]
-- Changed: [changed modules/files and reason]
+- {one sentence: what changed}
 ```
 
 ### Phase 3: Synthesize Experience
@@ -77,7 +72,7 @@ Synthesis rules:
 - Watch for upstream deviations: some issues originate in requirements or architecture phases, not coding
 - Lessons span multiple categories (bug causes, implicit assumptions, design constraints, build/test/deploy commands, required env vars, mandatory execution order) — merge same-category findings across stages into cross-stage patterns
 
-Append results to `.vibewire/evolve.md`. Do NOT split by stage or annotate source locations. Every pattern must include root cause and recommendation — missing either means insufficient depth.
+Append results to `.vibewire/evolve.md`. Do NOT split by stage or annotate source locations. Every pattern must include root cause and recommendation — missing either means insufficient depth. Each pattern must be a transferable insight that helps future development decisions (e.g., "API rate limits apply per-header, not per-token"), not an execution record or task narrative. Keep each entry abstract, concise, and precise — one sentence per field maximum.
 
 ```markdown
 ## PLAN-{N}-{name}

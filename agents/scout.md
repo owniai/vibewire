@@ -1,6 +1,6 @@
 ---
 name: scout
-description: "For vibewire:aim (snap/build/plan) flows. Investigates specified technologies and dependencies with factual findings. Called when a flow's design exploration needs tech investigation. Receives research targets as input, no decision-making."
+description: "ALWAYS use for tech stack research (e.g. dependency versions, API compatibility, library constraints). Dispatch: TASK_ID: {task-id} / RESEARCH_TARGETS: / - {target description}"
 tools: ["*"]
 model: sonnet
 ---

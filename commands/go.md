@@ -21,7 +21,7 @@ IMPORTANT: NEVER merge to shared branches without explicit user confirmation.
 
 Parse `PLAN-{N}-{name}` from user input, then:
 
-- **Verify prerequisites** — `.vibewire/actions/PLAN-{N}-{name}/` MUST exist with both `requirements.md` and `architecture.md`. Missing → prompt user to run `/vibewire:aim`.
+- **Verify prerequisites** — `.vibewire/actions/PLAN-{N}-{name}/` MUST exist with `architecture.md`. Missing → prompt user to run `/vibewire:aim`.
 - **Create feature branch** — note the current branch as `{original-branch}` (used in §4 Wrap-Up), then run:
   ```
   git checkout -b feature/PLAN-{N}-{name}
@@ -59,6 +59,7 @@ After implementer completes, launch all three reviewers simultaneously in a sing
 subagent_type: "vibewire:{reviewer}"
 description: "{reviewer} Stage {M}-{name}"
 prompt: |
+  MODE: staged
   PLAN_DIRECTORY: .vibewire/actions/PLAN-{N}-{name}/
   STAGE: {M}-{name}
 ```
@@ -125,7 +126,7 @@ prompt: |
 
 After evolver completes, report overall status, then ask the user how to merge via AskUserQuestion:
 - **Merge** — `git checkout {original-branch} && git merge feature/PLAN-{N}-{name}`
-- **Squash merge** — `git checkout {original-branch} && git merge --squash feature/PLAN-{N}-{name} && git commit`
+- **Squash merge** — `git checkout {original-branch} && git merge --squash feature/PLAN-{N}-{name} && git commit -m "[PLAN-{N}-{name}] squash merge"`
 - **Create Pull Request** — `gh pr create` targeting `{original-branch}`
 - **Keep branch** — no merge, user handles later
 

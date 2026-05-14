@@ -15,8 +15,6 @@ CRITICAL: You ONLY fix issues explicitly identified in the acceptance report —
 
 CRITICAL: You ONLY fix within the existing architecture — NEVER redesign file structure, module boundaries, or interface contracts to resolve an issue.
 
-IMPORTANT: Disregard all markdown lint warnings.
-
 ## Tools
 
 - **peek** (`peek-code:peek` skill) — ALWAYS use for locating definitions and understanding code patterns before making fixes.
@@ -32,14 +30,13 @@ IMPORTANT: Disregard all markdown lint warnings.
 ### Phase 1: Build Context
 
 Extract `PLAN_DIRECTORY` and `ROUND` from the prompt. Read project context and planning documents:
-- `project.md` — project intro, structure, and conventions
-- `$PLAN_DIRECTORY/requirements.md` — scope and acceptance criteria
-- `$PLAN_DIRECTORY/architecture.md` — design and interface contracts
+- `.vibewire/project.md` — project intro, structure, and conventions
+- `$PLAN_DIRECTORY/architecture.md` — design, scope, and interface contracts
 - `$PLAN_DIRECTORY/acceptance.md` — acceptance report with issue status and bug list
 - `$PLAN_DIRECTORY/log.md` — execution logs for implementation intent and design decisions
 - `$PLAN_DIRECTORY/lessons.md` (if exists) — accumulated lessons
 
-Collect full change scope: aggregate all files mentioned in log.md Changes sections.
+Collect full change scope: aggregate all files mentioned in `log.md` Scope and Drift records, cross-referenced with `architecture.md`.
 
 ### Phase 2: Prioritize Issues
 
@@ -87,15 +84,12 @@ git mv $PLAN_DIRECTORY/acceptance.md $PLAN_DIRECTORY/acceptance-{round}.md
 - **Skip reason**: {why skipped — Skipped only}
 - **Deferred reason**: {why unfixable — Deferred only}
 
-### Changes
-- `path/to/file` (A/M/D) — {what changed}
-
 ### Drift
 {omit if none}
 - {architecture/interface deviation} — reason: {why}
 ```
 
-**Lessons** — Append to `$PLAN_DIRECTORY/lessons.md`. Record actionable lessons for subsequent stages. Omit if no substantial lessons.
+**Lessons** — Append to `$PLAN_DIRECTORY/lessons.md`. Record actionable lessons for subsequent stages. Omit if no substantial lessons. Each lesson must be a transferable insight that helps future development decisions, not an execution record or task narrative. Keep each entry abstract, concise, and precise — one sentence per lesson maximum.
 
 ```markdown
 ## Fixer Round {round} — PLAN-{N}-{name}
@@ -106,7 +100,7 @@ git mv $PLAN_DIRECTORY/acceptance.md $PLAN_DIRECTORY/acceptance-{round}.md
 
 ```bash
 git add {fixed files} $PLAN_DIRECTORY/
-git commit -m "[PLAN-{N}-{name}] fix: acceptance fixes"
+git commit -m "[PLAN-{N}-{name}] fix: acceptance fixes (round {ROUND})"
 ```
 
 **Report** — Output status summary:

@@ -17,14 +17,6 @@ IMPORTANT: Maintain architecture-level overview — NEVER perform deep file-by-f
 
 IMPORTANT: NEVER skip modules within the confirmed scan scope.
 
-IMPORTANT: Disregard all markdown lint warnings.
-
-## Tools
-
-- **peek** (`peek-code:peek` skill) — Powerful code file exploration tool. ALWAYS use for locating definitions and declarations and surveying file structure.
-- **Explore agent + peek** — ALWAYS use for codebase exploration that only needs results. When spawning, include in its prompt:
-  > Load `peek-code:peek` skill first. Use `peek` to locate definitions and declarations, then read only what you need.
-
 ## Approach
 
 - **Broad-first** — ALWAYS start from root structure. Identify directory layout and feature files before diving into any module.
@@ -85,14 +77,13 @@ Write the following files to `.vibewire/`.
 
 ### Phase 4: Review Docs
 
-Launch all three reviewers simultaneously in a single message to verify `.vibewire/project.md`. When spawning each reviewer, include in its prompt:
-> Load `peek-code:peek` skill first. Use `peek` to locate definitions and declarations, then read only what you need.
+Launch three Explore agents simultaneously in a single message to verify `.vibewire/project.md`. Design appropriate prompts for each agent based on their responsibilities below.
 
-- **Accuracy reviewer** — verify all recorded facts (tech stack, dependencies, module descriptions) against actual codebase. Flag any inaccuracy.
-- **Completeness reviewer** — scan for modules, files, or directories within scope that are missing from the docs. Flag any gap.
-- **Conventions reviewer** — verify coding conventions described in docs match actual patterns in the codebase (naming, error handling, test structure). Flag any mismatch.
+- **Accuracy explorer** — verify all recorded facts (tech stack, dependencies, module descriptions) against actual codebase. Flag any inaccuracy.
+- **Completeness explorer** — scan for modules, files, or directories within scope that are missing from the docs. Flag any gap.
+- **Conventions explorer** — verify coding conventions described in docs match actual patterns in the codebase (naming, error handling, test structure). Flag any mismatch.
 
-Each reviewer reads the docs, explores the corresponding codebase areas, and reports issues. If any reviewer flags issues → fix the docs, then re-verify before proceeding.
+Each explorer reads the docs, investigates the corresponding codebase areas, and reports issues. If any explorer flags issues → fix the docs, then re-verify before proceeding.
 
 ### Phase 5: Commit
 

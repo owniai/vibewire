@@ -1,49 +1,38 @@
 ---
 name: aim
-description: Use ONLY when the user explicitly invokes /vibewire:aim. Do not auto-trigger based on codebase analysis, feature requests, or perceived implementation needs.
+description: "Use ONLY when the user explicitly invokes /vibewire:aim. Exploratory flow: clarification, research, discussion."
 ---
 
 # Aim
 
-Lightweight intent triage — focused on clarifying what and why, then route to the right downstream flow (snap / build / plan / vibe).
+Explore, clarify, and converge toward shared understanding.
 
 ## Scope
 
-CRITICAL: Aim ONLY routes — NEVER write code, modify files or git state, or make implementation decisions.
-
-IMPORTANT: Stay shallow, ask often — quick iterative clarification over deep analysis. Depth belongs downstream.
-
-IMPORTANT: NEVER read source code.
-
-IMPORTANT: NEVER read downstream flow files (`snap.md`, `build.md`, `plan.md`, `vibe.md`) before routing is decided.
+CRITICAL: Aim ONLY explores and analyzes — NEVER write or modify source code.
 
 ## Process
 
 ### Phase 1: Orient
 
-DO NOT read source code. ALWAYS read these files for basic context:
-- **`.vibewire/project.md`** and **`.vibewire/CHANGELOG.md`** — If neither exists, prompt user to run `/vibewire:intro`. For CHANGELOG, grep `^##` for title lines only; read full entries on-demand when relevant to the task.
-- **`.vibewire/evolve.md`** (if exists) — Known pitfalls relevant to routing.
+Read for context:
+- **`.vibewire/project.md`** — if missing, prompt `/vibewire:intro`.
+- **`.vibewire/CHANGELOG.md`** and **`.vibewire/evolve.md`** — scan section titles only; read full entries on-demand. Skip if absent.
 
-### Phase 2: Clarify Intent
+### Phase 2: Engage
 
-ALWAYS fully understand the user's task before routing. Clarify two aspects through AskUserQuestion — ask one question at a time, each targeting a single unknown:
-- **What** — the outcome: what should be true when done
-- **Why** — the context: what drives this and what constrains it
+Interview relentlessly about every aspect until reaching shared understanding. See [approach](approach.md).
 
-DO NOT explore or clarify **how** — that belongs to downstream flows. DO NOT proceed to Route until both what and why are clear.
+### Phase 3: Converge
 
-### Phase 3: Route to Flow
+Synthesize into actionable conclusions — Objective, Conclusions, Open Questions. NEVER vague summaries — every conclusion must be specific enough to act on. Open questions must state exactly what is unknown and what it blocks.
 
-With what and why clear, quickly identify the recommended flow — DO NOT overthink, the user decides:
-- **snap** — HOW clear. Single purpose, no code review needed. Straightforward change (e.g. rename, normalize, format, fix bug).
-- **build** — HOW clear. Code review required — even single-module tasks if the change warrants review.
-- **plan** — Multi-phase, complex implementation. HOW may or may not be clear — plan handles both.
-- **vibe** — Non-code tasks (analysis, research, discussion, operations, documentation), or code tasks where HOW is unclear. Needs discussion or interactive clarification before execution. Vibe clarifies HOW, then transitions to the appropriate execution flow.
+Ask user: output directly, or persist? If persisted, see [persist](persist.md).
 
-ALWAYS present the recommendation via AskUserQuestion with a brief rationale and all four options. Route based on the user's choice.
-ALWAYS read the corresponding flow file (in the same directory as this file) and follow its instructions. Aim stops here — the downstream flow owns everything.
-- snap → `snap.md`
-- build → `build.md`
-- plan → `plan.md`
-- vibe → `vibe.md`
+If code is needed, recommend next step — see [proceed options](proceed.md).
+
+## Anchor
+
+ALWAYS know who you are — aim toward shared understanding through relentless exploration and clarification.
+
+ALWAYS know where you are — Orient → Engage → Converge. If lost, ask the user.

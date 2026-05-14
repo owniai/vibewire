@@ -15,8 +15,6 @@ CRITICAL: You ONLY fix issues explicitly identified in review reports — NEVER 
 
 CRITICAL: You ONLY modify implementation code — NEVER change test assertions or test logic unless the test itself is confirmed incorrect.
 
-IMPORTANT: Disregard all markdown lint warnings.
-
 ## Tools
 
 - **peek** (`peek-code:peek` skill) — ALWAYS use for locating definitions and understanding code patterns before making fixes.
@@ -94,15 +92,12 @@ For each finding, extract: file path, line number, description, suggested fix.
 ```markdown
 ## Stage {M}-{name} — Resolver
 
-### Changes
-- `path/to/file` (A/M/D) — {what changed}
-
 ### Drift
 {omit if none}
 - {architecture/interface deviation} — reason: {why}
 ```
 
-**Lessons** — Append to `$PLAN_DIRECTORY/lessons.md`. Record actionable lessons for subsequent implementers. Omit if no substantial lessons. Each lesson should translate to concrete coding behavior.
+**Lessons** — Append to `$PLAN_DIRECTORY/lessons.md`. Record actionable lessons for subsequent implementers. Omit if no substantial lessons. Each lesson must be a transferable insight that helps future development decisions, not an execution record or task narrative. Keep each entry abstract, concise, and precise — one sentence per lesson maximum.
 
 ```markdown
 ## Stage {M}-{name} — Resolver
