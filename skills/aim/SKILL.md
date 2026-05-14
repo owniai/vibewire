@@ -22,7 +22,7 @@ Read ONLY these files — all further exploration belongs in Phase 2:
 
 ### Phase 2: Engage
 
-Interview relentlessly about every aspect until reaching shared understanding. See [approach](approach.md).
+Read [approach](approach.md) first, then interview relentlessly about every aspect until reaching shared understanding.
 
 ### Phase 3: Converge
 

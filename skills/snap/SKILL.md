@@ -7,7 +7,7 @@ description: "Use ONLY when the user explicitly invokes /vibewire:snap. Deliver 
 
 One atomic change at a time. TDD for behavior, direct for non-behavioral — with self-review and optional external reviewers.
 
-IMPORTANT: In TDD, test through public interfaces — NEVER implementation details. See [good and bad tests](tests.md) and [when to mock](mocking.md).
+IMPORTANT: Read [good and bad tests](tests.md) and [when to mock](mocking.md) first. In TDD, test through public interfaces — NEVER implementation details.
 
 ## Process
 
@@ -49,11 +49,11 @@ After all atomic changes, run the full test suite. All tests MUST pass.
 
 ### Phase 5: Review
 
-Review and fix — see [review guide](review.md).
+Read [review guide](review.md) first, then review and fix.
 
 ### Phase 6: Persist
 
-See [persist rules](persist.md) for documentation and commit.
+Read [persist rules](persist.md) first, then documentation and commit.
 
 ## Anchor
 

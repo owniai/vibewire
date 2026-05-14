@@ -10,28 +10,24 @@ CRITICAL: Plan ONLY produces documents — NEVER write or modify source code.
 
 ### Phase 1: Explore Architecture
 
-Design architecture relative to the existing project, layer by layer.
+Design architecture relative to the existing project, layer by layer. Read [arch-approach](arch-approach.md) first for approach and constraints.
 
 - [ ] Project-level decisions
 - [ ] Module decomposition
 - [ ] Data flow and interfaces
 - [ ] Module internals
 
-See [arch-approach](arch-approach.md) for approach and constraints.
-
 ### Phase 2: Define Stages
 
-Break confirmed architecture into delivery Stages.
+Break confirmed architecture into delivery Stages. Read [stages](stages.md) first for decomposition rules.
 
 - [ ] Decompose into atomic changes
 - [ ] Group atomic changes into Stages
 - [ ] Present atomic changes and Stages to user — proceed only after approval
 
-See [stages](stages.md) for decomposition rules.
-
 ### Phase 3: Persist & Hand Off
 
-Persist confirmed architecture, Stage Plan, and output next-step instructions. See [arch-persist](arch-persist.md).
+Read [arch-persist](arch-persist.md) first, then persist confirmed architecture and Stage Plan, and output next-step instructions.
 
 ## Anchor
 
