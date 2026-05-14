@@ -54,7 +54,8 @@ Update all affected sections. Always update the first-line metadata: `> Last upd
 
 ```markdown
 ## yyyy-mm-dd | PLAN-{N}-{name}
-- {one sentence: what changed}
+- Added: [module name and responsibility]
+- Changed: [changed modules]
 ```
 
 ### Phase 3: Synthesize Experience

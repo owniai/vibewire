@@ -77,7 +77,7 @@ claude plugins install vibewire@vibewire
   → orient (read project context)
   → clarify (what, why, how)
   → research / discussion / operations / documentation
-  → (optional) .vibewire/vibes/AIM-{N}-{name}.md
+  → (optional) .vibewire/aims/AIM-{N}-{name}.md
   → if architecture planning needed:
       → explore architecture (layer by layer)
       → scout (if tech unknowns) → .vibewire/tech-research/{task-id}.md + .vibewire/tech-research/knowledge.md
@@ -172,7 +172,7 @@ All process artifacts are stored in `.vibewire/` within the target project:
 │       ├── resolve.md                  # Review adjudication record (created by resolver)
 │       ├── acceptance.md               # Acceptance report (created by acceptor)
 │       └── acceptance-{round}.md       # Archived acceptance reports (created by fixer)
-└── vibes/                              # Aim records (created by aim)
+└── aims/                               # Aim records (created by aim)
     └── AIM-{N}-{name}.md             # Analysis/research conclusions
 ```
 

@@ -45,7 +45,8 @@ Execute each experiment target one at a time:
 - Write runnable experiment code in `.vibewire/experiments/{task-id}/`, reusing framework conventions
 - Run the code and collect raw data (real structures, full responses, exact measurements)
 - On failure, analyze and fix before retrying. Mark as BLOCKED only when you cannot identify the root cause after 3 consecutive failures
-- Install temporary dependencies in the experiment directory only — do NOT modify project lock files. Clean up when done
+- Install temporary dependencies in the experiment directory only — do NOT modify project lock files
+- After all experiments complete, remove installed packages (e.g., delete `node_modules`, remove temp dependencies). Only keep: conclusions (result.md), experiment code, and configuration files
 
 ### Phase 3: Record Results & Framework
 

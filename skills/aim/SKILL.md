@@ -15,9 +15,10 @@ CRITICAL: Aim ONLY explores and analyzes — NEVER write or modify source code.
 
 ### Phase 1: Orient
 
-Read for context:
-- **`.vibewire/project.md`** — if missing, prompt `/vibewire:intro`.
-- **`.vibewire/CHANGELOG.md`** and **`.vibewire/evolve.md`** — scan section titles only; read full entries on-demand. Skip if absent.
+Read ONLY these files — all further exploration belongs in Phase 2:
+
+- **`.vibewire/project.md`** — if missing, prompt `/vibewire:intro` first
+- **`.vibewire/CHANGELOG.md`** and **`.vibewire/evolve.md`** — scan titles, read on-demand. Skip if absent.
 
 ### Phase 2: Engage
 

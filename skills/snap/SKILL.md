@@ -13,13 +13,14 @@ IMPORTANT: In TDD, test through public interfaces — NEVER implementation detai
 
 ### Phase 1: Orient
 
-Read for context:
-- **`.vibewire/project.md`** — if missing, prompt `/vibewire:intro`.
-- **`.vibewire/CHANGELOG.md`** and **`.vibewire/evolve.md`** — scan section titles only; read full entries on-demand. Skip if absent.
+Read ONLY these files — all further exploration belongs in Phase 2:
 
-Explore codebase for existing patterns, conventions, test infrastructure, and architectural decisions.
+- **`.vibewire/project.md`** — if missing, prompt `/vibewire:intro` first
+- **`.vibewire/CHANGELOG.md`** and **`.vibewire/evolve.md`** — scan titles, read on-demand. Skip if absent.
 
 ### Phase 2: Break Down
+
+Explore codebase for existing patterns, conventions, test infrastructure, and architectural decisions.
 
 Before writing any code:
 

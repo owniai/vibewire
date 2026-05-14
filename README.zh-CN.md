@@ -77,7 +77,7 @@ claude plugins install vibewire@vibewire
   → 定位（读取项目上下文）
   → 澄清（what、why、how）
   → 研究 / 讨论 / 运维 / 文档
-  → （可选）.vibewire/vibes/AIM-{N}-{name}.md
+  → （可选）.vibewire/aims/AIM-{N}-{name}.md
   → 如需架构规划:
       → 探索架构（逐层确认）
       → scout（如有技术未知项）→ .vibewire/tech-research/{task-id}.md + .vibewire/tech-research/knowledge.md
@@ -172,7 +172,7 @@ claude plugins install vibewire@vibewire
 │       ├── resolve.md                  # 审查裁决记录（由 resolver 创建）
 │       ├── acceptance.md               # 验收报告（由 acceptor 创建）
 │       └── acceptance-{round}.md       # 归档的验收报告（由 fixer 创建）
-└── vibes/                              # Aim 记录（由 aim 创建）
+└── aims/                               # Aim 记录（由 aim 创建）
     └── AIM-{N}-{name}.md             # 分析/研究结论
 ```
 
