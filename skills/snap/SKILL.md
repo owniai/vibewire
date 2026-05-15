@@ -1,62 +1,70 @@
 ---
 name: snap
-description: "Use ONLY when the user explicitly invokes /vibewire:snap. Deliver atomic changes — TDD for behavior, direct for non-behavioral — with self-review and optional external reviewers."
+description: "Use ONLY when the user explicitly invokes /vibewire:snap. Implement atomic changes — TDD for behavior, direct for non-behavioral — with self-review and optional external reviewers."
 ---
 
 # Snap
 
-One atomic change at a time. TDD for behavior, direct for non-behavioral — with self-review and optional external reviewers.
+Implement atomic changes — TDD for behavior, direct for the rest.
 
-IMPORTANT: Read [good and bad tests](tests.md) and [when to mock](mocking.md) first. In TDD, test through public interfaces — NEVER implementation details.
+## Scope
+
+ALWAYS test through public interfaces — NEVER implementation details.
+
+ALWAYS read [tests](tests.md) and [mocking](mocking.md) before writing any test.
+
+## Before Start
+
+Load project context — proceed to Explore immediately after:
+
+- `.vibewire/project.md` — if missing, prompt `/vibewire:intro`.
+- `.vibewire/CHANGELOG.md` and `.vibewire/evolve.md` — scan titles, read on-demand. Skip if absent.
 
 ## Process
 
-### Phase 1: Orient
+### Phase 1: Explore
 
-Read ONLY these files — all further exploration belongs in Phase 2:
+Explore codebase deeply — existing patterns, conventions, and architectural decisions. When uncertain and unable to resolve — ask immediately, NEVER assume. One question per turn — NEVER batch or accumulate.
 
-- **`.vibewire/project.md`** — if missing, prompt `/vibewire:intro` first
-- **`.vibewire/CHANGELOG.md`** and **`.vibewire/evolve.md`** — scan titles, read on-demand. Skip if absent.
+ALWAYS read [interface-design](interface-design.md) when designing interfaces.
+
+Interactively confirm with user — interface changes and behaviors to test, critical paths only. Proceed to Break Down only after alignment.
 
 ### Phase 2: Break Down
 
-Explore codebase for existing patterns, conventions, test infrastructure, and architectural decisions.
+Break confirmed scope into atomic changes — one verifiable outcome each — needs "and" → split:
 
-Before writing any code:
+- `TDD: {name}` — behavioral (logic, API, bug fix)
+- `Direct: {name}` — non-behavioral (rename, format, reorganize, config)
 
-- Confirm with user what interface changes are needed
-- Confirm with user which behaviors to test — focus on critical paths and complex logic, not every edge case
-- Design interfaces for [testability and deep modules](interface-design.md)
-- Break confirmed changes into atomic changes — one verifiable outcome each; needs "and" → split
-  - `TDD: {name}` — behavioral (e.g. logic, API, bug fix)
-  - `Direct: {name}` — non-behavioral (e.g. rename, format, reorganize, config)
-- Present list to user — proceed only after approval
-- Create one task per atomic change
+Present list to user — proceed only after approval — create one task per atomic change.
 
 ### Phase 3: Implement
 
-Process one atomic change at a time. For each atomic change, follow the matching track:
-- **TDD** (behavioral):
-  - RED: write ONE failing test
-  - GREEN: write minimal code to pass — NEVER over-implement
-- **Direct** (non-behavioral): implement without tests.
+Process atomic changes strictly one at a time — NEVER skip, batch, or parallelize.
 
-After each atomic change: run related tests. DO NOT proceed until they pass.
+**TDD** — strict RED-GREEN cycle:
+- RED: write ONE failing test — MUST see it fail
+- GREEN: minimal code to pass — NEVER over-implement
+
+**Direct** — implement directly.
+
+After each atomic change — run related tests, NEVER proceed to next until they pass.
 
 ### Phase 4: Verify
 
-After all atomic changes, run the full test suite. All tests MUST pass.
+All atomic changes done — run full test suite, all tests MUST pass.
 
 ### Phase 5: Review
 
-Read [review guide](review.md) first, then review and fix.
+ALWAYS read [review](review.md) on entry — review and fix.
 
 ### Phase 6: Persist
 
-Read [persist rules](persist.md) first, then documentation and commit.
+ALWAYS read [persist](persist.md) on entry — documentation and commit.
 
 ## Anchor
 
-ALWAYS know who you are — snap implements confirmed tasks through atomic changes, with optional external review.
+ALWAYS know who you are — snap delivers atomic changes through TDD or direct tracks, with optional external review.
 
-ALWAYS know where you are — which atomic change, which phase (Orient → Break Down → Implement → Verify → Review → Persist). If unsure, STOP and re-orient.
+ALWAYS know where you are — which phase (Explore → Break Down → Implement → Verify → Review → Persist), which atomic change. If unsure, STOP and re-orient.

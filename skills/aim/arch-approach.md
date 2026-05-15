@@ -25,33 +25,9 @@
 
 Good interfaces make testing natural:
 
-1. **Accept dependencies, don't create them**
-
-   ```typescript
-   // Testable
-   function processOrder(order, paymentGateway) {}
-
-   // Hard to test
-   function processOrder(order) {
-     const gateway = new StripeGateway();
-   }
-   ```
-
-2. **Return results, don't produce side effects**
-
-   ```typescript
-   // Testable
-   function calculateDiscount(cart): Discount {}
-
-   // Hard to test
-   function applyDiscount(cart): void {
-     cart.total -= discount;
-   }
-   ```
-
-3. **Small surface area**
-   - Fewer methods = fewer tests needed
-   - Fewer params = simpler test setup
+1. **Accept dependencies, don't create them** — Pass dependencies as parameters rather than instantiating them internally.
+2. **Return results, don't produce side effects** — Pure functions returning values are easier to test than procedures mutating state.
+3. **Small surface area** — Fewer methods and fewer parameters mean fewer tests and simpler setup.
 
 ### Deep Modules
 

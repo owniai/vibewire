@@ -1,6 +1,6 @@
 # Persist
 
-`{name}` is the task's English identifier in kebab-case (e.g., `fix-login-bug`).
+`{name}` derives from the task's objective, in kebab-case (e.g., `fix-login-bug`).
 
 ## Documentation
 

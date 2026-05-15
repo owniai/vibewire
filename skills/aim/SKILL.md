@@ -5,35 +5,31 @@ description: "Use ONLY when the user explicitly invokes /vibewire:aim. Explorato
 
 # Aim
 
-Explore, clarify, and converge toward shared understanding.
+Grill until shared understanding — synthesize, exec-route.
 
 ## Scope
 
-CRITICAL: Aim ONLY explores and analyzes — NEVER write or modify source code.
+CRITICAL: ONLY explore and analyze — NEVER write or modify source code.
 
-## Process
+ALWAYS read [exec-route](exec-route.md) on execution intent.
 
-### Phase 1: Orient
+## Before Start
 
-Read ONLY these files — all further exploration belongs in Phase 2:
+Load project context — proceed to Grill immediately after:
 
-- **`.vibewire/project.md`** — if missing, prompt `/vibewire:intro` first
-- **`.vibewire/CHANGELOG.md`** and **`.vibewire/evolve.md`** — scan titles, read on-demand. Skip if absent.
+- `.vibewire/project.md` — if missing, prompt `/vibewire:intro`.
+- `.vibewire/CHANGELOG.md` and `.vibewire/evolve.md` — scan titles, read on-demand. Skip if absent.
 
-### Phase 2: Engage
+## Grill
 
-Read [approach](approach.md) first, then interview relentlessly about every aspect until reaching shared understanding.
+ALWAYS read [approach](approach.md) on entry for detailed methodology.
 
-### Phase 3: Converge
+Interview relentlessly about every aspect until reaching shared understanding — on convergence, output `Shared understanding reached.` then proceed to Output.
 
-Synthesize into actionable conclusions — Objective, Conclusions, Open Questions. NEVER vague summaries — every conclusion must be specific enough to act on. Open questions must state exactly what is unknown and what it blocks.
+## Output
 
-Ask user: output directly, or persist? If persisted, see [persist](persist.md).
+Ask user on entry: output directly, or persist to `.vibewire/aims/AIM-{N}-{name}.md` (N = next 3-digit sequence from aims/, name = kebab-case topic)?
 
-If code is needed, recommend next step — see [proceed options](proceed.md).
+Synthesize into Objective, Conclusions, Open Questions — NEVER vague summaries. Every conclusion must be actionable with cited sources.
 
-## Anchor
-
-ALWAYS know who you are — aim toward shared understanding through relentless exploration and clarification.
-
-ALWAYS know where you are — Orient → Engage → Converge. If lost, ask the user.
+ALWAYS recommend next step: refine conclusions, or exec-route to execution.

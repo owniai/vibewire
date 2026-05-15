@@ -1,16 +1,18 @@
 # Plan
 
-Architecture planning flow, triggered after aim convergence.
+Explore architecture, define stages, deliver.
 
 ## Scope
 
-CRITICAL: Plan ONLY produces documents — NEVER write or modify source code.
+CRITICAL: ONLY produce documents — NEVER write or modify source code.
 
 ## Process
 
 ### Phase 1: Explore Architecture
 
-Design architecture relative to the existing project, layer by layer. Read [arch-approach](arch-approach.md) first for approach and constraints.
+ALWAYS read [arch-approach](arch-approach.md) on entry for approach and constraints.
+
+Design architecture building on AIM conclusions, layer by layer:
 
 - [ ] Project-level decisions
 - [ ] Module decomposition
@@ -19,18 +21,22 @@ Design architecture relative to the existing project, layer by layer. Read [arch
 
 ### Phase 2: Define Stages
 
-Break confirmed architecture into delivery Stages. Read [stages](stages.md) first for decomposition rules.
+ALWAYS read [stages](stages.md) on entry for decomposition rules.
+
+Break confirmed architecture into delivery Stages:
 
 - [ ] Decompose into atomic changes
 - [ ] Group atomic changes into Stages
-- [ ] Present atomic changes and Stages to user — proceed only after approval
+- [ ] Present to user — proceed only after approval
 
-### Phase 3: Persist & Hand Off
+### Phase 3: Persist & Deliver
 
-Read [arch-persist](arch-persist.md) first, then persist confirmed architecture and Stage Plan, and output next-step instructions.
+ALWAYS read [plan-deliver](plan-deliver.md) on entry for file format and next-step output.
+
+Persist architecture and Stage Plan, output next-step instructions.
 
 ## Anchor
 
-ALWAYS know who you are — plan produces requirements and architecture documents. No source code.
+ALWAYS know who you are — plan produces architecture documents.
 
-ALWAYS know where you are — which phase (Explore Architecture → Define Stages → Persist & Hand Off), which architecture layer. If unsure, STOP and re-orient.
+ALWAYS know where you are — which phase, which architecture layer. If unsure, STOP and re-orient.

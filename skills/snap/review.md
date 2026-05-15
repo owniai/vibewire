@@ -25,6 +25,5 @@ Merge all findings (self-review + external reviewers). Deduplicate: same code lo
 - Fix when the issue affects correctness, security, or runtime behavior, or when the change is minimal and clearly improves the code
 - Skip when the fix would be more disruptive than the issue itself
 - Prioritize code quality — fix even without behavior change when readability, maintainability, or structural clarity improves significantly
-- Make minimal changes only
 
 Re-run full test suite after all fixes.

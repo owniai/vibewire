@@ -26,10 +26,10 @@ Planning complete. Documents saved to .vibewire/actions/PLAN-{N}-{name}/.
 
 To begin execution, run in a new session:
 (code block begin)
-/vibewire:go PLAN-{N}-{name}
-Stage execution order:
-  Stage 1-{name}
-  Stage 2-{name}
-  ...
+    /vibewire:go PLAN-{N}-{name}
+    Stage execution order:
+      Stage 1-{name}
+      Stage 2-{name}
+      ...
 (code block end)
 ```
