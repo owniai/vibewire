@@ -13,12 +13,14 @@ ALWAYS test through public interfaces — NEVER implementation details.
 
 ALWAYS read [tests](tests.md) and [mocking](mocking.md) before writing any test.
 
+File references: ALWAYS read on phase entry or stated condition — NEVER pre-read.
+
 ## Before Start
 
 Load project context — proceed to Explore immediately after:
 
 - `.vibewire/project.md` — if missing, prompt `/vibewire:intro`.
-- `.vibewire/CHANGELOG.md` and `.vibewire/evolve.md` — scan titles, read on-demand. Skip if absent.
+- `.vibewire/CHANGELOG.md` and `.vibewire/evolve.md` — grep titles ONLY, read body on-demand. Skip if absent.
 
 ## Process
 
@@ -57,11 +59,11 @@ All atomic changes done — run full test suite, all tests MUST pass.
 
 ### Phase 5: Review
 
-ALWAYS read [review](review.md) on entry — review and fix.
+ALWAYS read [review](review.md) for review and fix.
 
 ### Phase 6: Persist
 
-ALWAYS read [persist](persist.md) on entry — documentation and commit.
+ALWAYS read [persist](persist.md) for documentation and commit.
 
 ## Anchor
 

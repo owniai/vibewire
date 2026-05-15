@@ -10,7 +10,7 @@ CRITICAL: ONLY produce documents — NEVER write or modify source code.
 
 ### Phase 1: Explore Architecture
 
-ALWAYS read [arch-approach](arch-approach.md) on entry for approach and constraints.
+ALWAYS read [arch-approach](arch-approach.md) for approach and constraints.
 
 Design architecture building on AIM conclusions, layer by layer:
 
@@ -21,7 +21,7 @@ Design architecture building on AIM conclusions, layer by layer:
 
 ### Phase 2: Define Stages
 
-ALWAYS read [stages](stages.md) on entry for decomposition rules.
+ALWAYS read [stages](stages.md) for decomposition rules.
 
 Break confirmed architecture into delivery Stages:
 
@@ -31,7 +31,7 @@ Break confirmed architecture into delivery Stages:
 
 ### Phase 3: Persist & Deliver
 
-ALWAYS read [plan-deliver](plan-deliver.md) on entry for file format and next-step output.
+ALWAYS read [plan-deliver](plan-deliver.md) for format and next-step output.
 
 Persist architecture and Stage Plan, output next-step instructions.
 

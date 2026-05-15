@@ -50,12 +50,12 @@ Extract `PLAN_DIRECTORY` from the prompt. Read documents in layered order — gl
 
 Update all affected sections. Always update the first-line metadata: `> Last updated: yyyy-mm-dd | PLAN-{N}-{name}`. Leave unchanged sections untouched.
 
-**CHANGELOG.md** — Append entry at the top:
+**CHANGELOG.md** — Prepend entry:
 
 ```markdown
-## yyyy-mm-dd | PLAN-{N}-{name}
-- Added: [module name and responsibility]
-- Changed: [changed modules]
+## YYYY-MM-DD | PLAN-{N}-{name}
+Objective: {1-2 sentences}
+What changed: {bullet points}
 ```
 
 ### Phase 3: Synthesize Experience

@@ -82,7 +82,7 @@ claude plugins install vibewire@vibewire
       → explore architecture (layer by layer)
       → scout (if tech unknowns) → .vibewire/tech-research/{task-id}.md + .vibewire/tech-research/knowledge.md
       → experimenter (if unverified assumptions) → .vibewire/experiments/{task-id}/
-      → .vibewire/actions/PLAN-{N}-{name}/architecture.md
+      → .vibewire/plans/PLAN-{N}-{name}/architecture.md
       → (user reviews and approves)
   → may transition to snap if code change is simple
 
@@ -92,7 +92,7 @@ claude plugins install vibewire@vibewire
   → verify (full test suite)
   → review decision (self-review always; optional 3 reviewers in parallel)
   → fix (deduplicate findings, fix or skip)
-  → .vibewire/actions/{name}.md + .vibewire/evolve.md
+  → .vibewire/CHANGELOG.md + .vibewire/evolve.md
   → commit
 
 /vibewire:go PLAN-{N}-{name}

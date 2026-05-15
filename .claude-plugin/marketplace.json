@@ -11,7 +11,7 @@
       "name": "vibewire",
       "source": "./",
       "description": "Autonomous development workflow plugin — fully automated end-to-end from requirements to code",
-      "version": "0.10.3",
+      "version": "0.10.4",
       "author": {
         "name": "owniai"
       },

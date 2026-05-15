@@ -21,7 +21,7 @@ IMPORTANT: NEVER merge to shared branches without explicit user confirmation.
 
 Parse `PLAN-{N}-{name}` from user input, then:
 
-- **Verify prerequisites** — `.vibewire/actions/PLAN-{N}-{name}/` MUST exist with `architecture.md`. Missing → prompt user to run `/vibewire:aim`.
+- **Verify prerequisites** — `.vibewire/plans/PLAN-{N}-{name}/` MUST exist with `architecture.md`. Missing → prompt user to run `/vibewire:aim`.
 - **Create feature branch** — note the current branch as `{original-branch}` (used in §4 Wrap-Up), then run:
   ```
   git checkout -b feature/PLAN-{N}-{name}
@@ -37,7 +37,7 @@ Determine the stage list: parse from user input; ONLY read `architecture.md`'s S
 subagent_type: "vibewire:implementer"
 description: "implementer Stage {M}-{name}"
 prompt: |
-  PLAN_DIRECTORY: .vibewire/actions/PLAN-{N}-{name}/
+  PLAN_DIRECTORY: .vibewire/plans/PLAN-{N}-{name}/
   STAGE: {M}-{name}
 ```
 
@@ -48,7 +48,7 @@ Handle by implementer status:
 If still BLOCKED after 2 retries → pause for user intervention:
 
 ```
-Stage {M}-{name}: failed after retries. See .vibewire/actions/PLAN-{N}-{name}/log.md
+Stage {M}-{name}: failed after retries. See .vibewire/plans/PLAN-{N}-{name}/log.md
 ```
 
 #### Step 2.2: Dispatch Reviewers
@@ -60,7 +60,7 @@ subagent_type: "vibewire:{reviewer}"
 description: "{reviewer} Stage {M}-{name}"
 prompt: |
   MODE: staged
-  PLAN_DIRECTORY: .vibewire/actions/PLAN-{N}-{name}/
+  PLAN_DIRECTORY: .vibewire/plans/PLAN-{N}-{name}/
   STAGE: {M}-{name}
 ```
 
@@ -76,7 +76,7 @@ Once all three complete, evaluate their combined output:
 subagent_type: "vibewire:resolver"
 description: "resolver Stage {M}-{name}"
 prompt: |
-  PLAN_DIRECTORY: .vibewire/actions/PLAN-{N}-{name}/
+  PLAN_DIRECTORY: .vibewire/plans/PLAN-{N}-{name}/
   STAGE: {M}-{name}
 ```
 
@@ -92,7 +92,7 @@ After all stages complete, enter the acceptance-fix loop. Initialize `round = 1`
 subagent_type: "vibewire:acceptor"
 description: "acceptor PLAN-{N}-{name}"
 prompt: |
-  PLAN_DIRECTORY: .vibewire/actions/PLAN-{N}-{name}/
+  PLAN_DIRECTORY: .vibewire/plans/PLAN-{N}-{name}/
 ```
 
 Handle by acceptor verdict:
@@ -105,14 +105,14 @@ Handle by acceptor verdict:
 subagent_type: "vibewire:fixer"
 description: "fixer PLAN-{N}-{name} round {round}"
 prompt: |
-  PLAN_DIRECTORY: .vibewire/actions/PLAN-{N}-{name}/
+  PLAN_DIRECTORY: .vibewire/plans/PLAN-{N}-{name}/
   ROUND: {round}
 ```
 
 After fixer completes, `round++` and return to §3.1. If `round > 3` → pause for user intervention:
 
 ```
-PLAN-{N}-{name}: acceptance loop ended with unresolved issues. See .vibewire/actions/PLAN-{N}-{name}/acceptance.md
+PLAN-{N}-{name}: acceptance loop ended with unresolved issues. See .vibewire/plans/PLAN-{N}-{name}/acceptance.md
 ```
 
 ### Phase 4: Wrap Up
@@ -121,7 +121,7 @@ PLAN-{N}-{name}: acceptance loop ended with unresolved issues. See .vibewire/act
 subagent_type: "vibewire:evolver"
 description: "evolver PLAN-{N}-{name}"
 prompt: |
-  PLAN_DIRECTORY: .vibewire/actions/PLAN-{N}-{name}/
+  PLAN_DIRECTORY: .vibewire/plans/PLAN-{N}-{name}/
 ```
 
 After evolver completes, report overall status, then ask the user how to merge via AskUserQuestion:

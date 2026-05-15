@@ -82,7 +82,7 @@ claude plugins install vibewire@vibewire
       → 探索架构（逐层确认）
       → scout（如有技术未知项）→ .vibewire/tech-research/{task-id}.md + .vibewire/tech-research/knowledge.md
       → experimenter（如有未验证假设）→ .vibewire/experiments/{task-id}/
-      → .vibewire/actions/PLAN-{N}-{name}/architecture.md
+      → .vibewire/plans/PLAN-{N}-{name}/architecture.md
       → （用户审查并批准）
   → 如代码变更简单可转入 snap
 
@@ -92,7 +92,7 @@ claude plugins install vibewire@vibewire
   → 验证（完整测试套件）
   → 审查决策（始终自审；可选 3 个审查者并行）
   → 修复（去重发现，修复或跳过）
-  → .vibewire/actions/{name}.md + .vibewire/evolve.md
+  → .vibewire/CHANGELOG.md + .vibewire/evolve.md
   → commit
 
 /vibewire:go PLAN-{N}-{name}
