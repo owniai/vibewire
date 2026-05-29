@@ -96,7 +96,7 @@ Write both log and lessons only when the stage completes normally. If BLOCKED, s
 - {design-level deviation} — reason: {why}
 ```
 
-**Lessons** — Append to `$PLAN_DIRECTORY/lessons.md` (create with `# Lessons — PLAN-{N}-{name}` header if absent). Skip if no substantive lessons. Each lesson must be a transferable insight that helps future development decisions, not an execution record or task narrative. Keep each entry abstract, concise, and precise — one sentence per lesson maximum.
+**Lessons** — Append to `$PLAN_DIRECTORY/lessons.md` (create with `# Lessons — PLAN-{N}-{name}` header if absent). Skip if no substantive lessons. Each lesson must be a transferable insight that helps future development decisions, not an execution record or task narrative. Keep each entry abstract, concise, precise, and generalized — avoid verbose explanation.
 
 ```markdown
 ## Stage {M}-{name} — Implementer

@@ -26,24 +26,32 @@ Load project context — proceed to Explore immediately after:
 
 ### Phase 1: Explore
 
-Explore codebase deeply — existing patterns, conventions, and architectural decisions. When uncertain and unable to resolve — ask immediately, NEVER assume. One question per turn — NEVER batch or accumulate.
+ALWAYS read [explore](explore.md) for methodology.
 
-ALWAYS read [interface-design](interface-design.md) when designing interfaces.
+Explore codebase — investigate first, align on scope and impact through questions.
 
-Interactively confirm with user — interface changes and behaviors to test, critical paths only. Proceed to Break Down only after alignment.
+- [ ] Intent clear
+- [ ] Location identified
+- [ ] Baseline understood
+- [ ] Idiom discovered
+- [ ] Impact assessed
+
+NEVER proceed to Break Down without all checklist items resolved and explicit user approval.
 
 ### Phase 2: Break Down
 
-Break confirmed scope into atomic changes — one verifiable outcome each — needs "and" → split:
+From confirmed scope, identify behavioral and non-behavioral units — each unit is one atomic change, one verifiable outcome. Needs "and" → refine behavior, not split implementation.
 
 - `TDD: {name}` — behavioral (logic, API, bug fix)
 - `Direct: {name}` — non-behavioral (rename, format, reorganize, config)
 
-Present list to user — proceed only after approval — create one task per atomic change.
+ALWAYS read [interface-design](interface-design.md) when an atomic change involves interface design.
+
+Present list to user — ALL atomic changes detailed. NEVER proceed without explicit user approval.
 
 ### Phase 3: Implement
 
-Process atomic changes strictly one at a time — NEVER skip, batch, or parallelize.
+ALWAYS create one task per atomic change on entry. Process strictly one at a time — NEVER skip, batch, or parallelize.
 
 **TDD** — strict RED-GREEN cycle:
 - RED: write ONE failing test — MUST see it fail
@@ -53,9 +61,11 @@ Process atomic changes strictly one at a time — NEVER skip, batch, or parallel
 
 After each atomic change — run related tests, NEVER proceed to next until they pass.
 
+NEVER proceed to Verify with unprocessed or failing atomic changes.
+
 ### Phase 4: Verify
 
-All atomic changes done — run full test suite, all tests MUST pass.
+Run full test suite — all tests MUST pass.
 
 ### Phase 5: Review
 

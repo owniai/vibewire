@@ -138,7 +138,7 @@ claude plugins install vibewire@vibewire
 | **resolver** | Consolidates review reports from all three reviewers, deduplicates findings, cross-validates issues, executes minimal fixes | go |
 | **acceptor** | Post-implementation acceptance — verifies requirements traceability and hunts for hidden bugs through adversarial analysis | go |
 | **fixer** | Fixes bugs and partial requirements identified during acceptance verification. Test-first discipline with minimal changes | go |
-| **evolver** | Analyzes project health patterns from review/adjudication data, maintains evolve.md with health dashboard and experience records, updates project documentation | go |
+| **evolver** | Analyzes project health patterns from review/adjudication data, maintains evolve.md with experience records, updates project documentation | go |
 
 ---
 
@@ -152,7 +152,7 @@ All process artifacts are stored in `.vibewire/` within the target project:
 .vibewire/
 ├── project.md                          # Project overview (created by intro)
 ├── CHANGELOG.md                        # Change log (created by intro)
-├── evolve.md                           # Cross-milestone experience and health dashboard (created by evolver)
+├── evolve.md                           # Cross-milestone experience records (created by evolver)
 ├── tech-research/                      # Tech research artifacts (created by scout)
 │   ├── knowledge.md                    # Global research knowledge base
 │   └── {task-id}.md                    # Detailed research per task

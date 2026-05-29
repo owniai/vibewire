@@ -9,11 +9,9 @@ Grill until shared understanding — synthesize, route.
 
 ## Scope
 
-CRITICAL: ONLY explore and analyze — NEVER write or modify source code.
+CRITICAL: ONLY explore and analyze — NEVER write or modify source code — route for implementation.
 
-ALWAYS read [route](route.md) when proceeding to execute.
-
-File references: ALWAYS read on phase entry or stated condition — NEVER pre-read.
+Phase references: ALWAYS read on phase entry — NEVER pre-read.
 
 ## Before Start
 
@@ -22,21 +20,27 @@ Load project context — proceed to Grill immediately after:
 - `.vibewire/project.md` — if missing, prompt `/vibewire:intro`.
 - `.vibewire/CHANGELOG.md` and `.vibewire/evolve.md` — grep titles ONLY, read body on-demand. Skip if absent.
 
-## Grill
+## Process
+
+### Phase 1: Grill
 
 ALWAYS read [approach](approach.md) for methodology.
 
-Investigate first, align through questions — interview relentlessly about every aspect until reaching shared understanding.
+Investigate first, align through questions — interview relentlessly until shared understanding.
 
-- [ ] Present the skeleton — proceed ONLY after user confirms the outline.
-- [ ] Walk point by point — resolve and confirm each before advancing.
+- [ ] Present the skeleton — ALL aspects. NEVER deep-dive without confirmed scope.
+- [ ] Probe each point — strictly one at a time. NEVER batch, skip, or advance unresolved.
+- [ ] Deepen understanding — revisit ALL shallow or inconsistent points. NEVER accept vague or contradictory conclusions.
+- [ ] Address unknowns — resolve ALL blockers. NEVER converge with unresolved unknowns.
 
-On convergence, output `Shared understanding reached.` then proceed to Output.
+NEVER proceed to Synthesize with unresolved checklist items.
 
-## Output
+### Phase 2: Synthesize
 
-Ask user on entry: output directly, or persist to `.vibewire/aims/AIM-{N}-{name}.md` (N = next 3-digit sequence from aims/, name = kebab-case topic)?
+ALWAYS ask user on entry: output directly, or persist to `.vibewire/aims/AIM-{N}-{name}.md` (N = next 3-digit sequence from aims/, name = kebab-case topic)?
 
-Synthesize into Objective, Conclusions, Open Questions — NEVER vague summaries. Every conclusion must be actionable with cited sources.
+Synthesize into Objective, Conclusions, Further Exploration — NEVER vague summaries. Every conclusion actionable with cited sources.
 
-ALWAYS recommend next step: refine conclusions, or proceed to execute.
+### Phase 3: Route
+
+ALWAYS read [route](route.md) for routing to implementation.

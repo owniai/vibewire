@@ -1,15 +1,14 @@
-# Exec Route
+# Route
 
-- **snap** — requirement is clear, atomic, no design needed. Invoke `/vibewire:snap`.
-- **plan** — requirement is directional but needs architectural planning. Follow [plan](plan.md) flow.
-- **delegate: snap** — session context exhausted or scope demands fresh start. Output a copy-ready prompt: `/vibewire:snap` first, then objective, conclusions, blocking open questions. Conclusions only — never the exploration process.
+ALWAYS present all routes via AskUserQuestion with a recommendation — fast routing, no deep deliberation, user decides. ALWAYS include the persisted AIM document path if one exists.
 
-ALWAYS recommend the narrowest option. When snap suffices, do not suggest plan.
-
-ALWAYS include the persisted AIM document path if one exists.
+- **snap** — clear, atomic, no design needed. Invoke `/vibewire:snap`.
+- **plan** — directional, needs architectural planning. Follow [plan](plan.md).
+- **delegate: snap** — session exhausted or scope demands fresh start. Output copy-ready prompt: `/vibewire:snap`, objective, conclusions, further exploration. Conclusions only — never the exploration process.
+- **close** — end session without routing to implementation.
 
 ## Commit
 
-If AIM file was created or modified during this session — ask user to confirm commit before routing. Stage ONLY the AIM file. Message format: `[AIM-{N}-{name}] docs: {one-line description}`.
+ALWAYS confirm commit before exiting if AIM file was created or modified. Stage ONLY the AIM file. Format: `[AIM-{N}-{name}] docs: {one-line description}`.
 
-AIM's responsibility ends here — execution is delegated to the next flow.
+AIM's responsibility ends here.

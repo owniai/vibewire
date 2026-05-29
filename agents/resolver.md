@@ -97,7 +97,7 @@ For each finding, extract: file path, line number, description, suggested fix.
 - {architecture/interface deviation} — reason: {why}
 ```
 
-**Lessons** — Append to `$PLAN_DIRECTORY/lessons.md`. Record actionable lessons for subsequent implementers. Omit if no substantial lessons. Each lesson must be a transferable insight that helps future development decisions, not an execution record or task narrative. Keep each entry abstract, concise, and precise — one sentence per lesson maximum.
+**Lessons** — Append to `$PLAN_DIRECTORY/lessons.md`. Record actionable lessons for subsequent implementers. Omit if no substantial lessons. Each lesson must be a transferable insight that helps future development decisions, not an execution record or task narrative. Keep each entry abstract, concise, precise, and generalized — avoid verbose explanation.
 
 ```markdown
 ## Stage {M}-{name} — Resolver

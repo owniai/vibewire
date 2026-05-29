@@ -12,7 +12,7 @@ CRITICAL: ONLY produce documents — NEVER write or modify source code.
 
 ALWAYS read [arch-approach](arch-approach.md) for approach and constraints.
 
-Design architecture building on AIM conclusions, layer by layer:
+Design architecture building on AIM conclusions — strictly one layer at a time, top-down. NEVER skip, batch, or advance before layer confirmed.
 
 - [ ] Project-level decisions
 - [ ] Module decomposition
@@ -27,7 +27,7 @@ Break confirmed architecture into delivery Stages:
 
 - [ ] Decompose into atomic changes
 - [ ] Group atomic changes into Stages
-- [ ] Present to user — proceed only after approval
+- [ ] Present to user — ALL stages detailed. NEVER proceed without explicit approval.
 
 ### Phase 3: Persist & Deliver
 

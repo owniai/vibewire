@@ -4,14 +4,27 @@
 
 ## Documentation
 
-- `.vibewire/CHANGELOG.md` — prepend entry:
-  ```
-  ## YYYY-MM-DD | SNAP-{name}
-  Objective: {1-2 sentences}
-  What changed: {bullet points}
-  ```
-- `.vibewire/evolve.md` — append only when a genuinely reusable lesson emerged: short title + root cause + recommendation. Must be a transferable insight that helps future development (e.g., "API rate limits apply per-header, not per-token"), not a task execution record. Keep each entry abstract, concise, and precise — one sentence per field maximum. Skip when no such lesson exists.
-- `.vibewire/project.md` — update if this task affected project structure or conventions. Skip if no impact.
+### CHANGELOG.md
+
+Prepend entry:
+```
+## YYYY-MM-DD | SNAP-{name}
+Objective: {1-2 sentences}
+What changed: {bullet points}
+```
+
+### evolve.md
+
+Prepend ONLY when a genuinely reusable lesson emerged. Must be a transferable insight that helps future development (e.g., "API rate limits apply per-header, not per-token"), not a task execution record. Keep each entry abstract, concise, precise, and generalized — avoid verbose explanation. Skip when no such lesson exists.
+```
+## {Pattern Title} | SNAP-{name}
+- Lesson: {what was learned}
+- Action: {what to do differently}
+```
+
+### project.md
+
+Update if this task affected project structure or conventions. Skip if no impact.
 
 ## Commit
 
