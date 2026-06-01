@@ -1,8 +1,13 @@
-# Review
+# Polish
 
-ALWAYS ask user whether to launch external reviewers on entry. Self-review is mandatory — external reviewers run in parallel if approved.
+On entry, ALWAYS ask user whether to launch external reviewers (`quality-reviewer`, `efficiency-reviewer`, `reuse-reviewer`) BEFORE any review activity.
 
-Self-review looks for:
+- **Approved** — run self-review AND external reviewers in parallel.
+- **Declined** — proceed with self-review only.
+
+## Self-review
+
+Looks for:
 - **Duplication** → Extract function/class
 - **Long methods** → Break into private helpers (keep tests on public interface)
 - **Shallow modules** → Combine or deepen
@@ -10,14 +15,9 @@ Self-review looks for:
 - **Primitive obsession** → Introduce value objects
 - **Existing code** the new code reveals as problematic
 
-External reviewers (if approved) — launch three agents in parallel:
-- `quality-reviewer`
-- `efficiency-reviewer`
-- `reuse-reviewer`
-
 ## Fix
 
-Merge all findings. Deduplicate by location. For each:
+Merge all findings (self + external, if any). Deduplicate by location. For each:
 - **Fix** — correctness, security, runtime behavior, or clear code improvement
 - **Skip** — fix more disruptive than issue
 - **Prioritize** — readability, maintainability, structural clarity, even without behavior change

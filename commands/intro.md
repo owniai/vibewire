@@ -33,6 +33,8 @@ IMPORTANT: NEVER skip modules within the confirmed scan scope.
 
 ### Phase 2: Explore Codebase
 
+- **Empty project guard** — if no source code files exist (only config, docs, or empty directories), skip remaining exploration and proceed to Phase 3 to create placeholder docs with minimal content (project name, creation date, "empty project — awaiting source code"). Do NOT fabricate architecture or tech stack details.
+
 Scan and understand the codebase from root structure through each dimension：
 - **Overview** — extract from existing docs first (README, CLAUDE.md, `package.json` description)
 - **Tech stack** — identify via feature files (`package.json`, `Cargo.toml`, `go.mod`, `pyproject.toml`, `pom.xml`)
@@ -43,7 +45,7 @@ Scan and understand the codebase from root structure through each dimension：
 
 Write the following files to `.vibewire/`.
 
-**.vibewire/project.md** structure:
+**.vibewire/project.md** structure — prefer markdown headings (`###`, `####`) over deeply nested lists for sub-section hierarchy:
 
 ```markdown
 # {Project Name}
