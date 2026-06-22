@@ -19,17 +19,9 @@ Stage ONLY files produced by this task. Commit message format: `[PLAN-{N}-{name}
 
 ## Next Steps
 
-Output the following prompt for the user to copy and run in a new session:
+Output the following for the user:
 
 ```
 Planning complete. Documents saved to .vibewire/plans/PLAN-{N}-{name}/.
-
-To begin execution, run in a new session:
-(code block begin)
-    /vibewire:go PLAN-{N}-{name}
-    Stage execution order:
-      Stage 1-{name}
-      Stage 2-{name}
-      ...
-(code block end)
+Architecture and Stage Plan are ready for implementation.
 ```
