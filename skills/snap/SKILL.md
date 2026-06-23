@@ -19,6 +19,7 @@ Load project context — proceed to Explore immediately after:
 
 - `.vibewire/project.md` — if missing, prompt `/vibewire:intro`.
 - `.vibewire/CHANGELOG.md` and `.vibewire/evolve.md` — grep titles ONLY, read body on-demand. Skip if absent.
+- [plan-execution](plan-execution.md) — read ONLY when the prompt contains `PLAN-{N}-{name}`, for PLAN execution.
 
 ## Process
 
@@ -69,14 +70,14 @@ Run full test suite — all tests MUST pass.
 
 ### Phase 5: Polish
 
-ALWAYS read [polish-guide](polish.md).
+ALWAYS read [polish-guide](polish.md) — self-review, optional external review, and fix.
 
-### Phase 6: Persist
+## Finalize
 
-ALWAYS read [persist-guide](persist.md) for documentation and commit.
+ALWAYS read [finalize-guide](finalize.md) for documentation and commit — after Phase 5 (ad-hoc snap), or after Acceptance in PLAN execution (see [plan-execution](plan-execution.md)).
 
 ## Anchor
 
 ALWAYS know who you are — snap delivers atomic changes through TDD or direct tracks, with optional external review.
 
-ALWAYS know where you are — which phase (Explore → Break Down → Implement → Verify → Polish → Persist), which atomic change. If unsure, STOP and re-orient.
+ALWAYS know where you are — which phase (Explore → Break Down → Implement → Verify → Polish → then Finalize), which atomic change. If unsure, STOP and re-orient.

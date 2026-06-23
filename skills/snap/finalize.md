@@ -1,6 +1,6 @@
-# Persist
+# Finalize
 
-`{name}` derives from the task's objective, in kebab-case (e.g., `fix-login-bug`).
+`{IDENTITY}` identifies the work: `SNAP-{name}` for ad-hoc snap (`{name}` = task objective, kebab-case, e.g., `fix-login-bug`), or `PLAN-{N}-{name}` for PLAN execution.
 
 ## Documentation
 
@@ -8,7 +8,7 @@
 
 Prepend entry:
 ```
-## YYYY-MM-DD | SNAP-{name}
+## YYYY-MM-DD | {IDENTITY}
 Objective: {1-2 sentences}
 What changed: {bullet points}
 ```
@@ -17,7 +17,7 @@ What changed: {bullet points}
 
 Prepend ONLY when a genuinely reusable lesson emerged. Must be a transferable insight that helps future development (e.g., "API rate limits apply per-header, not per-token"), not a task execution record. Keep each entry abstract, concise, precise, and generalized — avoid verbose explanation. Skip when no such lesson exists.
 ```
-## {Pattern Title} | SNAP-{name}
+## {Pattern Title} | {IDENTITY}
 - Lesson: {what was learned}
 - Action: {what to do differently}
 ```
@@ -28,4 +28,4 @@ Update if this task affected project structure or conventions. Skip if no impact
 
 ## Commit
 
-Stage ONLY files changed or produced by this task — source files and updated `.vibewire/` files. Commit message format: `[SNAP-{name}] feat: {one-line description}`.
+Stage ONLY what this task changed or produced. Commit message format: `[{IDENTITY}] {type}: {one-line description}`.
