@@ -14,10 +14,10 @@ It starts with your project. Run `/vibewire:intro` once to scan the codebase and
 
 Choose the right skill for your task:
 
-- **Aim** — For exploration, research, discussion, and architecture planning. Aim clarifies requirements, investigates unknowns, and when needed, designs architecture with a staged delivery plan. When a task involves new technologies or unverified assumptions, aim dispatches **scout** to investigate and **experimenter** to run real-world experiments — grounding architecture decisions in verified data. If code is needed, aim transitions to snap or produces a PLAN document (architecture + stage plan).
+- **Aim** — For exploration, research, discussion, and architecture planning. Aim clarifies requirements, investigates unknowns, and when needed, designs architecture with a checkpoint-based delivery plan. When a task involves new technologies or unverified assumptions, aim dispatches **scout** to investigate and **experimenter** to run real-world experiments — grounding architecture decisions in verified data. If code is needed, aim transitions to snap or produces a PLAN document (architecture + checkpoint plan).
 - **Snap** — For well-defined implementation tasks. Snap handles the entire cycle: break down → TDD → verify → optional review → record → commit. Review is recommended for changes spanning 3+ files or affecting public APIs.
 
-All process artifacts live in `.vibewire/` inside your project — architecture, stage designs, implementation records, review reports, and experience logs. Nothing is hidden. You can trace every decision.
+All process artifacts live in `.vibewire/` inside your project — architecture, checkpoint plans, implementation records, review reports, and experience logs. Nothing is hidden. You can trace every decision.
 
 ---
 
@@ -67,9 +67,10 @@ claude plugins install vibewire@vibewire
       → explore architecture (layer by layer)
       → scout (if tech unknowns) → .vibewire/tech-research/{task-id}.md + .vibewire/tech-research/knowledge.md
       → experimenter (if unverified assumptions) → .vibewire/experiments/{task-id}/
-      → .vibewire/plans/PLAN-{N}-{name}/architecture.md
+      → .vibewire/plans/PLAN-{N}-{name}/ (architecture.md + checkpoints.md)
       → (user reviews and approves)
-  → may transition to snap if code change is simple
+      → hand off to snap: /vibewire:snap PLAN-{N}-{name} (execute checkpoints)
+  → or transition to snap directly if the change is simple
 
 /vibewire:snap (implementation):
   → break down → confirm
@@ -95,7 +96,7 @@ claude plugins install vibewire@vibewire
 
 | Skill | Description |
 |-------|-------------|
-| **aim** | Exploration, clarification, and architecture planning: orient → clarify → research / discussion / architecture design. Produces PLAN documents (architecture + stage plan) |
+| **aim** | Exploration, clarification, and architecture planning: orient → clarify → research / discussion / architecture design. Produces PLAN documents (architecture + checkpoint plan) |
 | **snap** | TDD implementation with optional review: break down → implement → verify → review decision → record → commit |
 
 ### Agents (5)
@@ -128,10 +129,10 @@ All process artifacts are stored in `.vibewire/` within the target project:
 │   ├── framework.md                    # Global experiment framework (created by experimenter)
 │   └── {task-id}/                      # Experiment results (created by experimenter)
 │       └── result.md
-├── actions/                            # Action and plan records
-│   ├── {name}.md                       # Action summary (created by snap)
+├── plans/                              # Plan records
 │   └── PLAN-{N}-{name}/               # Planning directory per plan task
-│       └── architecture.md             # Architecture design with Stage Plan (created by aim)
+│       ├── architecture.md             # Architecture design (created by aim)
+│       └── checkpoints.md              # Delivery checkpoints + status header (created by aim)
 └── aims/                               # Aim records (created by aim)
     └── AIM-{N}-{name}.md             # Analysis/research conclusions
 ```
@@ -159,6 +160,8 @@ flowchart TD
         A8 --> A9
     end
 
+    A9 --> snapflow
+
     subgraph snapflow["/vibewire:snap"]
         direction TB
         S0[User confirms scope] --> S1["Break Down → TDD → Verify"]
@@ -177,7 +180,7 @@ flowchart TD
 - **Autonomous by default** — You approve the design. The agents handle the rest.
 - **Review before merge** — Three independent reviewers catch different classes of issues. Nothing ships without review.
 - **Traceable process** — Every decision, every change, every review is recorded in `.vibewire/`.
-- **Fix, don't skip** — Blocked agents trigger automatic rework. Issues are escalated, not ignored.
+- **Fix, don't skip** — Review findings are fixed, not deferred.
 - **Scope discipline** — The aim skill pushes back on oversized tasks and helps you ship the smallest useful unit first.
 
 ---

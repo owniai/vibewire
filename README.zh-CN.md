@@ -14,10 +14,10 @@ VibeWire 编排一组专业化的 Agent 流水线，代表你完成规划、实�
 
 根据任务选择合适的 skill：
 
-- **Aim** — 适用于探索、研究、讨论和架构规划。Aim 澄清需求、调查未知项，必要时设计架构并生成分阶段交付计划。当任务涉及新技术或未验证的假设时，aim 派遣 **scout** 调查技术事实，派遣 **experimenter** 运行真实实验——将架构决策建立在已验证的数据之上。如果需要编码，aim 转向 snap 或产出 PLAN 文档（架构 + 阶段计划）。
+- **Aim** — 适用于探索、研究、讨论和架构规划。Aim 澄清需求、调查未知项，必要时设计架构并生成基于检查点的交付计划。当任务涉及新技术或未验证的假设时，aim 派遣 **scout** 调查技术事实，派遣 **experimenter** 运行真实实验——将架构决策建立在已验证的数据之上。如果需要编码，aim 转向 snap 或产出 PLAN 文档（架构 + 检查点计划）。
 - **Snap** — 适用于明确的实现任务。Snap 完成整个周期：分解 → TDD → 验证 → 可选审查 → 记录 → 提交。当变更涉及 3+ 文件或影响公共 API 时推荐进行审查。
 
-所有过程产物存放在项目内的 `.vibewire/` 目录——架构、阶段设计、实现记录、审查报告和经验日志。一切透明可追溯。
+所有过程产物存放在项目内的 `.vibewire/` 目录——架构、检查点计划、实现记录、审查报告和经验日志。一切透明可追溯。
 
 ---
 
@@ -67,9 +67,10 @@ claude plugins install vibewire@vibewire
       → 探索架构（逐层确认）
       → scout（如有技术未知项）→ .vibewire/tech-research/{task-id}.md + .vibewire/tech-research/knowledge.md
       → experimenter（如有未验证假设）→ .vibewire/experiments/{task-id}/
-      → .vibewire/plans/PLAN-{N}-{name}/architecture.md
+      → .vibewire/plans/PLAN-{N}-{name}/（architecture.md + checkpoints.md）
       → （用户审查并批准）
-  → 如代码变更简单可转入 snap
+      → 移交 snap：/vibewire:snap PLAN-{N}-{name}（执行检查点）
+  → 或变更简单时直接转入 snap
 
 /vibewire:snap（实现）:
   → 分解 → 确认
@@ -95,7 +96,7 @@ claude plugins install vibewire@vibewire
 
 | Skill | 描述 |
 |-------|------|
-| **aim** | 探索、澄清和架构规划：定位 → 澄清 → 研究 / 讨论 / 架构设计。产出 PLAN 文档（架构 + 阶段计划） |
+| **aim** | 探索、澄清和架构规划：定位 → 澄清 → 研究 / 讨论 / 架构设计。产出 PLAN 文档（架构 + 检查点计划） |
 | **snap** | TDD 实现，可选审查：分解 → 实现 → 验证 → 审查决策 → 记录 → 提交 |
 
 ### Agents（5 个）
@@ -128,10 +129,10 @@ claude plugins install vibewire@vibewire
 │   ├── framework.md                    # 全局实验框架（由 experimenter 创建）
 │   └── {task-id}/                      # 实验结果（由 experimenter 创建）
 │       └── result.md
-├── actions/                            # Action 和 Plan 记录
-│   ├── {name}.md                       # Action 摘要（由 snap 创建）
+├── plans/                              # Plan 记录
 │   └── PLAN-{N}-{name}/               # 每个 plan 任务的规划目录
-│       └── architecture.md             # 架构设计含 Stage Plan（由 aim 创建）
+│       ├── architecture.md             # 架构设计（由 aim 创建）
+│       └── checkpoints.md              # 交付检查点 + 状态头（由 aim 创建）
 └── aims/                               # Aim 记录（由 aim 创建）
     └── AIM-{N}-{name}.md             # 分析/研究结论
 ```
@@ -159,6 +160,8 @@ flowchart TD
         A8 --> A9
     end
 
+    A9 --> snapflow
+
     subgraph snapflow["/vibewire:snap"]
         direction TB
         S0[用户确认范围] --> S1["分解 → TDD → 验证"]
@@ -177,7 +180,7 @@ flowchart TD
 - **默认自主** — 你批准设计，Agent 处理其余一切。
 - **合并前审查** — 三个独立审查者捕获不同类别的问题。没有未经审查的代码上线。
 - **过程可追溯** — 每个决策、每次变更、每份审查都记录在 `.vibewire/` 中。
-- **修复而非跳过** — 被阻塞的 Agent 触发自动返工。问题会被升级，不会被忽略。
+- **修复而非跳过** — 审查发现的问题会被修复，不会被搁置。
 - **范围自律** — aim 技能会对过大的任务提出质疑，帮助你优先交付最小的可用单元。
 
 ---
