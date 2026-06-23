@@ -30,10 +30,10 @@ All Checkpoints `[x]` → Acceptance.
 
 ## Acceptance
 
-Dispatch three agents — quality-reviewer, efficiency-reviewer, reuse-reviewer — to verify every Checkpoint's acceptance criteria against `checkpoints.md` (primary), `architecture.md`, `log.md`.
+Dispatch three Explore agents in parallel — each independently verifying every Checkpoint's acceptance criteria against `checkpoints.md` (primary), `architecture.md`, `log.md`.
 
 - **Clean** → Finalize.
-- **Requirement gap** → fix, re-dispatch; loop until clean. Recurring gaps → STOP.
+- **Requirement gap** → fix, re-verify; loop until clean. Recurring gaps → STOP.
 - **Bug / non-requirement** → fix, re-run the test suite, Finalize.
 
 ## Finalize
