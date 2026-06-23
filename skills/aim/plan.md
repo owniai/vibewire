@@ -1,10 +1,12 @@
 # Plan
 
-Explore architecture, define stages, deliver.
+Explore architecture, define checkpoints, persist, and route.
 
 ## Scope
 
 CRITICAL: ONLY produce documents — NEVER write or modify source code.
+
+Phase references: ALWAYS read on phase entry — NEVER pre-read.
 
 ## Process
 
@@ -19,21 +21,27 @@ Design architecture building on AIM conclusions — strictly one layer at a time
 - [ ] Data flow and interfaces
 - [ ] Module internals
 
-### Phase 2: Define Stages
+### Phase 2: Define Checkpoints
 
-ALWAYS read [stages](stages.md) for decomposition rules.
+ALWAYS read [checkpoints](checkpoints.md) for decomposition rules.
 
-Break confirmed architecture into delivery Stages:
+Break confirmed architecture into delivery Checkpoints:
 
-- [ ] Decompose into atomic changes
-- [ ] Group atomic changes into Stages
-- [ ] Present to user — ALL stages detailed. NEVER proceed without explicit approval.
+- [ ] Group into delivery Checkpoints (runnable after each)
+- [ ] Present to user — ALL checkpoints detailed. NEVER proceed without explicit approval.
 
-### Phase 3: Persist & Deliver
+### Phase 3: Persist
 
-ALWAYS read [plan-deliver](plan-deliver.md) for format and next-step output.
+Persist to `.vibewire/plans/PLAN-{N}-{name}/` (N = next 3-digit sequence from plans/, name = kebab-case task id). Two files:
 
-Persist architecture and Stage Plan, output next-step instructions.
+- **`architecture.md`** — the four architecture layers, all confirmed decisions, tech decisions citing evidence sources. Architecture only.
+- **`checkpoints.md`** — a status header (one `- [ ]` per Checkpoint, all unchecked) above a `---` divider, then each Checkpoint's definition per the [format](checkpoints.md).
+
+Commit ONLY these two files: `[PLAN-{N}-{name}] docs: {one-line description}`.
+
+### Phase 4: Route
+
+Recommend executing the checkpoints — output copy-ready `/vibewire:snap PLAN-{N}-{name}`.
 
 ## Anchor
 
