@@ -20,7 +20,7 @@ Branch `plan/PLAN-{N}-{name}`.
 
 ## Per Checkpoint
 
-**Execute** — Phases 1-5 (Explore → Polish), scoped to this Checkpoint. Confirm only Checkpoint-scoped decisions. Polish ALWAYS runs external reviewers — no ask-gate in PLAN mode.
+**Execute** — Phases 1-5 (Investigate → Polish), scoped to this Checkpoint. Confirm only Checkpoint-scoped decisions. Polish ALWAYS runs external reviewers — no ask-gate in PLAN mode.
 
 **Wrap up** — record drift + notes in `log.md` (drift = implementation-level deviation from the plan, e.g. a different solution or an API constraint; notes = reusable observation, e.g. a perf quirk). Flip `[ ]` → `[x]`. Commit code + `checkpoints.md` + `log.md`: `[PLAN-{N}-{name}/CP-{M}-{name}] feat: {one-line}`.
 

@@ -15,7 +15,7 @@ File references: ALWAYS read on phase entry or stated condition — NEVER pre-re
 
 ## Before Start
 
-Load project context — proceed to Explore immediately after:
+Load project context — proceed to Investigate immediately after:
 
 - `.vibewire/project.md` — if missing, prompt `/vibewire:intro`.
 - `.vibewire/CHANGELOG.md` and `.vibewire/evolve.md` — grep titles ONLY, read body on-demand. Skip if absent.
@@ -23,22 +23,19 @@ Load project context — proceed to Explore immediately after:
 
 ## Process
 
-### Phase 1: Explore
+### Phase 1: Investigate
 
-Explore — investigate first, question on uncertainty, advance on confirmation.
-- **Sequential focus** — one checklist item at a time, in order. NEVER touch a later item before the current one is explicitly confirmed and resolved. Silence does NOT count as confirmation.
-- **Investigate first, question immediately** — resolve by codebase evidence; ask ONLY when evidence cannot answer, as soon as uncertainty arises. NEVER accumulate questions.
-- **One question per turn** — one point, one answer. ALWAYS attach recommendation; user confirms or corrects, NEVER constructs from zero.
-- **Cite sources** — EVERY finding needs provenance: file paths, code references. Distinguish fact from inference.
+**Clarify** — Resolve task ambiguity and confirm scope BEFORE exploring. Investigate by codebase evidence; ask ONLY when evidence cannot answer, the moment uncertainty arises — one question per turn, ALWAYS attach a recommendation; user confirms or corrects, NEVER constructs from zero. Silence is NOT confirmation; NEVER accumulate questions.
 
-Checklist (strict order):
-- [ ] Intent — Resolve task ambiguity before deep exploration.
-- [ ] Location — Trace from entry points through call chains — find ALL relevant locations, not just the first.
-- [ ] Baseline — Read existing code, trace execution paths through public interfaces — NEVER assume how things work without reading.
-- [ ] Idiom — Extract patterns from existing similar features — NEVER invent patterns that conflict.
-- [ ] Impact — Trace dependencies upstream and downstream — NEVER proceed without knowing the blast radius.
+**Explore** — Map the codebase in one fluid pass. EVERY finding needs provenance — file paths; distinguish fact from inference.
+- **Location** — Trace from entry points through call chains — find ALL relevant locations, not just the first.
+- **Baseline** — Read existing code, trace execution paths through public interfaces — NEVER assume how things work without reading.
+- **Idiom** — Extract patterns from existing similar features — NEVER invent patterns that conflict.
+- **Impact** — Trace dependencies upstream and downstream — NEVER proceed without knowing the blast radius.
 
-NEVER proceed to Break Down without all checklist items resolved and explicit user approval.
+Prefer dispatching ONE Explore agent for this pass — context coherence over a parallel fleet. If you delegate, ALWAYS review its key findings against the code yourself — NEVER trust a subagent wholesale; verify what Break Down will lean on, re-investigate anything unsupported.
+
+NEVER proceed to Break Down without scope clarified, the codebase explored, and explicit user approval.
 
 ### Phase 2: Break Down
 
@@ -80,4 +77,4 @@ ALWAYS read [finalize-guide](finalize.md) for documentation and commit — after
 
 ALWAYS know who you are — snap delivers atomic changes through TDD or direct tracks, with optional external review.
 
-ALWAYS know where you are — which phase (Explore → Break Down → Implement → Verify → Polish → then Finalize), which atomic change. If unsure, STOP and re-orient.
+ALWAYS know where you are — which phase (Investigate → Break Down → Implement → Verify → Polish → then Finalize), which atomic change. If unsure, STOP and re-orient.
