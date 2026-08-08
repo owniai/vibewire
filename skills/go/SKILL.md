@@ -1,9 +1,9 @@
 ---
-name: snap
-description: "Use ONLY when the user explicitly invokes /vibewire:snap. Implement atomic changes — TDD for behavior, direct for non-behavioral — with self-review and optional external reviewers."
+name: go
+description: "Use ONLY when the user explicitly invokes /vibewire:go. Implement atomic changes — TDD for behavior, direct for non-behavioral — with self-review and optional external reviewers."
 ---
 
-# Snap
+# Go
 
 Implement atomic changes — TDD for behavior, direct for the rest.
 
@@ -17,8 +17,7 @@ File references: ALWAYS read on phase entry or stated condition — NEVER pre-re
 
 Load project context — proceed to Investigate immediately after:
 
-- `.vibewire/project.md` — if missing, prompt `/vibewire:intro`.
-- `.vibewire/CHANGELOG.md` and `.vibewire/evolve.md` — grep titles ONLY, read body on-demand. Skip if absent.
+- `.vibewire/project.md` — if missing, prompt `/vibewire:intro`. Follow its **Vibewire artifacts** pointers for what else to read (and how).
 - [plan-execution](plan-execution.md) — read ONLY when the prompt contains `PLAN-{N}-{name}`, for PLAN execution.
 
 ## Process
@@ -71,10 +70,10 @@ ALWAYS read [polish-guide](polish.md) — self-review, optional external review,
 
 ## Finalize
 
-ALWAYS read [finalize-guide](finalize.md) for documentation and commit — after Phase 5 (ad-hoc snap), or after Acceptance in PLAN execution (see [plan-execution](plan-execution.md)).
+ALWAYS read [finalize-guide](finalize.md) for documentation and commit — after Phase 5 (ad-hoc go), or after Acceptance in PLAN execution (see [plan-execution](plan-execution.md)).
 
 ## Anchor
 
-ALWAYS know who you are — snap delivers atomic changes through TDD or direct tracks, with optional external review.
+ALWAYS know who you are — go delivers atomic changes through TDD or direct tracks, with optional external review.
 
 ALWAYS know where you are — which phase (Investigate → Break Down → Implement → Verify → Polish → then Finalize), which atomic change. If unsure, STOP and re-orient.

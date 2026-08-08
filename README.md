@@ -14,8 +14,8 @@ It starts with your project. Run `/vibewire:intro` once to scan the codebase and
 
 Choose the right skill for your task:
 
-- **Aim** — For exploration, research, discussion, and architecture planning. Aim clarifies requirements, investigates unknowns, and when needed, designs architecture with a checkpoint-based delivery plan. When a task involves new technologies or unverified assumptions, aim dispatches **scout** to investigate and **experimenter** to run real-world experiments — grounding architecture decisions in verified data. If code is needed, aim transitions to snap or produces a PLAN document (architecture + checkpoint plan).
-- **Snap** — For well-defined implementation tasks. Snap handles the entire cycle: break down → TDD → verify → optional review → record → commit. Review is recommended for changes spanning 3+ files or affecting public APIs.
+- **Aim** — For exploration, research, discussion, and architecture planning. Aim interviews to shared understanding while recording domain language and ADRs, then optionally synthesizes a to-spec-style AIM and routes to go or a PLAN. When a task involves new technologies or unverified assumptions, aim dispatches **scout** to investigate and **experimenter** to run real-world experiments — grounding architecture decisions in verified data. If code is needed, aim transitions to go or produces a PLAN document (architecture + checkpoint plan).
+- **Go** — For well-defined implementation tasks. Go handles the entire cycle: break down → TDD → verify → optional review → record → commit. Review is recommended for changes spanning 3+ files or affecting public APIs.
 
 All process artifacts live in `.vibewire/` inside your project — architecture, checkpoint plans, implementation records, review reports, and experience logs. Nothing is hidden. You can trace every decision.
 
@@ -42,7 +42,7 @@ claude plugins install vibewire@vibewire
 
 # Step 2: Choose the right skill for your task
 /vibewire:aim   # Explore, clarify, plan architecture if needed
-/vibewire:snap  # Direct implementation: break down → TDD → verify → optional review → commit
+/vibewire:go  # Direct implementation: break down → TDD → verify → optional review → commit
 ```
 
 ---
@@ -53,26 +53,26 @@ claude plugins install vibewire@vibewire
 |-----------------|---------|-------------|
 | `/vibewire:intro` | Scan project, establish documentation baseline | Once per project, or when the codebase has changed significantly |
 | `/vibewire:aim` | Exploration, clarification, and architecture planning | When you need to explore, analyze, decide, or plan before coding |
-| `/vibewire:snap` | TDD implementation with optional review | When you know what to build and want to code it |
+| `/vibewire:go` | TDD implementation with optional review | When you know what to build and want to code it |
 
 ```
 /vibewire:intro → .vibewire/project.md, .vibewire/CHANGELOG.md
 
 /vibewire:aim (exploration and planning):
-  → orient (read project context)
-  → clarify (what, why, how)
-  → research / discussion / operations / documentation
-  → (optional) .vibewire/aims/AIM-{N}-{name}.md
+  → interview (frontier rounds; inline `.vibewire/CONTEXT.md` + `.vibewire/adr/`)
+  → synthesize? (to-spec-style AIM, or skip) → route
+  → research / discussion / operations / documentation as needed during interview
+  → (optional) `.vibewire/aims/AIM-{N}-{name}.md`
   → if architecture planning needed:
       → explore architecture (layer by layer)
-      → scout (if tech unknowns) → .vibewire/tech-research/{task-id}.md + .vibewire/tech-research/knowledge.md
-      → experimenter (if unverified assumptions) → .vibewire/experiments/{task-id}/
-      → .vibewire/plans/PLAN-{N}-{name}/ (architecture.md + checkpoints.md)
+      → scout (if tech unknowns) → `.vibewire/tech-research/{task-id}.md` + `.vibewire/tech-research/knowledge.md`
+      → experimenter (if unverified assumptions) → `.vibewire/experiments/{task-id}/`
+      → `.vibewire/plans/PLAN-{N}-{name}/` (architecture.md + checkpoints.md)
       → (user reviews and approves)
-      → hand off to snap: /vibewire:snap PLAN-{N}-{name} (execute checkpoints)
-  → or transition to snap directly if the change is simple
+      → hand off to go: `/vibewire:go PLAN-{N}-{name}` (execute checkpoints)
+  → or transition to go directly if the change is simple
 
-/vibewire:snap (implementation):
+/vibewire:go (implementation):
   → break down → confirm
   → TDD (red → green) per atomic change
   → verify (full test suite)
@@ -90,14 +90,14 @@ claude plugins install vibewire@vibewire
 
 | Command | Description |
 |---------|-------------|
-| **intro** | Scans the codebase, establishes documentation baseline (`.vibewire/project.md`, `.vibewire/CHANGELOG.md`). Five steps: confirm scope → explore → write docs → review → commit |
+| **intro** | Scans the codebase, establishes documentation baseline (`.vibewire/project.md` with Vibewire artifacts index, `.vibewire/CHANGELOG.md`). Five steps: confirm scope → explore → write docs → review → commit |
 
 ### Skills (2)
 
 | Skill | Description |
 |-------|-------------|
-| **aim** | Exploration, clarification, and architecture planning: orient → clarify → research / discussion / architecture design. Produces PLAN documents (architecture + checkpoint plan) |
-| **snap** | TDD implementation with optional review: break down → implement → verify → review decision → record → commit |
+| **aim** | Interview and record domain memory, then optional to-spec-style AIM, then route: exploration → research / discussion / architecture design. Produces CONTEXT/ADR (lazy) and PLAN documents when needed |
+| **go** | TDD implementation with optional review: break down → implement → verify → review decision → record → commit |
 
 ### Agents (5)
 
@@ -105,9 +105,9 @@ claude plugins install vibewire@vibewire
 |-------|------|---------|
 | **scout** | Investigates specified technologies and dependencies with factual findings — versions, compatibility, constraints. Receives research targets, no decision-making | aim |
 | **experimenter** | Runs specified experiments to obtain real structures, API behaviors, or performance data. Receives experiment targets, no decision-making | aim |
-| **efficiency-reviewer** | Reviews for performance issues — unnecessary work, missed concurrency, memory leaks, algorithmic inefficiency | snap |
-| **quality-reviewer** | Reviews for anti-patterns — redundant state, parameter creep, copy-paste variants, over-abstraction, code smells | snap |
-| **reuse-reviewer** | Reviews for duplication — searches existing utilities and patterns to identify reusable code opportunities | snap |
+| **efficiency-reviewer** | Reviews for performance issues — unnecessary work, missed concurrency, memory leaks, algorithmic inefficiency | go |
+| **quality-reviewer** | Reviews for anti-patterns — redundant state, parameter creep, copy-paste variants, over-abstraction, code smells | go |
+| **reuse-reviewer** | Reviews for duplication — searches existing utilities and patterns to identify reusable code opportunities | go |
 
 ---
 
@@ -119,9 +119,12 @@ All process artifacts are stored in `.vibewire/` within the target project:
 
 ```
 .vibewire/
-├── project.md                          # Project overview (created by intro)
+├── project.md                          # Project overview (created by intro; Vibewire artifacts index)
+├── CONTEXT.md                          # Domain glossary (lazy; created by aim during interview)
+├── adr/                                # Architecture Decision Records (lazy; created by aim)
+│   └── 0001-{slug}.md
 ├── CHANGELOG.md                        # Change log (created by intro)
-├── evolve.md                           # Reusable lessons and experience records (maintained by snap)
+├── evolve.md                           # Reusable lessons and experience records (maintained by go)
 ├── tech-research/                      # Tech research artifacts (created by scout)
 │   ├── knowledge.md                    # Global research knowledge base
 │   └── {task-id}.md                    # Detailed research per task
@@ -133,8 +136,8 @@ All process artifacts are stored in `.vibewire/` within the target project:
 │   └── PLAN-{N}-{name}/               # Planning directory per plan task
 │       ├── architecture.md             # Architecture design (created by aim)
 │       └── checkpoints.md              # Delivery checkpoints + status header (created by aim)
-└── aims/                               # Aim records (created by aim)
-    └── AIM-{N}-{name}.md             # Analysis/research conclusions
+└── aims/                               # Aim records (created by aim synthesize)
+    └── AIM-{N}-{name}.md             # To-spec-style synthesis of an exploration
 ```
 
 ### Agent Pipeline
@@ -143,12 +146,12 @@ All process artifacts are stored in `.vibewire/` within the target project:
 flowchart TD
     subgraph aim["/vibewire:aim"]
         direction TB
-        A0[User describes task] --> A1[Orient + Clarify]
+        A0[User describes task] --> A1[Interview + domain docs]
         A1 --> A2{Code needed?}
         A2 -- No --> A3["Research / Discussion / Operations / Documentation"]
         A2 -- Yes --> A4{Complex or simple?}
         A4 -- Complex, needs planning --> A5{Tech unknowns?}
-        A4 -- Simple, HOW clear --> snapflow
+        A4 -- Simple, HOW clear --> goflow
 
         A5 -- Yes --> A6["scout
         Tech investigation"]
@@ -160,9 +163,9 @@ flowchart TD
         A8 --> A9
     end
 
-    A9 --> snapflow
+    A9 --> goflow
 
-    subgraph snapflow["/vibewire:snap"]
+    subgraph goflow["/vibewire:go"]
         direction TB
         S0[User confirms scope] --> S1["Break Down → TDD → Verify"]
         S1 --> S2{Review recommended?}

@@ -38,7 +38,7 @@ Dispatch three Explore agents in parallel — each independently verifying every
 
 ## Finalize
 
-Supplements snap's Finalize for PLAN execution:
+Supplements go's Finalize for PLAN execution:
 
 - One CHANGELOG entry for the whole plan, on completion only.
 - Distill `log.md` notes into `evolve.md`.

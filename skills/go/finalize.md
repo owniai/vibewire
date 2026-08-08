@@ -1,6 +1,6 @@
 # Finalize
 
-`{IDENTITY}` identifies the work: `SNAP-{name}` for ad-hoc snap (`{name}` = task objective, kebab-case, e.g., `fix-login-bug`), or `PLAN-{N}-{name}` for PLAN execution.
+`{IDENTITY}` identifies the work: `GO-{name}` for ad-hoc go (`{name}` = task objective, kebab-case, e.g., `fix-login-bug`), or `PLAN-{N}-{name}` for PLAN execution.
 
 ## Documentation
 

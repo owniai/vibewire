@@ -66,7 +66,17 @@ Write the following files to `.vibewire/`.
 
 ## Conventions
 {Coding standards, directory conventions, common patterns. Omit this section if no notable conventions found.}
+
+## Vibewire artifacts
+Paths under `.vibewire/`. After loading this file, follow these pointers:
+
+- **Language**: `.vibewire/CONTEXT.md` — project glossary (created lazily by `/vibewire:aim` when terms crystallise; do not create a placeholder). If the file exists, read it for vocabulary.
+- **Decisions**: `.vibewire/adr/` — Architecture Decision Records (created lazily by `/vibewire:aim` when a decision passes the ADR gates; do not create an empty directory). If present, skim titles; read bodies that touch the current work.
+- **Changelog**: `.vibewire/CHANGELOG.md` — grep titles ONLY; read body on demand.
+- **Evolve**: `.vibewire/evolve.md` — reusable lessons (maintained by `/vibewire:go`). Grep titles ONLY; read body on demand. Skip if absent.
 ```
+
+If exploration finds an existing glossary or ADR tree elsewhere (e.g. root `CONTEXT.md`, `docs/adr/`), note those paths under Vibewire artifacts as additional locations — still do not copy or scaffold empty VibeWire placeholders.
 
 **.vibewire/CHANGELOG.md** structure:
 

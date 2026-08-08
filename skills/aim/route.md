@@ -2,13 +2,23 @@
 
 ALWAYS present all routes via AskUserQuestion with a recommendation — fast routing, no deep deliberation, user decides. ALWAYS include the persisted AIM document path if one exists.
 
-- **snap** — clear, no design needed. Invoke `/vibewire:snap`.
+- **go** — clear, no design needed. Invoke `/vibewire:go`.
 - **plan** — directional, needs architectural planning. Follow [plan](plan.md).
-- **delegate: snap** — session exhausted or scope demands fresh start. Output copy-ready prompt: `/vibewire:snap`, objective, conclusions, further exploration. Conclusions only — never the exploration process.
+- **delegate: go** — session exhausted or scope demands fresh start. Output copy-ready prompt: `/vibewire:go`, objective, conclusions (or AIM path), further exploration. Conclusions only — never the exploration process.
 - **close** — end session without routing to implementation.
 
 ## Commit
 
-ALWAYS confirm commit before exiting if AIM file was created or modified. Stage ONLY the AIM file. Format: `[AIM-{N}-{name}] docs: {one-line description}`.
+ALWAYS confirm commit before exiting if any of these were created or modified in this session:
+
+- `.vibewire/aims/AIM-*.md`
+- `.vibewire/CONTEXT.md`
+- `.vibewire/adr/*`
+
+Stage ONLY those changed files (not unrelated `.vibewire/` noise). Suggested formats:
+
+- AIM: `[AIM-{N}-{name}] docs: {one-line description}`
+- CONTEXT / ADR only: `[vibewire/domain] docs: {one-line description}`
+- Mixed: prefer the AIM format when an AIM exists; otherwise the domain format.
 
 AIM's responsibility ends here.

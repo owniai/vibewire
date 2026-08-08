@@ -41,7 +41,7 @@ Commit ONLY these two files: `[PLAN-{N}-{name}] docs: {one-line description}`.
 
 ### Phase 4: Route
 
-Recommend executing the checkpoints — output copy-ready `/vibewire:snap PLAN-{N}-{name}`.
+Recommend executing the checkpoints — output copy-ready `/vibewire:go PLAN-{N}-{name}`.
 
 ## Anchor
 
