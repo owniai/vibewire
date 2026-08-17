@@ -15,9 +15,8 @@ File references: ALWAYS read on phase entry or stated condition — NEVER pre-re
 
 ## Before Start
 
-Load project context — proceed to Investigate immediately after:
+Read `.vibewire/project.md` — if missing, prompt `/vibewire:intro`. Follow its **Vibewire artifacts** pointers, then enter Investigate.
 
-- `.vibewire/project.md` — if missing, prompt `/vibewire:intro`. Follow its **Vibewire artifacts** pointers for what else to read (and how).
 - [plan-execution](plan-execution.md) — read ONLY when the prompt contains `PLAN-{N}-{name}`, for PLAN execution.
 
 ## Process

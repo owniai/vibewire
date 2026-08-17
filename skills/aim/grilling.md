@@ -18,4 +18,4 @@ Finding _facts_ is your job, never the user's. When a frontier question needs a 
 
 Cite sources for factual conclusions: file paths, URLs, experiment results. Distinguish fact from inference.
 
-The grilling session is done when the frontier is empty: every branch of the design tree visited, nothing left silently assumed. Do not proceed to Synthesize until the user confirms you have reached a shared understanding.
+The grilling session is done when the frontier is empty: every branch of the design tree visited, nothing left silently assumed — and the user confirms shared understanding.

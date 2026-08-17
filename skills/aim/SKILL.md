@@ -15,17 +15,15 @@ Phase references: ALWAYS read on phase entry — NEVER pre-read.
 
 ## Before Start
 
-Load project context — proceed to Grill immediately after:
-
-- `.vibewire/project.md` — if missing, prompt `/vibewire:intro`. Follow its **Vibewire artifacts** pointers for what else to read (and how).
+Read `.vibewire/project.md` — if missing, prompt `/vibewire:intro`. Follow its **Vibewire artifacts** pointers, then enter Grill.
 
 ## Process
 
 ### Phase 1: Grill
 
-ALWAYS read [approach](approach.md) on entry — interview methodology plus inline domain modeling.
+ALWAYS on entry: read [grilling](grilling.md) and [domain-modeling](domain-modeling.md) — one loop.
 
-NEVER proceed to Synthesize until the grilling frontier is empty and the user confirms shared understanding.
+NEVER proceed to Synthesize until the frontier is empty and the user confirms shared understanding.
 
 ### Phase 2: Synthesize
 
