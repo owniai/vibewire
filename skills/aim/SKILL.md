@@ -27,7 +27,10 @@ NEVER proceed to Synthesize until the frontier is empty and the user confirms sh
 
 ### Phase 2: Synthesize
 
-ALWAYS read [synthesize](synthesize.md) on entry — to-spec-style AIM or skip to Route.
+ALWAYS ask on entry (recommendation: persist when the work may span sessions or hand off to go/plan):
+
+- **Summarize** — read [synthesize](synthesize.md)
+- **Skip** — proceed to Route.
 
 ### Phase 3: Route
 

@@ -2,22 +2,22 @@
 
 [中文](README.zh-CN.md) | **English**
 
-An autonomous development workflow plugin for Claude Code. From a task description to tested, reviewed code — without human intervention.
+A development workflow plugin for Claude Code. Aim interviews to a shared spec; go implements — TDD, review, and commit.
 
-VibeWire orchestrates a pipeline of specialized agents that plan, implement, review, and iterate on your behalf. You describe what you want. The agents figure out how.
+You confirm direction. Agents execute the agreed scope.
 
 ---
 
 ## How It Works
 
-It starts with your project. Run `/vibewire:intro` once to scan the codebase and establish a documentation baseline.
+Run `/vibewire:intro` once to scan the codebase and establish a documentation baseline.
 
-Choose the right skill for your task:
+Choose the skill for the work:
 
-- **Aim** — For exploration, research, discussion, and architecture planning. Aim interviews to shared understanding while recording domain language and ADRs, then optionally synthesizes a to-spec-style AIM and routes to go or a PLAN. When a task involves new technologies or unverified assumptions, aim dispatches **scout** to investigate and **experimenter** to run real-world experiments — grounding architecture decisions in verified data. If code is needed, aim transitions to go or produces a PLAN document (architecture + checkpoint plan).
-- **Go** — For well-defined implementation tasks. Go handles the entire cycle: break down → TDD → verify → optional review → record → commit. Review is recommended for changes spanning 3+ files or affecting public APIs.
+- **Aim** — Exploration, research, discussion, and architecture planning. Interviews in frontier rounds until shared understanding, recording domain language and ADRs as they crystallise. Optionally synthesizes a to-spec-style AIM, then routes: **go** or **plan**. You confirm which, and this session or a new one. Scout and experimenter run when facts or hypotheses need looking up — they do not decide.
+- **Go** — Well-defined implementation. Investigate → break down → TDD (or direct) → verify → polish → finalize. Ad-hoc go asks before launching the three external reviewers; PLAN execution always launches them.
 
-All process artifacts live in `.vibewire/` inside your project — architecture, checkpoint plans, implementation records, review reports, and experience logs. Nothing is hidden. You can trace every decision.
+All process artifacts live in `.vibewire/` — architecture, checkpoint plans, AIM docs, and experience logs. Nothing is hidden.
 
 ---
 
@@ -40,9 +40,9 @@ claude plugins install vibewire@vibewire
 # Step 1: Scan your project (run once)
 /vibewire:intro
 
-# Step 2: Choose the right skill for your task
-/vibewire:aim   # Explore, clarify, plan architecture if needed
-/vibewire:go  # Direct implementation: break down → TDD → verify → optional review → commit
+# Step 2: Choose the skill
+/vibewire:aim   # Explore, clarify, route to go or plan
+/vibewire:go    # Implement: investigate → TDD → verify → polish → commit
 ```
 
 ---
@@ -53,33 +53,35 @@ claude plugins install vibewire@vibewire
 |-----------------|---------|-------------|
 | `/vibewire:intro` | Scan project, establish documentation baseline | Once per project, or when the codebase has changed significantly |
 | `/vibewire:aim` | Exploration, clarification, and architecture planning | When you need to explore, analyze, decide, or plan before coding |
-| `/vibewire:go` | TDD implementation with optional review | When you know what to build and want to code it |
+| `/vibewire:go` | Implementation with TDD and review | When you know what to build, or when executing a PLAN |
 
 ```
 /vibewire:intro → .vibewire/project.md, .vibewire/CHANGELOG.md
 
-/vibewire:aim (exploration and planning):
-  → interview (frontier rounds; inline `.vibewire/CONTEXT.md` + `.vibewire/adr/`)
-  → synthesize? (to-spec-style AIM, or skip) → route
-  → research / discussion / operations / documentation as needed during interview
+/vibewire:aim:
+  → Grill (frontier rounds; inline `.vibewire/CONTEXT.md` + `.vibewire/adr/`)
+  → Synthesize (to-spec-style AIM, or skip) → Route
+  → Route: recommend **go** or **plan**; you confirm which, and this session or a new one
   → (optional) `.vibewire/aims/AIM-{N}-{name}.md`
-  → if architecture planning needed:
-      → explore architecture (layer by layer)
-      → scout (if tech unknowns) → `.vibewire/tech-research/{task-id}.md` + `.vibewire/tech-research/knowledge.md`
-      → experimenter (if unverified assumptions) → `.vibewire/experiments/{task-id}/`
-      → `.vibewire/plans/PLAN-{N}-{name}/` (architecture.md + checkpoints.md)
-      → (user reviews and approves)
-      → hand off to go: `/vibewire:go PLAN-{N}-{name}` (execute checkpoints)
-  → or transition to go directly if the change is simple
 
-/vibewire:go (implementation):
-  → break down → confirm
-  → TDD (red → green) per atomic change
-  → verify (full test suite)
-  → review decision (self-review always; optional 3 reviewers in parallel)
-  → fix (deduplicate findings, fix or skip)
-  → .vibewire/CHANGELOG.md + .vibewire/evolve.md
-  → commit
+  plan:
+      → architecture (layer by layer) → write architecture.md
+      → checkpoints (approve all) → write checkpoints.md
+      → Route: ask commit, then `/vibewire:go PLAN-{N}-{name}`
+
+/vibewire:go (ad-hoc):
+  → Investigate → confirm
+  → Break Down → confirm
+  → Implement (TDD red → green, or Direct) per atomic change
+  → Verify (full test suite)
+  → Polish (self-review; ask before 3 external reviewers)
+  → Finalize (`.vibewire/CHANGELOG.md`, `.vibewire/evolve.md`) → commit
+
+/vibewire:go PLAN-{N}-{name}:
+  → branch `plan/PLAN-{N}-{name}`
+  → per Checkpoint: Phases 1–5 (Polish always launches reviewers)
+      → you verify → wrap up `log.md` → commit
+  → Acceptance → Finalize (one changelog entry) → merge (you confirm)
 ```
 
 ---
@@ -96,18 +98,18 @@ claude plugins install vibewire@vibewire
 
 | Skill | Description |
 |-------|-------------|
-| **aim** | Interview and record domain memory, then optional to-spec-style AIM, then route: exploration → research / discussion / architecture design. Produces CONTEXT/ADR (lazy) and PLAN documents when needed |
-| **go** | TDD implementation with optional review: break down → implement → verify → review decision → record → commit |
+| **aim** | Interview and record domain memory, optional to-spec-style AIM, then route to **go** or **plan**. CONTEXT/ADR lazy; PLAN when architecture is needed |
+| **go** | Investigate → break down → implement (TDD or direct) → verify → polish → finalize. Ad-hoc or `PLAN-{N}-{name}` checkpoint execution |
 
 ### Agents (5)
 
 | Agent | Role | Used By |
 |-------|------|---------|
-| **scout** | Investigates specified technologies and dependencies with factual findings — versions, compatibility, constraints. Receives research targets, no decision-making | aim |
-| **experimenter** | Runs specified experiments to obtain real structures, API behaviors, or performance data. Receives experiment targets, no decision-making | aim |
-| **efficiency-reviewer** | Reviews for performance issues — unnecessary work, missed concurrency, memory leaks, algorithmic inefficiency | go |
+| **scout** | Investigates specified technologies and dependencies — versions, compatibility, constraints. Receives research targets, no decision-making | aim |
+| **experimenter** | Runs specified experiments for real structures, API behavior, or performance data. Receives experiment targets, no decision-making | aim |
+| **efficiency-reviewer** | Reviews for performance — unnecessary work, missed concurrency, memory leaks, algorithmic inefficiency | go |
 | **quality-reviewer** | Reviews for anti-patterns — redundant state, parameter creep, copy-paste variants, over-abstraction, code smells | go |
-| **reuse-reviewer** | Reviews for duplication — searches existing utilities and patterns to identify reusable code opportunities | go |
+| **reuse-reviewer** | Reviews for duplication — searches existing utilities and patterns for reuse | go |
 
 ---
 
@@ -123,8 +125,8 @@ All process artifacts are stored in `.vibewire/` within the target project:
 ├── CONTEXT.md                          # Domain glossary (lazy; created by aim during interview)
 ├── adr/                                # Architecture Decision Records (lazy; created by aim)
 │   └── 0001-{slug}.md
-├── CHANGELOG.md                        # Change log (created by intro)
-├── evolve.md                           # Reusable lessons and experience records (maintained by go)
+├── CHANGELOG.md                        # Change log (created by intro; updated by go finalize)
+├── evolve.md                           # Reusable lessons (maintained by go)
 ├── tech-research/                      # Tech research artifacts (created by scout)
 │   ├── knowledge.md                    # Global research knowledge base
 │   └── {task-id}.md                    # Detailed research per task
@@ -132,12 +134,13 @@ All process artifacts are stored in `.vibewire/` within the target project:
 │   ├── framework.md                    # Global experiment framework (created by experimenter)
 │   └── {task-id}/                      # Experiment results (created by experimenter)
 │       └── result.md
-├── plans/                              # Plan records
-│   └── PLAN-{N}-{name}/               # Planning directory per plan task
-│       ├── architecture.md             # Architecture design (created by aim)
-│       └── checkpoints.md              # Delivery checkpoints + status header (created by aim)
-└── aims/                               # Aim records (created by aim synthesize)
-    └── AIM-{N}-{name}.md             # To-spec-style synthesis of an exploration
+├── plans/
+│   └── PLAN-{N}-{name}/
+│       ├── architecture.md             # Architecture (written after layers confirmed)
+│       ├── checkpoints.md              # Delivery checkpoints + status header
+│       └── log.md                      # Per-checkpoint drift + notes (created by go)
+└── aims/
+    └── AIM-{N}-{name}.md               # To-spec-style synthesis (optional)
 ```
 
 ### Agent Pipeline
@@ -145,34 +148,27 @@ All process artifacts are stored in `.vibewire/` within the target project:
 ```mermaid
 flowchart TD
     subgraph aim["/vibewire:aim"]
-        direction TB
-        A0[User describes task] --> A1[Interview + domain docs]
-        A1 --> A2{Code needed?}
-        A2 -- No --> A3["Research / Discussion / Operations / Documentation"]
-        A2 -- Yes --> A4{Complex or simple?}
-        A4 -- Complex, needs planning --> A5{Tech unknowns?}
-        A4 -- Simple, HOW clear --> goflow
-
-        A5 -- Yes --> A6["scout
-        Tech investigation"]
-        A6 --> A7{Unverified assumptions?}
-        A5 -- No --> A7
-        A7 -- Yes --> A8["experimenter
-        Run real-world experiments"]
-        A7 -- No --> A9[Architecture Design]
-        A8 --> A9
+        A1[Grill] --> A2[Synthesize]
+        A2 --> A3[Route]
+        A3 -->|go| goAdhoc
+        A3 -->|plan| P1[Architecture]
+        P1 --> P2[Checkpoints]
+        P2 --> goPlan
     end
 
-    A9 --> goflow
+    subgraph goAdhoc["/vibewire:go"]
+        G1[Investigate] --> G2[Break Down]
+        G2 --> G3[Implement]
+        G3 --> G4[Verify]
+        G4 --> G5[Polish]
+        G5 --> G6[Finalize]
+    end
 
-    subgraph goflow["/vibewire:go"]
-        direction TB
-        S0[User confirms scope] --> S1["Break Down → TDD → Verify"]
-        S1 --> S2{Review recommended?}
-        S2 -- Yes --> S3["3 reviewers (parallel)
-        → fix if needed"]
-        S2 -- No --> S4[Record → Commit]
-        S3 --> S4
+    subgraph goPlan["/vibewire:go PLAN-..."]
+        C1[Per Checkpoint] --> C2[You verify]
+        C2 --> C1
+        C2 --> C3[Acceptance]
+        C3 --> C4[Finalize + merge]
     end
 ```
 
@@ -180,11 +176,10 @@ flowchart TD
 
 ## Philosophy
 
-- **Autonomous by default** — You approve the design. The agents handle the rest.
-- **Review before merge** — Three independent reviewers catch different classes of issues. Nothing ships without review.
-- **Traceable process** — Every decision, every change, every review is recorded in `.vibewire/`.
-- **Fix, don't skip** — Review findings are fixed, not deferred.
-- **Scope discipline** — The aim skill pushes back on oversized tasks and helps you ship the smallest useful unit first.
+- **You confirm direction** — Skills recommend; you confirm routes, commits, and (ad-hoc) external review.
+- **Review in the loop** — Self-review always. External reviewers on ask; always during PLAN execution.
+- **Traceable process** — Decisions and delivery live in `.vibewire/`.
+- **Fix with judgment** — Merge findings; fix what improves the change, skip what would disrupt more.
 
 ---
 

@@ -1,6 +1,6 @@
 # Plan
 
-Explore architecture, define checkpoints, persist, and route.
+Explore architecture, define checkpoints, and route.
 
 ## Scope
 
@@ -21,6 +21,8 @@ Design architecture building on AIM conclusions — strictly one layer at a time
 - [ ] Data flow and interfaces
 - [ ] Module internals
 
+After all layers confirmed — write `.vibewire/plans/PLAN-{N}-{name}/architecture.md` (N = next 3-digit sequence from `.vibewire/plans/`, name = kebab-case task id): the four layers, all confirmed decisions, tech decisions citing evidence sources. Architecture only.
+
 ### Phase 2: Define Checkpoints
 
 ALWAYS read [checkpoints](checkpoints.md) for decomposition rules.
@@ -30,18 +32,16 @@ Break confirmed architecture into delivery Checkpoints:
 - [ ] Group into delivery Checkpoints (runnable after each)
 - [ ] Present to user — ALL checkpoints detailed. NEVER proceed without explicit approval.
 
-### Phase 3: Persist
+After approval — write `checkpoints.md` in that directory: a status header (one `- [ ]` per Checkpoint, all unchecked) above a `---` divider, then each Checkpoint's definition per the [format](checkpoints.md).
 
-Persist to `.vibewire/plans/PLAN-{N}-{name}/` (N = next 3-digit sequence from plans/, name = kebab-case task id). Two files:
+### Phase 3: Route
 
-- **`architecture.md`** — the four architecture layers, all confirmed decisions, tech decisions citing evidence sources. Architecture only.
-- **`checkpoints.md`** — a status header (one `- [ ]` per Checkpoint, all unchecked) above a `---` divider, then each Checkpoint's definition per the [format](checkpoints.md).
+ALWAYS state the recommendation — execute the checkpoints. User confirms this session or a new one.
 
-Commit ONLY these two files: `[PLAN-{N}-{name}] docs: {one-line description}`.
+- This session — invoke `/vibewire:go PLAN-{N}-{name}`
+- New session — output copy-ready prompt: `/vibewire:go PLAN-{N}-{name}`, AIM path if persisted, otherwise a tight digest of the settled spec. Never the exploration process.
 
-### Phase 4: Route
-
-Recommend executing the checkpoints — output copy-ready `/vibewire:go PLAN-{N}-{name}`.
+ALWAYS ask whether to commit, with a recommendation — user decides. Recommend yes when this session created or modified files. Commit ONLY those files.
 
 ## Anchor
 

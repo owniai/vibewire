@@ -1,19 +1,12 @@
 # Synthesize
 
-Turn the aligned conversation into a durable spec-style AIM — or skip persistence and proceed to Route.
+Turn the aligned conversation into a durable spec-style AIM.
 
-## Gate
-
-ALWAYS ask on entry (recommendation: persist when the work may span sessions or hand off to go/plan):
-
-- **Summarize** — write `.vibewire/aims/AIM-{N}-{name}.md` (N = next 3-digit sequence from `aims/`, name = kebab-case topic)
-- **Skip** — do not write an AIM; proceed to Route. CONTEXT/ADR already written during Grill stay as-is.
-
-There is no "output directly to chat only" option.
+Write `.vibewire/aims/AIM-{N}-{name}.md` (N = next 3-digit sequence from `.vibewire/aims/`, name = kebab-case topic).
 
 Do NOT interview for new decisions here — synthesize what is already known. Use vocabulary from `.vibewire/CONTEXT.md` when present; respect ADRs in the area.
 
-## Before writing (Summarize only)
+## Before writing
 
 Sketch the **seams** at which the feature will be tested. Prefer existing seams; take the highest seam possible; fewer is better — ideal is one. Confirm seams with the user before writing the AIM.
 
@@ -62,4 +55,4 @@ Every decision in the AIM must have been settled in Grill (or clearly marked as 
 
 ## After writing
 
-If Summarize ran, note the AIM path for Route. Commit of AIM / CONTEXT / ADR is handled in Route's Commit step (user confirms).
+Note the AIM path for Route.

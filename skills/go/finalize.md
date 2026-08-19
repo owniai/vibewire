@@ -4,7 +4,7 @@
 
 ## Documentation
 
-### CHANGELOG.md
+### `.vibewire/CHANGELOG.md`
 
 Prepend entry:
 ```
@@ -13,7 +13,7 @@ Objective: {1-2 sentences}
 What changed: {bullet points}
 ```
 
-### evolve.md
+### `.vibewire/evolve.md`
 
 Prepend ONLY when a genuinely reusable lesson emerged. Must be a transferable insight that helps future development (e.g., "API rate limits apply per-header, not per-token"), not a task execution record. Keep each entry abstract, concise, precise, and generalized — avoid verbose explanation. Skip when no such lesson exists.
 ```
@@ -22,7 +22,7 @@ Prepend ONLY when a genuinely reusable lesson emerged. Must be a transferable in
 - Action: {what to do differently}
 ```
 
-### project.md
+### `.vibewire/project.md`
 
 Update if this task affected project structure or conventions. Skip if no impact.
 

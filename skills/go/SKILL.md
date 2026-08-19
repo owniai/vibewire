@@ -1,6 +1,6 @@
 ---
 name: go
-description: "Use ONLY when the user explicitly invokes /vibewire:go. Implement atomic changes — TDD for behavior, direct for non-behavioral — with self-review and optional external reviewers."
+description: "Use when the user invokes /vibewire:go, or when aim routes to go. Implementation flow: well-defined work and PLAN checkpoints."
 ---
 
 # Go
@@ -15,9 +15,10 @@ File references: ALWAYS read on phase entry or stated condition — NEVER pre-re
 
 ## Before Start
 
-Read `.vibewire/project.md` — if missing, prompt `/vibewire:intro`. Follow its **Vibewire artifacts** pointers, then enter Investigate.
+Read `.vibewire/project.md` — if missing, prompt `/vibewire:intro`. Follow its **Vibewire artifacts** pointers.
 
-- [plan-execution](plan-execution.md) — read ONLY when the prompt contains `PLAN-{N}-{name}`, for PLAN execution.
+- Prompt contains `PLAN-{N}-{name}` — read [plan-execution](plan-execution.md) and follow it.
+- Otherwise — enter Investigate. Name the work `GO-{name}` (kebab-case objective) and keep it through Finalize.
 
 ## Process
 
@@ -47,7 +48,7 @@ NEVER proceed to Implement without ALL atomic changes listed and explicit user a
 
 ### Phase 3: Implement
 
-ALWAYS on entry: create one task per atomic change — if any TDD track exists, read [testing-guide](testing.md). 
+ALWAYS on entry: create one task per atomic change — if any TDD track exists, read [testing](testing.md). 
 
 Process strictly one at a time — NEVER skip, batch, or parallelize. NEVER proceed to next until an atomic change is complete.
 
@@ -61,15 +62,15 @@ NEVER proceed to Verify with unprocessed or failing atomic changes.
 
 ### Phase 4: Verify
 
-Run full test suite — all tests MUST pass.
+Run full test suite — all tests MUST pass. Failures this change did not introduce: STOP and report — NEVER paper over. No suite to run: state it.
 
 ### Phase 5: Polish
 
-ALWAYS read [polish-guide](polish.md) — self-review, optional external review, and fix.
+ALWAYS read [polish](polish.md) — self-review, external review, and fix.
 
 ## Finalize
 
-ALWAYS read [finalize-guide](finalize.md) for documentation and commit — after Phase 5 (ad-hoc go), or after Acceptance in PLAN execution (see [plan-execution](plan-execution.md)).
+ALWAYS read [finalize](finalize.md) for documentation and commit — after Phase 5 (ad-hoc go), or after Acceptance in PLAN execution (see [plan-execution](plan-execution.md)).
 
 ## Anchor
 

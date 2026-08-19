@@ -1,9 +1,9 @@
 {
   "name": "vibewire",
-  "description": "Autonomous development workflow plugin — fully automated end-to-end from requirements to code",
-  "version": "0.13.0",
+  "description": "Development workflow plugin — aim clarifies, go implements",
+  "version": "0.14.0",
   "author": {
     "name": "owniai"
   },
-  "keywords": ["autonomous", "development", "agent", "workflow"]
+  "keywords": ["development", "agent", "workflow"]
 }

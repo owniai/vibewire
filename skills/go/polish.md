@@ -1,8 +1,8 @@
 # Polish
 
-On entry, ALWAYS ask user whether to launch external reviewers (`quality-reviewer`, `efficiency-reviewer`, `reuse-reviewer`) BEFORE any review activity.
+On entry: ad-hoc go — ALWAYS ask whether to launch external reviewers (`vibewire:quality-reviewer`, `vibewire:efficiency-reviewer`, `vibewire:reuse-reviewer`) BEFORE any review activity. PLAN execution — do not ask; launch them.
 
-- **Approved** — run self-review AND external reviewers in parallel.
+- **Approved** / PLAN — run self-review AND external reviewers in parallel.
 - **Declined** — proceed with self-review only.
 
 ## Self-review
